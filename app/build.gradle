@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        sign
+//        release {
+//            keyAlias 'xxxx'
+//            keyPassword 'xxxxx'
+//            storeFile file('/Users/orangefaller/Desktop/xxxx.jks')
+//            storePassword 'xxxxx'
+//        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "com.ofcat.whereboardgame"
+        minSdkVersion 16
+        targetSdkVersion 25
+
+        multiDexEnabled true
+
+        versionCode 10001
+        versionName "1.0.001"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.sign
+        }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    //    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.code.gson:gson:2.4'
+    testCompile 'junit:junit:4.12'
+}
+
+
+//rootProject.file(): 取得根目錄中的檔案
+def ksFile = rootProject.file('../orcat_keystore/keystore.properties')
+def props = new Properties();
+if (ksFile.canRead()) {
+    props.load(new FileInputStream(ksFile))
+
+    if (props != null) {
+        android.signingConfigs.sign.storeFile file(props['KEYSTORE_FILE'])
+        android.signingConfigs.sign.storePassword props['KEYSTORE_PASSWORD']
+        android.signingConfigs.sign.keyAlias props['KEYSTORE_ALIAS']
+        android.signingConfigs.sign.keyPassword props['KEYSTORE_ALIAS_PASSWORD']
+    } else {
+        println 'some entries in \'keystore.properties\' not found!'
+    }
+} else {
+    println '\'keystore.properties\' not found!'
+}

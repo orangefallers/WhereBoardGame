@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">去哪玩桌遊 GO</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="google_play_service_miss">沒有GooglePlay服務</string>
+
+    <string name="waitting">請稍候</string>
+    <string name="no_internet">網路未連線，請開啟網路</string>
+    <string name="welcome_title">~看看附近哪兒有桌遊店~</string>
+    <string name="go">GO</string>
+    <string name="data_update">資料更新日期：%s</string>
+
+    <string name="my_location">我的位置</string>
+
+</resources>
