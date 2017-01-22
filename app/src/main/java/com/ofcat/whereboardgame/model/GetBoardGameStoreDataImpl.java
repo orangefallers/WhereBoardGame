@@ -1,12 +1,10 @@
 package com.ofcat.whereboardgame.model;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.FeedDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;

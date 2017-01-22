@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -249,7 +248,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, MapsActivity.this);
         } catch (SecurityException e) {
-            Log.w(TAG, "Exception!!");
+//            Log.w(TAG, "Exception!!");
         }
     }
 
@@ -273,7 +272,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         currentLocation = location;
-        Log.i(TAG, "OnLocationChanged");
+//        Log.i(TAG, "OnLocationChanged");
 
         LatLng latLan = new LatLng(location.getLatitude(), location.getLongitude());
 

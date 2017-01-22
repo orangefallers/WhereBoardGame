@@ -1,14 +1,11 @@
 package com.ofcat.whereboardgame.task;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -85,7 +82,7 @@ public class GetMapTask extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        Log.i("Result", "json = " + response);
+//        Log.i("Result", "json = " + response);
 
         if (this.listener !=null){
             listener.onSuccess(response);
