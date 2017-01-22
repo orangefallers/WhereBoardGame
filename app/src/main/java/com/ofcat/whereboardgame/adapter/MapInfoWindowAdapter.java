@@ -22,11 +22,6 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     @Override
     public View getInfoWindow(Marker marker) {
-        return null;
-    }
-
-    @Override
-    public View getInfoContents(Marker marker) {
         View view = act.getLayoutInflater().inflate(R.layout.custom_marker, null);
 
         TextView tvStoreName = (TextView) view.findViewById(R.id.marker_store_name);
@@ -40,7 +35,11 @@ public class MapInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         } else {
             tvAddress.setText(marker.getSnippet());
         }
-
         return view;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
     }
 }
