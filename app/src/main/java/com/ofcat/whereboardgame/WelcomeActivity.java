@@ -41,11 +41,17 @@ public class WelcomeActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.btn_welcome_go:
 
-                    btnGo.setEnabled(false);
-                    tvAppStatus.setVisibility(View.VISIBLE);
-                    tvAppStatus.setText(getString(R.string.waitting));
-                    Intent intent = new Intent(WelcomeActivity.this, MapsActivity.class);
-                    startActivity(intent);
+                    if (ActivityCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        btnGo.setEnabled(false);
+                        ActivityCompat.requestPermissions(WelcomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequestCode);
+                    } else {
+//                        btnGo.setEnabled(true);
+                        btnGo.setEnabled(false);
+                        tvAppStatus.setVisibility(View.VISIBLE);
+                        tvAppStatus.setText(getString(R.string.waitting));
+                        Intent intent = new Intent(WelcomeActivity.this, MapsActivity.class);
+                        startActivity(intent);
+                    }
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -98,13 +104,6 @@ public class WelcomeActivity extends AppCompatActivity {
             btnGo.setEnabled(true);
         }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            btnGo.setEnabled(false);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, permissionRequestCode);
-        } else {
-            btnGo.setEnabled(true);
-        }
-
         tvUpdateDate.setText(String.format(getResources().getString(R.string.data_update), boardGameStoreData.getDataUpdateDate()));
     }
 
@@ -117,6 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 btnGo.setEnabled(true);
             } else {
+                Toast.makeText(WelcomeActivity.this, getString(R.string.please_argue_location_permission), Toast.LENGTH_LONG).show();
                 btnGo.setEnabled(false);
             }
 

@@ -10,6 +10,8 @@
     <string name="go">GO</string>
     <string name="data_update">資料更新日期：%s</string>
 
+    <string name="please_argue_location_permission">請同意權限，否則無法開啟地圖，謝謝</string>
+
     <string name="my_location">我的位置</string>
 
 </resources>
