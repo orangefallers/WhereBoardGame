@@ -1,14 +1,17 @@
 package com.ofcat.whereboardgame;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
@@ -26,6 +29,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private TextView tvUpdateDate;
     private Button btnGo;
 
+    private int debugCount = 0;
+
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -37,6 +42,23 @@ public class WelcomeActivity extends AppCompatActivity {
                     tvAppStatus.setText(getString(R.string.waitting));
                     Intent intent = new Intent(WelcomeActivity.this, MapsActivity.class);
                     startActivity(intent);
+
+                    break;
+                case R.id.tv_welcome_data_update_date:
+                    debugCount++;
+
+                    if (debugCount == 20) {
+                        String versionName;
+                        try {
+                            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            versionName = "0.0.000";
+                            e.printStackTrace();
+                        }
+
+                        Toast.makeText(WelcomeActivity.this, versionName, Toast.LENGTH_LONG).show();
+                        debugCount = 0;
+                    }
 
                     break;
             }
@@ -51,6 +73,7 @@ public class WelcomeActivity extends AppCompatActivity {
         initView();
 
         btnGo.setOnClickListener(clickListener);
+        tvUpdateDate.setOnClickListener(clickListener);
 
         if (boardGameStoreData == null) {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, null);
