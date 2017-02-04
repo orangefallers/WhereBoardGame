@@ -14,4 +14,16 @@
 # class:
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
+#}    com.google.firebase.database
+
+# Add this global rule
+-keepattributes Signature
+
+-keepclassmembers class com.ofcat.whereboardgame.** {
+  *;
+}
+
+#-keep public class * extends android.support.v7.app.AppCompatActivity
+#-keep class com.google.firebase.database** {
+#*;
 #}

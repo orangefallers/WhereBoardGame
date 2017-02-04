@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.ofcat.whereboardgame.config.AppConfig;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.FeedDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
@@ -28,7 +29,7 @@ import java.util.TimeZone;
 public class GetBoardGameStoreDataImpl {
 
     private final String storeUrlByCells = "https://spreadsheets.google.com/feeds/cells/128wH1tdLJHe9D-EyPoyVcALt4I8s43DVuG5VulL9_cU/1/public/values?alt=json";
-    private final String storeUrlByList = "https://spreadsheets.google.com/feeds/list/128wH1tdLJHe9D-EyPoyVcALt4I8s43DVuG5VulL9_cU/1/public/values?alt=json";
+    private final String storeApiUrlByList = AppConfig.STORE_URL;
 
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -85,7 +86,7 @@ public class GetBoardGameStoreDataImpl {
 
     public void startLoadData() {
         if (getMapTask == null) {
-            getMapTask = new GetMapTask(storeUrlByList, taskListener);
+            getMapTask = new GetMapTask(storeApiUrlByList, taskListener);
             getMapTask.execute();
         }
 

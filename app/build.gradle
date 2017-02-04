@@ -19,12 +19,13 @@ android {
 
         multiDexEnabled true
 
-        versionCode 10001
-        versionName "1.0.001"
+        versionCode 10003
+        versionName "1.0.003"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            signingConfig signingConfigs.release
@@ -42,16 +43,37 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
+
     })
+
     compile 'com.android.support:appcompat-v7:25.0.0'
     //    compile 'com.google.android.gms:play-services:9.8.0'
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
-    compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-database:10.0.1'
+
     testCompile 'junit:junit:4.12'
+
+    //Conflict with dependency 'com.google.code.findbugs:jsr305'
+//    androidTestCompile 'com.google.code.findbugs:jsr305:3.0.1'
+
+//    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'pub.devrel:easypermissions:0.2.1'
+//    compile('com.google.api-client:google-api-client-android:1.22.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+//    compile('com.google.apis:google-api-services-sheets:v4-rev82-1.22.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+
+
 }
 
+// for firebase
+apply plugin: 'com.google.gms.google-services'
 
 //rootProject.file(): 取得根目錄中的檔案
 def ksFile = rootProject.file('../orcat_keystore/keystore.properties')
