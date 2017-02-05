@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +15,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.ofcat.whereboardgame.firebase.model.FireBaseModelApi;
+import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
+import com.ofcat.whereboardgame.report.ReportActivity;
 
 /**
  * Created by orangefaller on 2017/1/15.
@@ -28,10 +33,13 @@ public class WelcomeActivity extends AppCompatActivity {
     private final static int permissionRequestCode = 24;
 
     private GetBoardGameStoreDataImpl boardGameStoreData;
+    private FireBaseModelApi fireBaseModleApi;
 
     private TextView tvAppStatus;
     private TextView tvUpdateDate;
+    private TextView tvSystemNotify;
     private Button btnGo;
+    private Button btnReport;
 
     private int debugCount = 0;
 
@@ -52,6 +60,11 @@ public class WelcomeActivity extends AppCompatActivity {
                         Intent intent = new Intent(WelcomeActivity.this, MapsActivity.class);
                         startActivity(intent);
                     }
+
+                    break;
+                case R.id.btn_welcome_report:
+                    Intent intent = new Intent(WelcomeActivity.this, ReportActivity.class);
+                    startActivity(intent);
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -76,6 +89,22 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     };
 
+    private ValueEventListener valueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+//            GenericTypeIndicator<ArrayList<StoreDTO>> typeIndicator = new GenericTypeIndicator<ArrayList<StoreDTO>>() {
+//            };
+
+            String systemNotify = dataSnapshot.child("SystemNotification").getValue(String.class);
+            showSystemBulletinBoard(systemNotify);
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,10 +112,16 @@ public class WelcomeActivity extends AppCompatActivity {
         initView();
 
         btnGo.setOnClickListener(clickListener);
+        btnReport.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
         if (boardGameStoreData == null) {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, null);
+        }
+
+        if (fireBaseModleApi == null) {
+            fireBaseModleApi = new FireBaseModelApiImpl();
+            fireBaseModleApi.addValueEventListener(valueEventListener);
         }
 
     }
@@ -108,6 +143,15 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (fireBaseModleApi != null) {
+            fireBaseModleApi.removeValueEventListener(valueEventListener);
+        }
+
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -125,9 +169,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void initView() {
         tvAppStatus = (TextView) findViewById(R.id.tv_app_status);
+        tvSystemNotify = (TextView) findViewById(R.id.tv_app_system_notify);
         tvUpdateDate = (TextView) findViewById(R.id.tv_welcome_data_update_date);
 
         btnGo = (Button) findViewById(R.id.btn_welcome_go);
+        btnReport = (Button) findViewById(R.id.btn_welcome_report);
 
     }
 
@@ -140,6 +186,15 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         return false;
 
+    }
+
+    private void showSystemBulletinBoard(String bulletin) {
+        if (bulletin == null || bulletin.equals("")) {
+            tvSystemNotify.setVisibility(View.GONE);
+        } else {
+            tvSystemNotify.setVisibility(View.VISIBLE);
+            tvSystemNotify.setText(bulletin);
+        }
     }
 
 }

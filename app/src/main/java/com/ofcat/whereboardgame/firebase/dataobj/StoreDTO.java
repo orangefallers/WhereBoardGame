@@ -11,6 +11,7 @@ public class StoreDTO {
 
     private String storeName;
     private String storeAddress;
+    private String storeStatus;
 
     public StoreDTO() {
     }
@@ -29,5 +30,13 @@ public class StoreDTO {
 
     public String getStoreAddress() {
         return storeAddress;
+    }
+
+    public String getStoreStatus() {
+        return storeStatus;
+    }
+
+    public void setStoreStatus(String storeStatus) {
+        this.storeStatus = storeStatus;
     }
 }
