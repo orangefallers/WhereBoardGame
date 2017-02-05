@@ -113,6 +113,8 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         initView();
+        initActionBar();
+
 
         spinnerStoreStatus.setOnItemSelectedListener(itemSelectedListener);
         btnConfirm.setOnClickListener(clickListener);
@@ -138,6 +140,14 @@ public class ReportActivity extends AppCompatActivity {
         etStoreAddress = (EditText) findViewById(R.id.et_report_store_address);
         btnConfirm = (Button) findViewById(R.id.btn_report_confirm);
 
+    }
+
+    private void initActionBar() {
+        try {
+            getSupportActionBar().setTitle(R.string.report_store_info);
+        } catch (NullPointerException e) {
+
+        }
     }
 
     private void onClickConfirm(String name, String address, String status) {
