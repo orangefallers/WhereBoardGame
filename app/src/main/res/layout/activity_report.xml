@@ -41,6 +41,7 @@
         android:id="@+id/et_report_store_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="3"
         android:layout_below="@id/tv_report_store_name" />
 
     <TextView
@@ -54,6 +55,7 @@
         android:id="@+id/et_report_store_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="3"
         android:layout_below="@id/tv_report_store_address" />
 
     <Button

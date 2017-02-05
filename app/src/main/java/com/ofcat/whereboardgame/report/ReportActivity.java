@@ -49,7 +49,7 @@ public class ReportActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.btn_report_confirm:
 
-                    if (etStoreAddress.getText().toString().equals("") || etStoreName.getText().toString().equals("")) {
+                    if (etStoreAddress.getText().toString().trim().equals("") || etStoreName.getText().toString().trim().equals("")) {
                         showErrorDataDialog();
                     } else {
                         showThanksDialog();
