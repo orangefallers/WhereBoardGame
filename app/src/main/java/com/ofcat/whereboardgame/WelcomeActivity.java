@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApi;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
@@ -94,9 +96,15 @@ public class WelcomeActivity extends AppCompatActivity {
         public void onDataChange(DataSnapshot dataSnapshot) {
 //            GenericTypeIndicator<ArrayList<StoreDTO>> typeIndicator = new GenericTypeIndicator<ArrayList<StoreDTO>>() {
 //            };
-
-            String systemNotify = dataSnapshot.child("SystemNotification").getValue(String.class);
-            showSystemBulletinBoard(systemNotify);
+            SystemConfigDTO systemConfigDTO = null;
+            if (dataSnapshot.child("SystemConfig").exists()) {
+                systemConfigDTO = dataSnapshot.child("SystemConfig").getValue(SystemConfigDTO.class);
+                settingSystemConfig(systemConfigDTO);
+            }
+            if (dataSnapshot.child("SystemNotification").exists()) {
+                String systemNotify = dataSnapshot.child("SystemNotification").getValue(String.class);
+                showSystemBulletinBoard(systemNotify);
+            }
 
         }
 
@@ -195,6 +203,14 @@ public class WelcomeActivity extends AppCompatActivity {
             tvSystemNotify.setVisibility(View.VISIBLE);
             tvSystemNotify.setText(bulletin);
         }
+    }
+
+    private void settingSystemConfig(SystemConfigDTO configDTO) {
+        if (configDTO != null) {
+            btnReport.setEnabled(configDTO.isOpenReportFeature());
+            btnGo.setEnabled(configDTO.isOpenWatchMapFeature());
+        }
+
     }
 
 }

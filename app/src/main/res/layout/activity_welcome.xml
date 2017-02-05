@@ -49,7 +49,7 @@
             android:id="@+id/btn_welcome_go"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_background"
+            android:background="@drawable/selector_welcome_button"
             android:padding="20dp"
             android:text="@string/go"
             android:textColor="#ffffff" />
@@ -58,7 +58,7 @@
             android:id="@+id/btn_welcome_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_background"
+            android:background="@drawable/selector_welcome_button"
             android:padding="20dp"
             android:text="@string/report_store_info"
             android:textColor="#ffffff" />
