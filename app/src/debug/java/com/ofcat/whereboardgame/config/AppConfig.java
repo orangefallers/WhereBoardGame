@@ -9,5 +9,5 @@ public class AppConfig {
     // test url
     public static String STORE_URL = "https://spreadsheets.google.com/feeds/list/1iB9TVmicuu9ddB14l9twRWk4Q5QkhNJEB9DHdD210og/1/public/values?alt=json";
 
-    public static String FIREBASE_URL = "https://intrepid-decker-155313.firebaseio.com";
+    public static String FIREBASE_URL = "";
 }
