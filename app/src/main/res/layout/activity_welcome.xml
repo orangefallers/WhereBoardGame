@@ -8,7 +8,7 @@
         android:id="@+id/tv_welcome_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_welcome_go"
+        android:layout_above="@+id/ll_welcome_button_area"
         android:layout_marginBottom="20dp"
         android:text="@string/welcome_title"
         android:textSize="16sp"
@@ -22,15 +22,34 @@
         android:gravity="center"
         android:textColor="#CC0000"
         android:background="#CCCCCC"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
-    <Button
-        android:id="@+id/btn_welcome_go"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_welcome_button_area"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:padding="30dp"
-        android:text="@string/go"/>
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_welcome_go"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_background"
+            android:padding="20dp"
+            android:text="@string/go"/>
+
+        <Button
+            android:id="@+id/btn_welcome_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="@drawable/btn_background"
+            android:text="@string/report_store_info"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_welcome_data_update_date"

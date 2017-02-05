@@ -8,10 +8,23 @@
     <string name="no_internet">網路未連線，請開啟網路</string>
     <string name="welcome_title">~看看附近哪兒有桌遊店~</string>
     <string name="go">GO</string>
+    <string name="report_store_info">我要回報</string>
     <string name="data_update">資料更新日期：%s</string>
 
     <string name="please_argue_location_permission">請同意權限，否則無法開啟地圖，謝謝</string>
 
     <string name="my_location">我的位置</string>
+    <string name="confirm">確認</string>
+
+
+    <!--report Activity -->
+    <string name="store_name">桌遊店名稱</string>
+    <string name="store_address">桌遊店地址</string>
+
+    <string-array name="store_status">
+        <item>我發現新桌遊店了!</item>
+        <item>這家桌遊店再也不開了QQ</item>
+        <item>這家桌遊店搬新家了~</item>
+    </string-array>
 
 </resources>
