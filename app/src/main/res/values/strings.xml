@@ -2,6 +2,9 @@
     <string name="app_name">去哪玩桌遊 GO</string>
     <string name="title_activity_maps">Map</string>
 
+    <!-- for facebook sdk -->
+    <string name="facebook_app_id"></string>
+
     <string name="google_play_service_miss">沒有GooglePlay服務</string>
 
     <string name="waitting">請稍候</string>
@@ -25,6 +28,12 @@
     <string name="report_dialog_thanks_title">感謝您熱心回報</string>
     <string name="report_dialog_thanks_message">最慢約7個工作天\n人工審查完成後，桌遊地圖將會更新\n記得按下回報上傳喔!</string>
     <string name="report_success">回報成功</string>
+
+
+    <!--Login Activity -->
+    <string name="login_account">帳號</string>
+    <string name="login_password">密碼</string>
+    <string name="login_logout">登出帳號</string>
 
     <string-array name="store_status">
         <item>我發現新桌遊店了!</item>

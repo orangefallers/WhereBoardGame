@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NormalMargin">
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="NormalPadding_6dp">
+        <item name="android:padding">6dp</item>
+    </style>
+
+
 </resources>

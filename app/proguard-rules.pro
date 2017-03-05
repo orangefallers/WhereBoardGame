@@ -18,6 +18,7 @@
 
 # Add this global rule
 -keepattributes Signature
+-keepattributes *Annotation*
 
 -keepclassmembers class com.ofcat.whereboardgame.** {
   *;
