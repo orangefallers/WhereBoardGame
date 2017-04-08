@@ -10,6 +10,9 @@ import java.io.Serializable;
 
 public class StoreInfoDTO implements Serializable {
 
+    @SerializedName("storeid")
+    private String storeId;
+
     @SerializedName("storename")
     private String storeName;
 
@@ -23,6 +26,15 @@ public class StoreInfoDTO implements Serializable {
     //經度
     @SerializedName("longitude")
     private String longitude;
+
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
 
     public String getStoreName() {
         return storeName;

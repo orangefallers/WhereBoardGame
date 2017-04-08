@@ -113,6 +113,7 @@ public class GetBoardGameStoreDataImpl {
 
         for (EntryDTO entryDTO : entryDTOArrayList) {
             StoreInfoDTO storeInfoDTO = new StoreInfoDTO();
+            storeInfoDTO.setStoreId(entryDTO.getStoreId().toString());
             storeInfoDTO.setStoreName(entryDTO.getStoreName().getToString());
             storeInfoDTO.setAddress(entryDTO.getAddress().getToString());
             storeInfoDTO.setLatitude(entryDTO.getLatitude().getToString());

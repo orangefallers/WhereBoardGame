@@ -29,6 +29,9 @@ public class EntryDTO implements Serializable {
     @SerializedName("link")
     private ArrayList<LinkDTO> linkDTOs;
 
+    @SerializedName("gsx$storeid")
+    private TstringDTO storeId;
+
     @SerializedName("gsx$storename")
     private TstringDTO storeName;
 
@@ -65,6 +68,14 @@ public class EntryDTO implements Serializable {
 
     public void setContent(TypeDTO content) {
         this.content = content;
+    }
+
+    public TstringDTO getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(TstringDTO storeId) {
+        this.storeId = storeId;
     }
 
     public TstringDTO getStoreName() {
