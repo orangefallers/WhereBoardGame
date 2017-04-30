@@ -3,9 +3,14 @@
     <string name="title_activity_maps">Map</string>
 
     <!-- for facebook sdk -->
-    <string name="facebook_app_id"></string>
+    <string name="facebook_app_id">1855282734753651</string>
 
     <string name="google_play_service_miss">沒有GooglePlay服務</string>
+
+    <string name="main_welcome_tab_home">首頁</string>
+    <string name="main_welcome_tab_map">GO</string>
+    <string name="main_welcome_tab_find_someone">揪團去</string>
+    <string name="main_welcome_tab_report">我要回報</string>
 
     <string name="waitting">請稍候</string>
     <string name="no_internet">網路未連線，請開啟網路</string>
@@ -34,6 +39,25 @@
     <string name="login_account">帳號</string>
     <string name="login_password">密碼</string>
     <string name="login_logout">登出帳號</string>
+
+    <!--Map Activity-->
+    <string name="map_choose_button_find_person">我要揪團</string>
+    <string name="map_choose_button_who_play">誰在揪團</string>
+
+    <!--Find person Activity-->
+    <string name="findperson_place">地點</string>
+    <string name="findperson_date">日期</string>
+    <string name="findperson_date_and_time">日期時間</string>
+    <string name="findperson_initiator">主揪稱呼</string>
+    <string name="findperson_contact">聯絡方式</string>
+    <string-array name="findperson_item_title_list">
+        <item>主揪稱呼</item>
+        <item>日期時間</item>
+        <item>聯絡方式</item>
+        <item>其他注意事項</item>
+    </string-array>
+
+
 
     <string-array name="store_status">
         <item>我發現新桌遊店了!</item>
