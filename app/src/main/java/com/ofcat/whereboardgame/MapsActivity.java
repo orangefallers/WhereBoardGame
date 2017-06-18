@@ -1,10 +1,20 @@
 package com.ofcat.whereboardgame;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.IntEvaluator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -21,12 +31,20 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.adapter.MapInfoWindowAdapter;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
+import com.ofcat.whereboardgame.findperson.FindPersonActivity;
+import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
+import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -37,45 +55,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
 
+    private FireBaseModelApiImpl fireBaseModelApi;
+
     private Location currentLocation;
 
     private Marker currentMarker;
 
     private GetBoardGameStoreDataImpl boardGameStoreData;
 
+    private LinearLayout llChooseLayout;
+
+    private TextView tvFindPerson;
+    private TextView tvWhoPlay;
+
+    // 顯示列表的動畫，在第一次執行時初始化相關參數
+    private AnimatorSet showAnimationSet = null;
+    // 隱藏列表的動畫
+    private AnimatorSet hideAnimationSet = null;
+
+    private boolean isShowListChoose = false;
+
+    private int listChoooseHeight;
+
+    private String boardGameStoreName;
 
 //    private ArrayList<MarkerOptions> markerOptionses;
 
     private GetBoardGameStoreDataImpl.StoreDataImplListener dataImplListener = new GetBoardGameStoreDataImpl.StoreDataImplListener() {
         @Override
         public void onStoreDataList(ArrayList<EntryDTO> entryDTOs) {
-//            if (markerOptionses == null) {
-//                markerOptionses = new ArrayList<>();
-//            }
-//
-//            markerOptionses.clear();
-
-//            int i = 0;
-//
-//            for (EntryDTO entryDTO : entryDTOs) {
-//
-//                if (i > 0) {
-//                    double lat = Double.parseDouble(entryDTO.getLatitude().getToString());
-//                    double lng = Double.parseDouble(entryDTO.getLongitude().getToString());
-//
-//                    LatLng storeLatLng = new LatLng(lat, lng);
-//
-//                    MarkerOptions options = new MarkerOptions()
-//                            .title(entryDTO.getStoreName().getToString())
-//                            .snippet(entryDTO.getAddress().getToString())
-//                            .position(storeLatLng);
-//
-//                    mMap.addMarker(options);
-//                }
-//
-//                i++;
-//            }
-
 
         }
 
@@ -97,7 +105,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .snippet(storeInfoDTO.getAddress())
                             .position(storeLatLng);
 
-                    mMap.addMarker(options);
+                    Marker marker = mMap.addMarker(options);
+                    marker.setTag(storeInfoDTO);
                 }
 
                 i++;
@@ -106,7 +115,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         public void onUpdateData(String date) {
-//            Log.i("update", "date = " + date);
 //            TimeZone.setDefault(TimeZone.getTimeZone("GTM+8"));
 
         }
@@ -116,11 +124,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        initView();
 
         connectLocationService();
 
         configLocationRequest();
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -154,11 +162,134 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    private void initView() {
+        llChooseLayout = (LinearLayout) findViewById(R.id.map_list_choose_button);
+        llChooseLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                listChoooseHeight = llChooseLayout.getHeight();
+//                Log.i(TAG, "height = " + listChoooseHeight);
+            }
+        });
+
+        tvFindPerson = (TextView) findViewById(R.id.map_list_find_person_play);
+        tvWhoPlay = (TextView) findViewById(R.id.map_list_who_play);
+
+        tvFindPerson.setOnClickListener(clickListener);
+        tvWhoPlay.setOnClickListener(clickListener);
+
+
+    }
+
+    private void showListAnimation() {
+//        llChooseLayout.setVisibility(View.VISIBLE);
+//        if (showAnimationSet == null) {
+//            showAnimationSet = new AnimatorSet();
+//            int hideY = llChooseLayout.getBottom();
+//            int showY = (int) llChooseLayout.getY();
+//            int height = llChooseLayout.getHeight();
+//
+//            // 設定顯示列表動畫
+//            showAnimationSet = new AnimatorSet();
+//            showAnimationSet.play(ObjectAnimator.ofFloat(llChooseLayout, "y", hideY, showY));
+//            showAnimationSet.setDuration(500);
+//            showAnimationSet.setInterpolator(new AccelerateDecelerateInterpolator());
+//            showAnimationSet.addListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    super.onAnimationEnd(animation);
+////                    llChooseLayout.animate().setListener(null);
+//                    isShowListChoose = true;
+//                }
+//            });
+//
+//        }
+//
+//        if (!showAnimationSet.isRunning()) {
+//            showAnimationSet.start();
+//        }
+        ValueAnimator valueAnimation = ValueAnimator.ofObject(new IntEvaluator(), 0, listChoooseHeight);
+        valueAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                ViewGroup.LayoutParams params1 = llChooseLayout.getLayoutParams();
+                params1.height = (int) animation.getAnimatedValue();
+                llChooseLayout.setLayoutParams(params1);
+                if ((int) animation.getAnimatedValue() > 4) {
+                    llChooseLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        valueAnimation.setDuration(500);
+        valueAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isShowListChoose = true;
+            }
+        });
+
+        if (!valueAnimation.isRunning()) {
+            valueAnimation.start();
+        }
+
+    }
+
+    private void hideListAnimation() {
+//        if (hideAnimationSet == null) {
+//            int hideY = llChooseLayout.getBottom();
+//            int showY = (int) llChooseLayout.getY();
+//            int height = llChooseLayout.getHeight();
+//            hideAnimationSet = new AnimatorSet();
+//            hideAnimationSet.play(ObjectAnimator.ofFloat(llChooseLayout, "y", hideY, 0));
+//            hideAnimationSet.setDuration(500);
+//            hideAnimationSet.setInterpolator(new AccelerateDecelerateInterpolator());
+//            hideAnimationSet.addListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    llChooseLayout.setVisibility(View.INVISIBLE);
+////                    llChooseLayout.animate().setListener(null);
+//                    isShowListChoose = false;
+//                }
+//            });
+//        }
+//
+//        if (!hideAnimationSet.isRunning()) {
+//            hideAnimationSet.start();
+//        }
+
+        ValueAnimator valueAnimation = ValueAnimator.ofObject(new IntEvaluator(), listChoooseHeight, 0);
+        valueAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                ViewGroup.LayoutParams params1 = llChooseLayout.getLayoutParams();
+                params1.height = (int) animation.getAnimatedValue();
+                llChooseLayout.setLayoutParams(params1);
+            }
+        });
+
+        valueAnimation.setDuration(500);
+        valueAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                llChooseLayout.setVisibility(View.INVISIBLE);
+                isShowListChoose = false;
+            }
+        });
+
+        if (!valueAnimation.isRunning()) {
+            valueAnimation.start();
+        }
+    }
+
 
     @Override
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
+
     }
 
     @Override
@@ -196,24 +327,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+
+                boardGameStoreName = marker.getTitle();
+
 //                if (marker.equals(currentMarker)){
 //
 //                    Toast.makeText(MapsActivity.this, "This is my home",Toast.LENGTH_LONG).show();
 //                    return true;
 //                }
-//                return false;
-//            }
-//        });
+                return false;
+            }
+        });
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
 
-//                Toast.makeText(MapsActivity.this, "This is " + marker.getTitle(), Toast.LENGTH_LONG).show();
+                if (marker.getTag() != null) {
+                    StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
+
+//                    boardGameStoreName = marker.getTitle();
+
+                    if (isShowListChoose) {
+                        hideListAnimation();
+                    } else {
+                        showListAnimation();
+                    }
+                }
+
             }
         });
 
@@ -282,6 +427,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .title(getString(R.string.my_location))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             currentMarker.showInfoWindow();
+            currentMarker.setTag(null);
             moveMap(latLan);
         } else {
             currentMarker.setPosition(latLan);
@@ -290,4 +436,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.map_list_find_person_play:
+                    Intent intent = new Intent(MapsActivity.this, FindPersonActivity.class);
+                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
+                    startActivity(intent);
+                    break;
+                case R.id.map_list_who_play:
+                    if (fireBaseModelApi == null) {
+                        fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("WaitPlayerRoom").addApiNote("100003");
+                        fireBaseModelApi.execute();
+                        fireBaseModelApi.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                GenericTypeIndicator<List<WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<List<WaitPlayerRoomDTO>>() {
+                                };
+                                List<WaitPlayerRoomDTO> storeDTOs = dataSnapshot.getValue(typeIndicator);
+                                if (!storeDTOs.isEmpty()) {
+//                                    Log.i("kevintest", "store size = " + storeDTOs.size());
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    };
 }
