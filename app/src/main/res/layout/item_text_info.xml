@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+    <TextView
+        android:id="@+id/tv_info_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/iv_info_icon"
+        android:layout_toStartOf="@+id/iv_info_icon"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:textSize="16sp"
+        android:textColor="@color/deep_gray"
+        tools:text="這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字" />
+
+    <ImageView
+        android:id="@+id/iv_info_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        tools:src="@mipmap/ic_date_range_black_36dp"
+        tools:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_info_text"
+        android:background="@color/colorPrimary" />
+
+</RelativeLayout>

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,8 +20,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
-import com.ofcat.whereboardgame.firebase.model.FireBaseModelApi;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.login.FacebookLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 import com.ofcat.whereboardgame.report.ReportActivity;
 
@@ -34,13 +35,14 @@ public class WelcomeActivity extends AppCompatActivity {
     private final static int permissionRequestCode = 24;
 
     private GetBoardGameStoreDataImpl boardGameStoreData;
-    private FireBaseModelApi fireBaseModleApi;
+    private FireBaseModelApiImpl fireBaseModelApi;
 
     private TextView tvAppStatus;
     private TextView tvUpdateDate;
     private TextView tvSystemNotify;
     private Button btnGo;
     private Button btnReport;
+    private Button btnLogin;
 
     private int debugCount = 0;
 
@@ -68,6 +70,10 @@ public class WelcomeActivity extends AppCompatActivity {
                     startActivity(intent);
 
                     break;
+                case R.id.btn_welcome_login:
+                    startActivity(new Intent(WelcomeActivity.this, FacebookLoginActivity.class));
+
+                    break;
                 case R.id.tv_welcome_data_update_date:
                     debugCount++;
 
@@ -90,25 +96,46 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     };
 
-    private ValueEventListener valueEventListener = new ValueEventListener() {
+    private ValueEventListener systemConfigValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.i(TAG, "systemConfigValueEventListener");
 //            GenericTypeIndicator<ArrayList<StoreDTO>> typeIndicator = new GenericTypeIndicator<ArrayList<StoreDTO>>() {
 //            };
-            SystemConfigDTO systemConfigDTO = null;
-            if (dataSnapshot.child("SystemConfig").exists()) {
-                systemConfigDTO = dataSnapshot.child("SystemConfig").getValue(SystemConfigDTO.class);
-                settingSystemConfig(systemConfigDTO);
-            }
-            if (dataSnapshot.child("SystemNotification").exists()) {
-                String systemNotify = dataSnapshot.child("SystemNotification").getValue(String.class);
-                showSystemBulletinBoard(systemNotify);
-            }
+//            SystemConfigDTO systemConfigDTO;
+//            if (dataSnapshot.child("SystemConfig").exists()) {
+//                systemConfigDTO = dataSnapshot.child("SystemConfig").getValue(SystemConfigDTO.class);
+//                settingSystemConfig(systemConfigDTO);
+//            }
+//            if (dataSnapshot.child("SystemNotification").exists()) {
+//                String systemNotify = dataSnapshot.child("SystemNotification").getValue(String.class);
+//                showSystemBulletinBoard(systemNotify);
+//            }
+
+            SystemConfigDTO systemConfigDTO = dataSnapshot.getValue(SystemConfigDTO.class);
+            settingSystemConfig(systemConfigDTO);
+            Log.i(TAG, "data = " + dataSnapshot.toString());
 
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            Log.e(TAG, "systemConfigValueEventListener DatabaseError = " + databaseError.getMessage());
+        }
+    };
+
+    private ValueEventListener systemNotifyValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Log.i(TAG, "systemNotifyValueEventListener");
+            String systemNotify = dataSnapshot.getValue(String.class);
+            showSystemBulletinBoard(systemNotify);
+            Log.i(TAG, "data 02 = " + dataSnapshot.toString());
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.e(TAG, "systemNotifyValueEventListener DatabaseError = " + databaseError.getMessage());
         }
     };
 
@@ -120,18 +147,29 @@ public class WelcomeActivity extends AppCompatActivity {
 
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);
+        btnLogin.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
         if (boardGameStoreData == null) {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, null);
         }
 
-        if (fireBaseModleApi == null) {
-            fireBaseModleApi = new FireBaseModelApiImpl();
-            fireBaseModleApi.addValueEventListener(valueEventListener);
+        if (fireBaseModelApi == null) {
+            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("SystemConfig");
+            fireBaseModelApi.execute();
+            fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);
+
+            fireBaseModelApi.cleanUrl();
+            fireBaseModelApi.addApiNote("SystemNotification");
+            fireBaseModelApi.execute();
+            fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
+//            fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);
+//            fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
         }
 
     }
+
+
 
     @Override
     protected void onResume() {
@@ -152,8 +190,9 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (fireBaseModleApi != null) {
-            fireBaseModleApi.removeValueEventListener(valueEventListener);
+        if (fireBaseModelApi != null) {
+            fireBaseModelApi.removeValueEventListener(systemConfigValueEventListener);
+            fireBaseModelApi.removeValueEventListener(systemNotifyValueEventListener);
         }
 
     }
@@ -181,6 +220,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         btnGo = (Button) findViewById(R.id.btn_welcome_go);
         btnReport = (Button) findViewById(R.id.btn_welcome_report);
+        btnLogin = (Button) findViewById(R.id.btn_welcome_login);
 
     }
 

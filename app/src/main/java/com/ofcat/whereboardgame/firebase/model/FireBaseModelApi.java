@@ -14,4 +14,6 @@ public interface FireBaseModelApi {
     void removeValueEventListener(ValueEventListener valueEventListener);
 
     DatabaseReference getDatabaseRef();
+
+    DatabaseReference getDefaultDatabaseRef();
 }

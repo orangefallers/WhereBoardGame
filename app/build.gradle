@@ -19,10 +19,20 @@ android {
 
         multiDexEnabled true
 
-        versionCode 11002
-        versionName "1.1.002"
+        versionCode 11004
+        versionName "1.1.004"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+//    productFlavors {
+//        free {
+//            applicationId "com.ofcat.whereboardgame.free"
+//        }
+//        pro {
+//            applicationId "com.ofcat.whereboardgame"
+//        }
+//    }
+
     buildTypes {
         release {
             shrinkResources true

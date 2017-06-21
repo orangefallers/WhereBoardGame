@@ -76,7 +76,6 @@ public class ReportActivity extends AppCompatActivity {
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//            Log.i(TAG, "onChildAdded");
             if (isClickUpload) {
                 isClickUpload = false;
                 Toast.makeText(ReportActivity.this, getString(R.string.report_success), Toast.LENGTH_LONG).show();
@@ -85,7 +84,6 @@ public class ReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            Log.i(TAG, "onChildChanged");
             if (isClickUpload) {
                 isClickUpload = false;
                 Toast.makeText(ReportActivity.this, getString(R.string.report_success), Toast.LENGTH_LONG).show();
@@ -94,17 +92,14 @@ public class ReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            Log.i(TAG, "onChildRemoved");
         }
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//            Log.i(TAG, "onChildMoved");
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-//            Log.i(TAG, "onCancelled");
         }
     };
 
@@ -121,7 +116,7 @@ public class ReportActivity extends AppCompatActivity {
 
         if (fireBaseModelApi == null) {
             fireBaseModelApi = new FireBaseModelApiImpl();
-            fireBaseModelApi.getDatabaseRef().addChildEventListener(childEventListener);
+            fireBaseModelApi.getDefaultDatabaseRef().addChildEventListener(childEventListener);
         }
 
     }
@@ -130,7 +125,7 @@ public class ReportActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (fireBaseModelApi != null) {
-            fireBaseModelApi.getDatabaseRef().removeEventListener(childEventListener);
+            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(childEventListener);
         }
     }
 
@@ -153,7 +148,7 @@ public class ReportActivity extends AppCompatActivity {
     private void onClickConfirm(String name, String address, String status) {
         isClickUpload = true;
 
-        String ur_key = fireBaseModelApi.getDatabaseRef().child(TABLE_USER_REPORT).push().getKey();
+        String ur_key = fireBaseModelApi.getDefaultDatabaseRef().child(TABLE_USER_REPORT).push().getKey();
 
         StoreDTO ur_StoreDTO = new StoreDTO();
         ur_StoreDTO.setStoreName(name);
@@ -163,7 +158,7 @@ public class ReportActivity extends AppCompatActivity {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/" + TABLE_USER_REPORT + "/" + ur_key, ur_StoreDTO);
 
-        fireBaseModelApi.getDatabaseRef().updateChildren(childUpdates);
+        fireBaseModelApi.getDefaultDatabaseRef().updateChildren(childUpdates);
 
     }
 

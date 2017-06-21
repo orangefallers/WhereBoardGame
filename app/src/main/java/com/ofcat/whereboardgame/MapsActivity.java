@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -44,7 +45,8 @@ import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -77,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int listChoooseHeight;
 
-    private String boardGameStoreName;
+    private String boardGameStoreName, boardGameStoreId;
 
 //    private ArrayList<MarkerOptions> markerOptionses;
 
@@ -304,6 +306,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (boardGameStoreData != null) {
             boardGameStoreData.onDestroy();
         }
+
+//        if (fireBaseModelApi != null) {
+//            fireBaseModelApi.removeValueEventListener(systemConfigValueEventListener);
+//            fireBaseModelApi.removeValueEventListener(systemNotifyValueEventListener);
+//        }
     }
 
     /**
@@ -333,6 +340,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 boardGameStoreName = marker.getTitle();
+
+                if (marker.getTag() != null) {
+                    StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
+
+                    boardGameStoreId = infoDTO.getStoreId();
+
+                }
 
 //                if (marker.equals(currentMarker)){
 //
@@ -446,6 +460,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 case R.id.map_list_find_person_play:
                     Intent intent = new Intent(MapsActivity.this, FindPersonActivity.class);
                     intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
+                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, boardGameStoreId);
                     startActivity(intent);
                     break;
                 case R.id.map_list_who_play:
@@ -456,18 +471,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                GenericTypeIndicator<List<WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<List<WaitPlayerRoomDTO>>() {
+//                                GenericTypeIndicator<List<WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<List<WaitPlayerRoomDTO>>() {
+//                                };
+//                                List<WaitPlayerRoomDTO> storeDTOs = dataSnapshot.getValue(typeIndicator);
+//                                if (!storeDTOs.isEmpty()) {
+////                                    Log.i("kevintest", "store size = " + storeDTOs.size());
+//                                }
+
+                                GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
                                 };
-                                List<WaitPlayerRoomDTO> storeDTOs = dataSnapshot.getValue(typeIndicator);
-                                if (!storeDTOs.isEmpty()) {
-//                                    Log.i("kevintest", "store size = " + storeDTOs.size());
+
+                                HashMap<String, WaitPlayerRoomDTO> roomDTOHashMap = dataSnapshot.getValue(typeIndicator);
+//                                Map.Entry entry = (Map.Entry) roomDTOHashMap.entrySet();
+                                for (Map.Entry entry : roomDTOHashMap.entrySet()) {
+                                    if (entry.getValue() instanceof WaitPlayerRoomDTO) {
+                                        WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
+                                        Log.i("kevintest", "room map key = " + entry.getKey() + " value = " + roomDTO.getStoreName());
+                                    }
+
                                 }
+
+
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
+
+
                         });
                     }
                     break;

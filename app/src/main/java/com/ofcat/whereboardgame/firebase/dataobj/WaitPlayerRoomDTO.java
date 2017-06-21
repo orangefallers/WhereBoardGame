@@ -12,6 +12,8 @@ public class WaitPlayerRoomDTO {
 
     private String initiator;
 
+    private String storeName;
+
     private String contact;
 
     private String content;
@@ -68,5 +70,13 @@ public class WaitPlayerRoomDTO {
 
     public void setLocation(LocationDTO location) {
         this.location = location;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
     }
 }

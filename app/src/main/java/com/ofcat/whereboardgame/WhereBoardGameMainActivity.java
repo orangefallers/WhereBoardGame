@@ -1,10 +1,12 @@
 package com.ofcat.whereboardgame;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 
+import com.ofcat.whereboardgame.home.HomeFragment;
 import com.ofcat.whereboardgame.report.ReportFragment;
 
 /**
@@ -29,13 +31,17 @@ public class WhereBoardGameMainActivity extends AppCompatActivity {
 
             switch (tab.getPosition()) {
                 case TAB_HOME:
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_container, HomeFragment.newInstance())
+                            .commit();
                     break;
                 case TAB_MAP:
                     break;
                 case TAB_FIND_SOMEONE:
                     break;
                 case TAB_REPORT:
-                    getSupportFragmentManager()
+                    getFragmentManager()
                             .beginTransaction()
                             .replace(R.id.main_container, ReportFragment.newInstance())
                             .commit();
@@ -60,12 +66,21 @@ public class WhereBoardGameMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_welcome);
         initView();
+        initFirstFragment();
 
     }
 
     private void initView() {
         tabLayout_main_welcome = (TabLayout) findViewById(R.id.tl_main_welcome);
         tabLayout_main_welcome.addOnTabSelectedListener(selectedListener);
+
+    }
+
+    private void initFirstFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, HomeFragment.newInstance())
+                .commit();
 
     }
 }

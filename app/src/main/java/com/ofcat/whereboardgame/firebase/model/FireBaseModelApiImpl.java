@@ -11,13 +11,33 @@ import com.ofcat.whereboardgame.config.AppConfig;
 
 public class FireBaseModelApiImpl implements FireBaseModelApi {
 
+    private final String TAG = FireBaseModelApiImpl.class.getSimpleName();
+
     private DatabaseReference myRef;
+    private FirebaseDatabase database;
+
+    private String apiNote = "";
 
     public FireBaseModelApiImpl() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        myRef = database.getReferenceFromUrl(AppConfig.FIREBASE_URL);
+        database = FirebaseDatabase.getInstance();
+//        myRef = database.getReferenceFromUrl(AppConfig.FIREBASE_URL);
 //        myRef.setValue("Where Hello World");
 //        myRef.addValueEventListener(valueEventListener);
+    }
+
+    public FireBaseModelApiImpl addApiNote(String note) {
+        apiNote = apiNote + "/" + note;
+        return this;
+    }
+
+    public void execute() {
+        String apiUrl = AppConfig.FIREBASE_URL + apiNote;
+//        Log.i(TAG, "apiUrl = " + apiUrl);
+        myRef = database.getReferenceFromUrl(apiUrl);
+    }
+
+    public void cleanUrl() {
+        apiNote = "";
     }
 
     @Override
@@ -37,5 +57,10 @@ public class FireBaseModelApiImpl implements FireBaseModelApi {
     @Override
     public DatabaseReference getDatabaseRef() {
         return myRef;
+    }
+
+    @Override
+    public DatabaseReference getDefaultDatabaseRef() {
+        return database.getReferenceFromUrl(AppConfig.FIREBASE_URL);
     }
 }

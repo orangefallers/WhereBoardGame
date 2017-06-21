@@ -1,8 +1,69 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/map_root_frame_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.ofcat.whereboardgame.MapsActivity" />
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.ofcat.whereboardgame.MapsActivity" />
+
+    <LinearLayout
+        android:id="@+id/map_list_choose_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/transparent"
+        android:visibility="invisible"
+        android:orientation="horizontal"
+        tools:visibility="visible">
+
+        <!--<TextView-->
+            <!--android:id="@+id/map_list_title"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="6dp"-->
+            <!--android:textSize="16sp" />-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dp"-->
+            <!--android:background="@drawable/line_blue"/>-->
+
+        <!--我要揪團-->
+        <TextView
+            android:id="@+id/map_list_find_person_play"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/selector_welcome_button"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/map_choose_button_find_person"
+            android:textSize="16sp" />
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="2dp"-->
+            <!--android:background="@drawable/line_blue"/>-->
+
+        <!--誰在開團-->
+        <TextView
+            android:id="@+id/map_list_who_play"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_welcome_button"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="6dp"
+            android:text="@string/map_choose_button_who_play"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -52,11 +52,17 @@
     <string name="findperson_contact">聯絡方式</string>
     <string-array name="findperson_item_title_list">
         <item>主揪稱呼</item>
-        <item>日期時間</item>
+        <item>時間</item>
         <item>聯絡方式</item>
         <item>其他注意事項</item>
     </string-array>
 
+    <string-array name="findperson_item_hint_list">
+        <item></item>
+        <item>13:00&#8211;20:00</item>
+        <item>手機號碼、Line Id等</item>
+        <item>店家消費方式、禁帶外食、報名方式等</item>
+    </string-array>
 
 
     <string-array name="store_status">
