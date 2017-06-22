@@ -34,6 +34,11 @@
     <string name="report_dialog_thanks_message">最慢約7個工作天\n人工審查完成後，桌遊地圖將會更新\n記得按下回報上傳喔!</string>
     <string name="report_success">回報成功</string>
 
+    <string-array name="store_status">
+        <item>我發現新桌遊店了!</item>
+        <item>這家桌遊店再也不開了QQ</item>
+        <item>這家桌遊店搬新家了~</item>
+    </string-array>
 
     <!--Login Activity -->
     <string name="login_account">帳號</string>
@@ -64,11 +69,7 @@
         <item>店家消費方式、禁帶外食、報名方式等</item>
     </string-array>
 
-
-    <string-array name="store_status">
-        <item>我發現新桌遊店了!</item>
-        <item>這家桌遊店再也不開了QQ</item>
-        <item>這家桌遊店搬新家了~</item>
-    </string-array>
-
+    <!--PlayerRoomList Activity-->
+    <string name="player_room_list_title">JOIN US !</string>
+ 
 </resources>

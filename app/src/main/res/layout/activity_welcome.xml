@@ -39,7 +39,7 @@
 
     <LinearLayout
         android:id="@+id/ll_welcome_button_area"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
@@ -73,6 +73,20 @@
             android:textColor="#ffffff"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_welcome_join_playroom"
+        android:layout_below="@id/ll_welcome_button_area"
+        android:layout_alignLeft="@id/ll_welcome_button_area"
+        android:layout_alignStart="@id/ll_welcome_button_area"
+        android:layout_alignRight="@id/ll_welcome_button_area"
+        android:layout_alignEnd="@id/ll_welcome_button_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_welcome_button"
+        android:padding="20dp"
+        android:text="哪兒有缺咖"
+        android:textColor="#ffffff"/>
 
     <TextView
         android:id="@+id/tv_welcome_data_update_date"

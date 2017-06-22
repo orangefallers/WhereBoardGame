@@ -6,6 +6,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.config.AppConfig;
 
 /**
+ * 不要用singleton,會有問題 2017/06/22 by orangefaller
+ *
  * Created by orangefaller on 2017/2/4.
  */
 
@@ -18,12 +20,21 @@ public class FireBaseModelApiImpl implements FireBaseModelApi {
 
     private String apiNote = "";
 
+    private static FireBaseModelApiImpl fireBaseModelApi;
+
     public FireBaseModelApiImpl() {
         database = FirebaseDatabase.getInstance();
 //        myRef = database.getReferenceFromUrl(AppConfig.FIREBASE_URL);
 //        myRef.setValue("Where Hello World");
 //        myRef.addValueEventListener(valueEventListener);
     }
+
+//    public static FireBaseModelApiImpl getInstance() {
+//        if (fireBaseModelApi == null) {
+//            fireBaseModelApi = new FireBaseModelApiImpl();
+//        }
+//        return fireBaseModelApi;
+//    }
 
     public FireBaseModelApiImpl addApiNote(String note) {
         apiNote = apiNote + "/" + note;

@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.login.FacebookLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 import com.ofcat.whereboardgame.report.ReportActivity;
@@ -43,6 +44,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnGo;
     private Button btnReport;
     private Button btnLogin;
+    private Button btnJoinPlay;
 
     private int debugCount = 0;
 
@@ -72,6 +74,10 @@ public class WelcomeActivity extends AppCompatActivity {
                     break;
                 case R.id.btn_welcome_login:
                     startActivity(new Intent(WelcomeActivity.this, FacebookLoginActivity.class));
+
+                    break;
+                case R.id.btn_welcome_join_playroom:
+                    startActivity(new Intent(WelcomeActivity.this, PlayerRoomListActivity.class));
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -148,6 +154,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);
         btnLogin.setOnClickListener(clickListener);
+        btnJoinPlay.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
         if (boardGameStoreData == null) {
@@ -221,6 +228,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnGo = (Button) findViewById(R.id.btn_welcome_go);
         btnReport = (Button) findViewById(R.id.btn_welcome_report);
         btnLogin = (Button) findViewById(R.id.btn_welcome_login);
+        btnJoinPlay = (Button) findViewById(R.id.btn_welcome_join_playroom);
 
     }
 
