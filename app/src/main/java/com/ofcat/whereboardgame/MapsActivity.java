@@ -33,20 +33,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.adapter.MapInfoWindowAdapter;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
-import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -79,7 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int listChoooseHeight;
 
-    private String boardGameStoreName, boardGameStoreId;
+    private String boardGameStoreName, boardGameStoreId, boardGameStoreTag;
 
     private HashMap<String, Marker> storeMarkerMap = new HashMap<>();
 
@@ -338,10 +335,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
 
                     boardGameStoreId = infoDTO.getStoreId();
+                    boardGameStoreTag = infoDTO.getAddress().substring(0, 2);
 
                 } else {
                     boardGameStoreId = null;
-
+                    boardGameStoreTag = null;
                     if (isShowListChoose) {
                         hideListAnimation();
                     }
@@ -462,6 +460,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         intent = new Intent(MapsActivity.this, FindPersonActivity.class);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, boardGameStoreId);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, boardGameStoreTag);
                         startActivity(intent);
                     }
                     break;

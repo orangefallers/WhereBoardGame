@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.util.FirebaseTableKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,13 +126,13 @@ public class PlayerRoomListActivity extends AppCompatActivity {
 
             if (queryStoreId != null && !queryStoreId.equals("")) {
                 fireBaseModelApi = new FireBaseModelApiImpl()
-                        .addApiNote("WaitPlayerRoom")
+                        .addApiNote(FirebaseTableKey.TABLE_WAITPLYERROOM)
                         .addApiNote(queryStoreId);
                 fireBaseModelApi.execute();
                 fireBaseModelApi.addValueEventListener(playerRoomListByStoreIdValueEventListener);
             } else {
                 fireBaseModelApi = new FireBaseModelApiImpl()
-                        .addApiNote("WaitPlayerRoom");
+                        .addApiNote(FirebaseTableKey.TABLE_WAITPLYERROOM);
                 fireBaseModelApi.execute();
                 fireBaseModelApi.addValueEventListener(playerRoomListAllValueEventListener);
             }

@@ -4,11 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
-import com.ofcat.whereboardgame.findperson.FindPersonAdapter;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 
 import java.util.List;
@@ -44,14 +42,16 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (holder instanceof VHPlayerRoomItem) {
 
             String test = "Open";
-            if (position % 2 == 0) {
-                test = "Close";
-            }
+//            if (position % 2 == 0) {
+//                test = "Close";
+//            }
             ((VHPlayerRoomItem) holder).render(test,
                     waitPlayerRoomDTOList.get(position).getDate(),
                     waitPlayerRoomDTOList.get(position).getStoreName(),
                     waitPlayerRoomDTOList.get(position).getInitiator());
-            ((VHPlayerRoomItem) holder).setLocationTag("台北");
+
+            ((VHPlayerRoomItem) holder).setLocationTag(
+                    waitPlayerRoomDTOList.get(position).getAddressTag());
         }
     }
 

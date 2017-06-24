@@ -24,6 +24,8 @@ public class WaitPlayerRoomDTO {
 
     private LocationDTO location;
 
+    private String addressTag;
+
     public String getInitiator() {
         return initiator;
     }
@@ -78,5 +80,13 @@ public class WaitPlayerRoomDTO {
 
     public void setStoreName(String storeName) {
         this.storeName = storeName;
+    }
+
+    public String getAddressTag() {
+        return addressTag;
+    }
+
+    public void setAddressTag(String addressTag) {
+        this.addressTag = addressTag;
     }
 }
