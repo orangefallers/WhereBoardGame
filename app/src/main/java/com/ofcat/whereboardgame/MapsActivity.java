@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -42,6 +41,7 @@ import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
 import java.util.ArrayList;
@@ -81,6 +81,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private String boardGameStoreName, boardGameStoreId;
 
+    private HashMap<String, Marker> storeMarkerMap = new HashMap<>();
+
 //    private ArrayList<MarkerOptions> markerOptionses;
 
     private GetBoardGameStoreDataImpl.StoreDataImplListener dataImplListener = new GetBoardGameStoreDataImpl.StoreDataImplListener() {
@@ -109,15 +111,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     Marker marker = mMap.addMarker(options);
                     marker.setTag(storeInfoDTO);
+                    storeMarkerMap.put(storeInfoDTO.getStoreId(), marker);
                 }
 
                 i++;
             }
+
+            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
         }
 
         @Override
         public void onUpdateData(String date) {
 //            TimeZone.setDefault(TimeZone.getTimeZone("GTM+8"));
+
+        }
+    };
+
+    private ValueEventListener playerRoomListValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                if (storeMarkerMap.containsKey(child.getKey())) {
+                    Marker marker = storeMarkerMap.get(child.getKey());
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                }
+
+            }
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
 
         }
     };
@@ -139,6 +163,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (boardGameStoreData == null) {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, dataImplListener);
+        }
+
+        if (fireBaseModelApi == null) {
+            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("WaitPlayerRoom");
+            fireBaseModelApi.execute();
+//            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
         }
 
 
@@ -184,32 +214,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void showListAnimation() {
-//        llChooseLayout.setVisibility(View.VISIBLE);
-//        if (showAnimationSet == null) {
-//            showAnimationSet = new AnimatorSet();
-//            int hideY = llChooseLayout.getBottom();
-//            int showY = (int) llChooseLayout.getY();
-//            int height = llChooseLayout.getHeight();
-//
-//            // 設定顯示列表動畫
-//            showAnimationSet = new AnimatorSet();
-//            showAnimationSet.play(ObjectAnimator.ofFloat(llChooseLayout, "y", hideY, showY));
-//            showAnimationSet.setDuration(500);
-//            showAnimationSet.setInterpolator(new AccelerateDecelerateInterpolator());
-//            showAnimationSet.addListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    super.onAnimationEnd(animation);
-////                    llChooseLayout.animate().setListener(null);
-//                    isShowListChoose = true;
-//                }
-//            });
-//
-//        }
-//
-//        if (!showAnimationSet.isRunning()) {
-//            showAnimationSet.start();
-//        }
+
+        enableListChooseButton(false);
+
         ValueAnimator valueAnimation = ValueAnimator.ofObject(new IntEvaluator(), 0, listChoooseHeight);
         valueAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -229,6 +236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isShowListChoose = true;
+                enableListChooseButton(true);
             }
         });
 
@@ -239,27 +247,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void hideListAnimation() {
-//        if (hideAnimationSet == null) {
-//            int hideY = llChooseLayout.getBottom();
-//            int showY = (int) llChooseLayout.getY();
-//            int height = llChooseLayout.getHeight();
-//            hideAnimationSet = new AnimatorSet();
-//            hideAnimationSet.play(ObjectAnimator.ofFloat(llChooseLayout, "y", hideY, 0));
-//            hideAnimationSet.setDuration(500);
-//            hideAnimationSet.setInterpolator(new AccelerateDecelerateInterpolator());
-//            hideAnimationSet.addListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    llChooseLayout.setVisibility(View.INVISIBLE);
-////                    llChooseLayout.animate().setListener(null);
-//                    isShowListChoose = false;
-//                }
-//            });
-//        }
-//
-//        if (!hideAnimationSet.isRunning()) {
-//            hideAnimationSet.start();
-//        }
+
+        enableListChooseButton(false);
 
         ValueAnimator valueAnimation = ValueAnimator.ofObject(new IntEvaluator(), listChoooseHeight, 0);
         valueAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -278,12 +267,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 super.onAnimationEnd(animation);
                 llChooseLayout.setVisibility(View.INVISIBLE);
                 isShowListChoose = false;
+                enableListChooseButton(true);
             }
         });
 
         if (!valueAnimation.isRunning()) {
             valueAnimation.start();
         }
+    }
+
+    private void enableListChooseButton(boolean isEnable) {
+        tvFindPerson.setEnabled(isEnable);
+        tvWhoPlay.setEnabled(isEnable);
     }
 
 
@@ -307,10 +302,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boardGameStoreData.onDestroy();
         }
 
-//        if (fireBaseModelApi != null) {
-//            fireBaseModelApi.removeValueEventListener(systemConfigValueEventListener);
-//            fireBaseModelApi.removeValueEventListener(systemNotifyValueEventListener);
-//        }
+        if (fireBaseModelApi != null) {
+            fireBaseModelApi.removeValueEventListener(playerRoomListValueEventListener);
+        }
     }
 
     /**
@@ -333,7 +327,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             boardGameStoreData.startLoadData();
         }
 
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -346,6 +339,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     boardGameStoreId = infoDTO.getStoreId();
 
+                } else {
+                    boardGameStoreId = null;
+
+                    if (isShowListChoose) {
+                        hideListAnimation();
+                    }
                 }
 
 //                if (marker.equals(currentMarker)){
@@ -456,52 +455,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View view) {
 
+            Intent intent;
             switch (view.getId()) {
                 case R.id.map_list_find_person_play:
-                    Intent intent = new Intent(MapsActivity.this, FindPersonActivity.class);
-                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
-                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, boardGameStoreId);
-                    startActivity(intent);
+                    if (boardGameStoreId != null) {
+                        intent = new Intent(MapsActivity.this, FindPersonActivity.class);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, boardGameStoreId);
+                        startActivity(intent);
+                    }
                     break;
                 case R.id.map_list_who_play:
-                    if (fireBaseModelApi == null) {
-                        fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("WaitPlayerRoom").addApiNote("100003");
-                        fireBaseModelApi.execute();
-                        fireBaseModelApi.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-//                                GenericTypeIndicator<List<WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<List<WaitPlayerRoomDTO>>() {
-//                                };
-//                                List<WaitPlayerRoomDTO> storeDTOs = dataSnapshot.getValue(typeIndicator);
-//                                if (!storeDTOs.isEmpty()) {
-////                                    Log.i("kevintest", "store size = " + storeDTOs.size());
-//                                }
-
-                                GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
-                                };
-
-                                HashMap<String, WaitPlayerRoomDTO> roomDTOHashMap = dataSnapshot.getValue(typeIndicator);
-//                                Map.Entry entry = (Map.Entry) roomDTOHashMap.entrySet();
-                                for (Map.Entry entry : roomDTOHashMap.entrySet()) {
-                                    if (entry.getValue() instanceof WaitPlayerRoomDTO) {
-                                        WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
-                                        Log.i("kevintest", "room map key = " + entry.getKey() + " value = " + roomDTO.getStoreName());
-                                    }
-
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-
-
-                        });
+                    if (boardGameStoreId != null) {
+                        intent = new Intent(MapsActivity.this, PlayerRoomListActivity.class);
+                        intent.putExtra(PlayerRoomListActivity.KEY_PLAYERROOMLIST_STORE_ID, boardGameStoreId);
+                        startActivity(intent);
                     }
+
                     break;
                 default:
                     break;

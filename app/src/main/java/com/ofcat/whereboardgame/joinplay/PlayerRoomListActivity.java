@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +27,8 @@ import java.util.Set;
 
 public class PlayerRoomListActivity extends AppCompatActivity {
 
+    public static final String KEY_PLAYERROOMLIST_STORE_ID = "key_player_room_list_store_id";
+
     private FireBaseModelApiImpl fireBaseModelApi;
 
     private RecyclerView rvPlayerRoomList;
@@ -36,19 +37,18 @@ public class PlayerRoomListActivity extends AppCompatActivity {
     private Set<String> keySet = new LinkedHashSet<>();
     private List<WaitPlayerRoomDTO> waitPlayerRoomDTOList = new ArrayList<>();
 
-    private ValueEventListener playerRoomListValueEventListener = new ValueEventListener() {
+    private String queryStoreId = "";
+
+    private ValueEventListener playerRoomListAllValueEventListener = new ValueEventListener() {
 
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-
-            Log.i("kevintest", "data = " + dataSnapshot.toString());
 
             for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                 GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator1 = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
                 };
                 HashMap<String, WaitPlayerRoomDTO> waitPlayerRoomDTOHashMap = child.getValue(typeIndicator1);
-                Log.i("kevintest", "map size = " + waitPlayerRoomDTOHashMap.size());
 
                 for (Map.Entry entry : waitPlayerRoomDTOHashMap.entrySet()) {
                     WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
@@ -58,8 +58,41 @@ public class PlayerRoomListActivity extends AppCompatActivity {
                         keySet.add(key);
                         waitPlayerRoomDTOList.add(roomDTO);
                     }
-                    Log.i("kevintest", "room map key = " + entry.getKey() + " value = " + roomDTO.getStoreName());
 
+                }
+
+            }
+
+            adapter.setDataList(waitPlayerRoomDTOList);
+            adapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    private ValueEventListener playerRoomListByStoreIdValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+
+            if (!dataSnapshot.exists()){
+                return;
+            }
+
+            GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator1 = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
+            };
+            HashMap<String, WaitPlayerRoomDTO> waitPlayerRoomDTOHashMap = dataSnapshot.getValue(typeIndicator1);
+
+            for (Map.Entry entry : waitPlayerRoomDTOHashMap.entrySet()) {
+                WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
+                String key = (String) entry.getKey();
+
+                if (null != keySet && !keySet.contains(key)) {
+                    keySet.add(key);
+                    waitPlayerRoomDTOList.add(roomDTO);
                 }
 
             }
@@ -79,7 +112,7 @@ public class PlayerRoomListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_room_list);
-
+        queryStoreId = getIntent().getStringExtra(KEY_PLAYERROOMLIST_STORE_ID);
         initActionBar();
         initView();
 
@@ -87,10 +120,23 @@ public class PlayerRoomListActivity extends AppCompatActivity {
             keySet = new LinkedHashSet<>();
         }
 
+
         if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("WaitPlayerRoom");
-            fireBaseModelApi.execute();
-            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
+
+            if (queryStoreId != null && !queryStoreId.equals("")) {
+                fireBaseModelApi = new FireBaseModelApiImpl()
+                        .addApiNote("WaitPlayerRoom")
+                        .addApiNote(queryStoreId);
+                fireBaseModelApi.execute();
+                fireBaseModelApi.addValueEventListener(playerRoomListByStoreIdValueEventListener);
+            } else {
+                fireBaseModelApi = new FireBaseModelApiImpl()
+                        .addApiNote("WaitPlayerRoom");
+                fireBaseModelApi.execute();
+                fireBaseModelApi.addValueEventListener(playerRoomListAllValueEventListener);
+            }
+
+
         }
 
     }
@@ -98,17 +144,20 @@ public class PlayerRoomListActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (fireBaseModelApi != null) {
-            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(playerRoomListValueEventListener);
-        }
+//        if (fireBaseModelApi != null) {
+//            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(playerRoomListAllValueEventListener);
+//        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (fireBaseModelApi != null) {
-//            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(playerRoomListValueEventListener);
-//        }
+
+        if (fireBaseModelApi != null) {
+            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(playerRoomListAllValueEventListener);
+            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(playerRoomListByStoreIdValueEventListener);
+            fireBaseModelApi = null;
+        }
 
         keySet.clear();
         keySet = null;
