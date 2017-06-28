@@ -3,12 +3,14 @@ package com.ofcat.whereboardgame.firebase.dataobj;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by orangefaller on 2017/4/30.
  */
 
 @IgnoreExtraProperties
-public class WaitPlayerRoomDTO {
+public class WaitPlayerRoomDTO implements Serializable{
 
     private String initiator;
 

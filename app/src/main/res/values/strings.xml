@@ -26,6 +26,11 @@
     <string name="upload">回報上傳</string>
     <string name="i_know">我知道了</string>
 
+
+    <string name="menu_report">我要回報</string>
+    <string name="menu_room_list">哪裡有團</string>
+    <string name="menu_issue_report">建議事項</string>
+
     <!--report Activity -->
     <string name="store_name">桌遊店名稱</string>
     <string name="store_address">桌遊店地址</string>
@@ -71,5 +76,6 @@
 
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">JOIN US !</string>
+    <string name="player_room_detail_content_title">其他注意事項</string>
  
 </resources>

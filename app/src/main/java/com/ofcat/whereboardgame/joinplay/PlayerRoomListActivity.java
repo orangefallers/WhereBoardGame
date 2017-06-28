@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,7 +80,7 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
 
-            if (!dataSnapshot.exists()){
+            if (!dataSnapshot.exists()) {
                 return;
             }
 
@@ -120,7 +121,6 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         if (keySet == null) {
             keySet = new LinkedHashSet<>();
         }
-
 
         if (fireBaseModelApi == null) {
 
@@ -174,6 +174,7 @@ public class PlayerRoomListActivity extends AppCompatActivity {
 
         if (adapter == null) {
             adapter = new PlayerRoomListAdapter();
+            adapter.setAdapterListener(adapterListener);
         }
         rvPlayerRoomList.setAdapter(adapter);
 
@@ -187,5 +188,23 @@ public class PlayerRoomListActivity extends AppCompatActivity {
 
         }
     }
+
+    private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack("player_room_detail")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_right)
+                .replace(R.id.rl_player_room_list_root, PlayerRoomDetailFragment.newInstance(roomDTO))
+                .commit();
+
+    }
+
+    private PlayerRoomListAdapter.AdapterListener adapterListener = new PlayerRoomListAdapter.AdapterListener() {
+        @Override
+        public void onClickItem(View view, WaitPlayerRoomDTO waitPlayerRoomDTO) {
+            switchDetailFragment(waitPlayerRoomDTO);
+        }
+    };
+
 
 }

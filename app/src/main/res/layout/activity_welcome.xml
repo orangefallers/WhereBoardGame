@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/tv_welcome_title"
@@ -92,10 +93,19 @@
         android:id="@+id/tv_welcome_data_update_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/welcome_navigation"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:padding="10dp"
         tools:text="資料更新日期" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/welcome_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="start"
+        android:layout_alignParentBottom="true"
+        android:background="#a7563b"
+        app:menu="@menu/welcome_bottom_navigation" />
 
 </RelativeLayout>

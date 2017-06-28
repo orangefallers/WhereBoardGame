@@ -17,6 +17,8 @@ import java.util.List;
 
 public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private AdapterListener listener;
+
     private List<WaitPlayerRoomDTO> waitPlayerRoomDTOList;
 
 
@@ -25,6 +27,11 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setDataList(List<WaitPlayerRoomDTO> list) {
         this.waitPlayerRoomDTOList = list;
+
+    }
+
+    public void setAdapterListener(AdapterListener listener) {
+        this.listener = listener;
 
     }
 
@@ -67,7 +74,7 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return LayoutInflater.from(parent.getContext());
     }
 
-    private class VHPlayerRoomItem extends RecyclerView.ViewHolder {
+    private class VHPlayerRoomItem extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tvLocation;
         private TextView tvTitle;
@@ -83,6 +90,8 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tvSubTitle = (TextView) itemView.findViewById(R.id.tv_item_sub_title);
             tvBottomTitle = (TextView) itemView.findViewById(R.id.tv_item_bottom_title);
             tvLocationTag = (TextView) itemView.findViewById(R.id.tv_item_title_tag);
+
+            itemView.setOnClickListener(this);
         }
 
         public void render(String location, String title, String subTitle, String bottomTitle) {
@@ -92,8 +101,23 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tvBottomTitle.setText(bottomTitle);
         }
 
-        public void setLocationTag(String locationTag){
+        public void setLocationTag(String locationTag) {
             tvLocationTag.setText(locationTag);
         }
+
+        @Override
+        public void onClick(View view) {
+            if (listener != null && waitPlayerRoomDTOList != null && !waitPlayerRoomDTOList.isEmpty()) {
+                listener.onClickItem(view, waitPlayerRoomDTOList.get(getAdapterPosition()));
+            }
+
+        }
     }
+
+    public interface AdapterListener {
+
+        void onClickItem(View view, WaitPlayerRoomDTO waitPlayerRoomDTO);
+
+    }
+
 }
