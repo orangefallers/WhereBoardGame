@@ -83,5 +83,6 @@
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">JOIN US !</string>
     <string name="player_room_detail_content_title">其他注意事項</string>
+    <string name="player_room_empty_message">目前尚未有人揪團</string>
  
 </resources>

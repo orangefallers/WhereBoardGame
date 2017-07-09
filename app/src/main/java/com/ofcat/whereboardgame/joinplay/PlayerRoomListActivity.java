@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,6 +16,7 @@ import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
+import com.ofcat.whereboardgame.util.MyLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +37,8 @@ public class PlayerRoomListActivity extends AppCompatActivity {
 
     private RecyclerView rvPlayerRoomList;
     private PlayerRoomListAdapter adapter;
+
+    private TextView tvEmptyMessage;
 
     private Set<String> keySet = new LinkedHashSet<>();
     private List<WaitPlayerRoomDTO> waitPlayerRoomDTOList = new ArrayList<>();
@@ -64,6 +68,8 @@ public class PlayerRoomListActivity extends AppCompatActivity {
                 }
 
             }
+
+            showEmptyMessage(waitPlayerRoomDTOList.isEmpty());
 
             adapter.setDataList(waitPlayerRoomDTOList);
             adapter.notifyDataSetChanged();
@@ -98,6 +104,8 @@ public class PlayerRoomListActivity extends AppCompatActivity {
                 }
 
             }
+
+            showEmptyMessage(waitPlayerRoomDTOList.isEmpty());
 
             adapter.setDataList(waitPlayerRoomDTOList);
             adapter.notifyDataSetChanged();
@@ -179,6 +187,9 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         rvPlayerRoomList.setAdapter(adapter);
 
 
+        tvEmptyMessage = (TextView) findViewById(R.id.tv_player_room_empty_msg);
+
+
     }
 
     private void initActionBar() {
@@ -187,6 +198,11 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
 
         }
+    }
+
+
+    private void showEmptyMessage(boolean isEmpty) {
+        tvEmptyMessage.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
