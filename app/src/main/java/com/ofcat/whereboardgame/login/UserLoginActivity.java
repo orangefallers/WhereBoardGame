@@ -63,16 +63,16 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private Button btnGoogleLogin, btnSignOut;
     private TextView tvLoginDescription;
 
-    private boolean isLoadingStatus;
-
     private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
             FirebaseUser user = firebaseAuth.getCurrentUser();
+            isLoading(false);
             if (user != null) {
                 // User is signed in
                 Log.i(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 Log.i(TAG, "onAuthStateChanged:signed_in:" + user.getEmail());
+                llLoginButtonArea.setVisibility(View.INVISIBLE);
                 showLoginStatusDescription(true);
 
             } else {
@@ -169,13 +169,12 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void isLoading(boolean isLoad) {
-        isLoadingStatus = isLoad;
         if (isLoad) {
             llLoginButtonArea.setVisibility(View.GONE);
             btnSignOut.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
         } else {
-//            llLoginButtonArea.setVisibility(View.VISIBLE);
+            llLoginButtonArea.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
@@ -183,16 +182,10 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void showLoginStatusDescription(boolean isLogin) {
 
-        if (isLoadingStatus){
-            return;
-        }
-
         if (isLogin) {
             tvLoginDescription.setText(getString(R.string.login_already_login));
-            llLoginButtonArea.setVisibility(View.GONE);
         } else {
             tvLoginDescription.setText(getString(R.string.login_description));
-            llLoginButtonArea.setVisibility(View.VISIBLE);
         }
 
     }
@@ -209,6 +202,11 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         if (authStateListener != null) {
             auth.removeAuthStateListener(authStateListener);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         isLoading(false);
     }
 
@@ -249,7 +247,6 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.i(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                        isLoading(false);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
@@ -285,7 +282,6 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                        isLoading(false);
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
