@@ -8,26 +8,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="6dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
         android:entries="@array/store_status"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginEnd="6dp"
         android:spinnerMode="dropdown" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/corner_rect_blue_frame"
-        android:layout_alignTop="@id/spinner_report_store_status"
         android:layout_alignBottom="@id/spinner_report_store_status"
-        android:layout_alignRight="@id/spinner_report_store_status"
+        android:layout_alignEnd="@id/spinner_report_store_status"
         android:layout_alignLeft="@id/spinner_report_store_status"
+        android:layout_alignRight="@id/spinner_report_store_status"
         android:layout_alignStart="@id/spinner_report_store_status"
-        android:layout_alignEnd="@id/spinner_report_store_status"/>
+        android:layout_alignTop="@id/spinner_report_store_status"
+        android:background="@drawable/corner_rect_blue_frame" />
 
     <TextView
         android:id="@+id/tv_report_store_name"
@@ -41,8 +41,8 @@
         android:id="@+id/et_report_store_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:layout_below="@id/tv_report_store_name" />
+        android:layout_below="@id/tv_report_store_name"
+        android:maxLines="3" />
 
     <TextView
         android:id="@+id/tv_report_store_address"
@@ -55,8 +55,8 @@
         android:id="@+id/et_report_store_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="3"
-        android:layout_below="@id/tv_report_store_address" />
+        android:layout_below="@id/tv_report_store_address"
+        android:maxLines="3" />
 
     <Button
         android:id="@+id/btn_report_confirm"

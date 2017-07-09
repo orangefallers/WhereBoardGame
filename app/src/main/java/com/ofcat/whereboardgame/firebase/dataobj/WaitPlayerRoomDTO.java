@@ -28,6 +28,8 @@ public class WaitPlayerRoomDTO implements Serializable{
 
     private String addressTag;
 
+    private String timeStamp;
+
     public String getInitiator() {
         return initiator;
     }
@@ -90,5 +92,13 @@ public class WaitPlayerRoomDTO implements Serializable{
 
     public void setAddressTag(String addressTag) {
         this.addressTag = addressTag;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

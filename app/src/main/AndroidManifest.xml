@@ -73,7 +73,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".login.FacebookLoginActivity"
+            android:name=".login.UserLoginActivity"
             android:screenOrientation="portrait" />
 
         <activity

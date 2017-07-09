@@ -46,9 +46,15 @@
     </string-array>
 
     <!--Login Activity -->
+    <string name="login_title">使用者資訊</string>
     <string name="login_account">帳號</string>
     <string name="login_password">密碼</string>
     <string name="login_logout">登出帳號</string>
+    <string name="login_fail">登入失敗!</string>
+    <string name="login_with_gmail">使用 Gmail 帳號登入</string>
+    <string name="login_description">您可以透過下列方式登入\n以便使用更多功能</string>
+    <string name="login_already_login">已登入</string>
+
 
     <!--Map Activity-->
     <string name="map_choose_button_find_person">我要揪團</string>

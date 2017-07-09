@@ -32,7 +32,8 @@
             android:gravity="center"
             android:padding="6dp"
             android:text="@string/map_choose_button_find_person"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
 
         <!--誰在開團-->
         <TextView
@@ -44,7 +45,8 @@
             android:gravity="center"
             android:padding="6dp"
             android:text="@string/map_choose_button_who_play"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
 

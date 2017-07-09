@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_welcome_title"
@@ -48,46 +48,38 @@
 
         <Button
             android:id="@+id/btn_welcome_go"
+            style="@style/MainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_welcome_button"
-            android:padding="20dp"
-            android:text="@string/go"
-            android:textColor="#ffffff" />
+            android:text="@string/go" />
 
         <Button
             android:id="@+id/btn_welcome_report"
+            style="@style/MainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_welcome_button"
-            android:padding="20dp"
-            android:text="@string/report_store_info"
-            android:textColor="#ffffff" />
+            android:text="@string/report_store_info" />
 
         <Button
             android:id="@+id/btn_welcome_login"
+            style="@style/MainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_welcome_button"
-            android:padding="20dp"
-            android:text="登入測試"
-            android:textColor="#ffffff"/>
+            android:text="登入測試" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_welcome_join_playroom"
-        android:layout_below="@id/ll_welcome_button_area"
-        android:layout_alignLeft="@id/ll_welcome_button_area"
-        android:layout_alignStart="@id/ll_welcome_button_area"
-        android:layout_alignRight="@id/ll_welcome_button_area"
-        android:layout_alignEnd="@id/ll_welcome_button_area"
+        style="@style/MainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/selector_welcome_button"
-        android:padding="20dp"
-        android:text="哪兒有缺咖"
-        android:textColor="#ffffff"/>
+        android:layout_alignEnd="@id/ll_welcome_button_area"
+        android:layout_alignLeft="@id/ll_welcome_button_area"
+        android:layout_alignRight="@id/ll_welcome_button_area"
+        android:layout_alignStart="@id/ll_welcome_button_area"
+        android:layout_below="@id/ll_welcome_button_area"
+        android:text="哪兒有缺咖" />
 
     <TextView
         android:id="@+id/tv_welcome_data_update_date"
@@ -103,8 +95,8 @@
         android:id="@+id/welcome_navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:layout_gravity="start"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="start"
         android:background="#a7563b"
         app:menu="@menu/welcome_bottom_navigation" />
 
