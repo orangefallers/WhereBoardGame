@@ -16,7 +16,9 @@
     <string name="no_internet">網路未連線，請開啟網路</string>
     <string name="welcome_title">~看看附近哪兒有桌遊店~</string>
     <string name="go">GO</string>
-    <string name="report_store_info">我要回報</string>
+    <string name="gotoMap">前往桌遊店地圖</string>
+    <string name="gotoPlayerRoom">哪兒有缺咖</string>
+    <string name="report_store_info">回報桌遊店資訊</string>
     <string name="data_update">資料更新日期：%s</string>
 
     <string name="please_argue_location_permission">請同意權限，否則無法開啟地圖，謝謝</string>

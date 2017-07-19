@@ -95,6 +95,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/rect_primary_frame"
                 android:padding="4dp"
+                android:autoLink="web"
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
