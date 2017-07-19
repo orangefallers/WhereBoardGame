@@ -56,6 +56,8 @@
     <string name="login_with_gmail">使用 Gmail 帳號登入</string>
     <string name="login_description">您可以透過下列方式登入\n以便使用更多功能</string>
     <string name="login_already_login">已登入</string>
+    <string name="login_already_login_facebook">Facebook帳號 已登入</string>
+    <string name="login_already_login_google">Gmail帳號 已登入</string>
 
 
     <!--Map Activity-->

@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -51,6 +50,9 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private static final String TAG = UserLoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 9001;
 
+    private static final String PROVIDER_FACEBOOK = "facebook.com";
+    private static final String PROVIDER_GOOGLE = "google.com";
+
     private FirebaseAuth auth;
 
     private CallbackManager mCallbackManager;
@@ -63,6 +65,9 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private Button btnGoogleLogin, btnSignOut;
     private TextView tvLoginDescription;
 
+
+    private String userAccountProvider = "";
+
     private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -70,14 +75,20 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             isLoading(false);
             if (user != null) {
                 // User is signed in
-                Log.i(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                Log.i(TAG, "onAuthStateChanged:signed_in:" + user.getEmail());
+                MyLog.i(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+                try {
+                    userAccountProvider = user.getProviders().get(0);
+                } catch (NullPointerException e) {
+                    userAccountProvider = "";
+                }
+
                 llLoginButtonArea.setVisibility(View.INVISIBLE);
                 showLoginStatusDescription(true);
 
             } else {
                 // User is signed out
-                Log.i(TAG, "onAuthStateChanged:signed_out");
+                MyLog.i(TAG, "onAuthStateChanged:signed_out");
                 showLoginStatusDescription(false);
             }
         }
@@ -126,20 +137,22 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         btnFacebookLogin.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                MyLog.i(TAG, "facebook:onSuccess:" + loginResult);
+                isLoading(true);
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
 
             @Override
             public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
+                MyLog.i(TAG, "facebook:onCancel");
                 showErrorDataDialog(null);
                 // ...
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
+//                Log.e(TAG, "facebook:onError", error);
                 showErrorDataDialog(error.getMessage());
             }
         });
@@ -183,7 +196,15 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private void showLoginStatusDescription(boolean isLogin) {
 
         if (isLogin) {
-            tvLoginDescription.setText(getString(R.string.login_already_login));
+
+            if (userAccountProvider.equals(PROVIDER_FACEBOOK)) {
+                tvLoginDescription.setText(getString(R.string.login_already_login_facebook));
+            } else if (userAccountProvider.equals(PROVIDER_GOOGLE)) {
+                tvLoginDescription.setText(getString(R.string.login_already_login_google));
+            } else {
+                tvLoginDescription.setText(getString(R.string.login_already_login));
+            }
+
         } else {
             tvLoginDescription.setText(getString(R.string.login_description));
         }
@@ -219,7 +240,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.i(TAG, "result.isSuccess = " + result.isSuccess());
+            MyLog.i(TAG, "result.isSuccess = " + result.isSuccess());
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
@@ -227,7 +248,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
-                Log.i(TAG, "result status message = " + result.getStatus().getStatusMessage());
+                MyLog.i(TAG, "result status message = " + result.getStatus().getStatusMessage());
                 showErrorDataDialog(result.getStatus().getStatusMessage());
 //                updateUI(null);
             }
@@ -235,23 +256,20 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
-        // [START_EXCLUDE silent]
-//        showProgressDialog();
-        // [END_EXCLUDE]
+        MyLog.i(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        Log.i(TAG, "provider = " + credential.getProvider());
+        MyLog.i(TAG, "provider = " + credential.getProvider());
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.i(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        MyLog.i(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
+//                            MyLog.e(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(UserLoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
@@ -260,9 +278,6 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                             finish();
                         }
 
-                        // [START_EXCLUDE]
-//                        hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
 
@@ -281,12 +296,12 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        MyLog.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
+//                            MyLog.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(UserLoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
