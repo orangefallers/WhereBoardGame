@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 
 @IgnoreExtraProperties
-public class WaitPlayerRoomDTO implements Serializable{
+public class WaitPlayerRoomDTO implements Serializable {
 
     private String initiator;
 
@@ -29,6 +29,11 @@ public class WaitPlayerRoomDTO implements Serializable{
     private String addressTag;
 
     private String timeStamp;
+
+    private Object timeStampOrder;
+
+    //1 is 缺人     2 is 滿團
+    private int roomStatus = 1;
 
     public String getInitiator() {
         return initiator;
@@ -100,5 +105,21 @@ public class WaitPlayerRoomDTO implements Serializable{
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Object getTimeStampOrder() {
+        return timeStampOrder;
+    }
+
+    public void setTimeStampOrder(Object timeStampOrder) {
+        this.timeStampOrder = timeStampOrder;
+    }
+
+    public int getRoomStatus() {
+        return roomStatus;
+    }
+
+    public void setRoomStatus(int roomStatus) {
+        this.roomStatus = roomStatus;
     }
 }
