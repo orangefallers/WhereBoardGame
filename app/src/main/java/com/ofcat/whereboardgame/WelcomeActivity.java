@@ -22,9 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
-import com.ofcat.whereboardgame.login.FacebookLoginActivity;
+import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 import com.ofcat.whereboardgame.report.ReportActivity;
+import com.ofcat.whereboardgame.util.FirebaseTableKey;
+
 
 /**
  * Created by orangefaller on 2017/1/15.
@@ -73,7 +75,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     break;
                 case R.id.btn_welcome_login:
-                    startActivity(new Intent(WelcomeActivity.this, FacebookLoginActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, UserLoginActivity.class));
 
                     break;
                 case R.id.btn_welcome_join_playroom:
@@ -162,12 +164,12 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("SystemConfig");
+            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(FirebaseTableKey.TABLE_SYSTEM_CONFIG);
             fireBaseModelApi.execute();
             fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);
 
             fireBaseModelApi.cleanUrl();
-            fireBaseModelApi.addApiNote("SystemNotification");
+            fireBaseModelApi.addApiNote(FirebaseTableKey.TABLE_SYSTEM_NOTIFICATION);
             fireBaseModelApi.execute();
             fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
 //            fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);

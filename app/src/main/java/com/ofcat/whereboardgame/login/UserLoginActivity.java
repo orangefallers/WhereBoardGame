@@ -9,8 +9,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +40,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
+import com.ofcat.whereboardgame.config.AppConfig;
+import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
+import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
 
 
@@ -54,19 +65,26 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private static final String PROVIDER_GOOGLE = "google.com";
 
     private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DatabaseReference databaseReference;
 
     private CallbackManager mCallbackManager;
 
     private GoogleApiClient mGoogleApiClient;
 
     private LinearLayout llLoginButtonArea;
+    private RelativeLayout rlUserInfoArea;
     private ProgressBar progressBar;
     private LoginButton btnFacebookLogin;
     private Button btnGoogleLogin, btnSignOut;
     private TextView tvLoginDescription;
+    private TextView tvUserInfoPlayerRoom;
+    private Switch playerRoomStatus;
 
 
     private String userAccountProvider = "";
+    private String userId = "";
+    private String userStoreId = "";
 
     private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
@@ -76,6 +94,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             if (user != null) {
                 // User is signed in
                 MyLog.i(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                userId = user.getUid();
 
                 try {
                     userAccountProvider = user.getProviders().get(0);
@@ -86,10 +105,36 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                 llLoginButtonArea.setVisibility(View.INVISIBLE);
                 showLoginStatusDescription(true);
 
+                databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + user.getUid());
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserInfoDTO userInfoDTO = dataSnapshot.getValue(UserInfoDTO.class);
+                        if (userInfoDTO != null) {
+                            tvUserInfoPlayerRoom.setText(userInfoDTO.getWaitPlayerRoomDTO().getInitiator());
+
+                            if (userInfoDTO.getWaitPlayerRoomDTO().getRoomStatus() == 2) {
+                                playerRoomStatus.setChecked(true);
+                            } else {
+                                playerRoomStatus.setChecked(false);
+                            }
+
+                            userStoreId = userInfoDTO.getStoreId();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             } else {
                 // User is signed out
+                userId = "";
                 MyLog.i(TAG, "onAuthStateChanged:signed_out");
                 showLoginStatusDescription(false);
+
             }
         }
     };
@@ -121,6 +166,9 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         initView();
 
         auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+//        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO);
+
 
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -157,6 +205,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             }
         });
 
+
     }
 
     private void initActionBar() {
@@ -175,6 +224,17 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         btnGoogleLogin = (Button) findViewById(R.id.btn_google_sign_in);
         btnSignOut = (Button) findViewById(R.id.btn_sign_out);
         tvLoginDescription = (TextView) findViewById(R.id.login_description);
+
+        rlUserInfoArea = (RelativeLayout) findViewById(R.id.rl_user_info_area);
+        tvUserInfoPlayerRoom = (TextView) findViewById(R.id.tv_user_info_play_room);
+        playerRoomStatus = (Switch) findViewById(R.id.switch_control_room_status);
+
+        playerRoomStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                changeUserPlayerRoomStatus(b);
+            }
+        });
 
         btnFacebookLogin.setOnClickListener(clickListener);
         btnGoogleLogin.setOnClickListener(clickListener);
@@ -207,6 +267,28 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
         } else {
             tvLoginDescription.setText(getString(R.string.login_description));
+        }
+
+    }
+
+    private void changeUserPlayerRoomStatus(boolean isFull) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
+        if (isFull) {
+            databaseReference.child("waitPlayerRoomDTO").child("roomStatus").setValue(2);
+        } else {
+            databaseReference.child("waitPlayerRoomDTO").child("roomStatus").setValue(1);
+        }
+
+        changePlayerRoomListRoomStatus(isFull);
+
+    }
+
+    private void changePlayerRoomListRoomStatus(boolean isFull) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
+        if (isFull) {
+            databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(2);
+        } else {
+            databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(1);
         }
 
     }
