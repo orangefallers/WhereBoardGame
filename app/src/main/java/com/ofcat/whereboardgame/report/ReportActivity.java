@@ -33,7 +33,7 @@ public class ReportActivity extends AppCompatActivity {
 
     private final static String TABLE_USER_REPORT = "UserReport";
 
-    private FireBaseModelApi fireBaseModelApi;
+    private FireBaseModelApiImpl fireBaseModelApi;
 
     private Spinner spinnerStoreStatus;
     private EditText etStoreName;
@@ -76,6 +76,7 @@ public class ReportActivity extends AppCompatActivity {
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//            Toast.makeText(ReportActivity.this, "onChildAdded = " + s, Toast.LENGTH_SHORT).show();
             if (isClickUpload) {
                 isClickUpload = false;
                 Toast.makeText(ReportActivity.this, getString(R.string.report_success), Toast.LENGTH_LONG).show();
@@ -84,6 +85,7 @@ public class ReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//            Toast.makeText(ReportActivity.this, "onChildChanged = " + s, Toast.LENGTH_SHORT).show();
             if (isClickUpload) {
                 isClickUpload = false;
                 Toast.makeText(ReportActivity.this, getString(R.string.report_success), Toast.LENGTH_LONG).show();
@@ -110,13 +112,13 @@ public class ReportActivity extends AppCompatActivity {
         initView();
         initActionBar();
 
-
         spinnerStoreStatus.setOnItemSelectedListener(itemSelectedListener);
         btnConfirm.setOnClickListener(clickListener);
 
         if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl();
-            fireBaseModelApi.getDefaultDatabaseRef().addChildEventListener(childEventListener);
+            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(TABLE_USER_REPORT);
+            fireBaseModelApi.execute();
+            fireBaseModelApi.getDatabaseRef().addChildEventListener(childEventListener);
         }
 
     }
@@ -125,7 +127,7 @@ public class ReportActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (fireBaseModelApi != null) {
-            fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(childEventListener);
+            fireBaseModelApi.getDatabaseRef().removeEventListener(childEventListener);
         }
     }
 
@@ -148,7 +150,7 @@ public class ReportActivity extends AppCompatActivity {
     private void onClickConfirm(String name, String address, String status) {
         isClickUpload = true;
 
-        String ur_key = fireBaseModelApi.getDefaultDatabaseRef().child(TABLE_USER_REPORT).push().getKey();
+        String ur_key = fireBaseModelApi.getDatabaseRef().child(TABLE_USER_REPORT).push().getKey();
 
         StoreDTO ur_StoreDTO = new StoreDTO();
         ur_StoreDTO.setStoreName(name);
