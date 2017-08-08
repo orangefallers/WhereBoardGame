@@ -29,13 +29,6 @@ public class FireBaseModelApiImpl implements FireBaseModelApi {
 //        myRef.addValueEventListener(valueEventListener);
     }
 
-//    public static FireBaseModelApiImpl getInstance() {
-//        if (fireBaseModelApi == null) {
-//            fireBaseModelApi = new FireBaseModelApiImpl();
-//        }
-//        return fireBaseModelApi;
-//    }
-
     public FireBaseModelApiImpl addApiNote(String note) {
         apiNote = apiNote + "/" + note;
         return this;
