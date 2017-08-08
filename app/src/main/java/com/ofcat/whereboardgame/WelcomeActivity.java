@@ -122,7 +122,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
             SystemConfigDTO systemConfigDTO = dataSnapshot.getValue(SystemConfigDTO.class);
             settingSystemConfig(systemConfigDTO);
-            Log.i(TAG, "data = " + dataSnapshot.toString());
+//            Log.i(TAG, "data = " + dataSnapshot.toString());
 
         }
 
@@ -135,15 +135,15 @@ public class WelcomeActivity extends AppCompatActivity {
     private ValueEventListener systemNotifyValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.i(TAG, "systemNotifyValueEventListener");
+//            Log.i(TAG, "systemNotifyValueEventListener");
             String systemNotify = dataSnapshot.getValue(String.class);
             showSystemBulletinBoard(systemNotify);
-            Log.i(TAG, "data 02 = " + dataSnapshot.toString());
+//            Log.i(TAG, "data 02 = " + dataSnapshot.toString());
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-            Log.e(TAG, "systemNotifyValueEventListener DatabaseError = " + databaseError.getMessage());
+//            Log.e(TAG, "systemNotifyValueEventListener DatabaseError = " + databaseError.getMessage());
         }
     };
 
@@ -172,13 +172,9 @@ public class WelcomeActivity extends AppCompatActivity {
             fireBaseModelApi.addApiNote(FirebaseTableKey.TABLE_SYSTEM_NOTIFICATION);
             fireBaseModelApi.execute();
             fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
-//            fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);
-//            fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
         }
 
     }
-
-
 
     @Override
     protected void onResume() {
