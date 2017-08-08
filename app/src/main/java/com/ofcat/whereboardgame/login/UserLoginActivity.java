@@ -79,6 +79,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private Button btnGoogleLogin, btnSignOut;
     private TextView tvLoginDescription;
     private TextView tvUserInfoPlayerRoom;
+    private TextView tvUserInfoPlayerRoomDate;
     private Switch playerRoomStatus;
 
 
@@ -106,34 +107,13 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                 showLoginStatusDescription(true);
 
                 databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + user.getUid());
-                databaseReference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        UserInfoDTO userInfoDTO = dataSnapshot.getValue(UserInfoDTO.class);
-                        if (userInfoDTO != null) {
-                            tvUserInfoPlayerRoom.setText(userInfoDTO.getWaitPlayerRoomDTO().getInitiator());
-
-                            if (userInfoDTO.getWaitPlayerRoomDTO().getRoomStatus() == 2) {
-                                playerRoomStatus.setChecked(true);
-                            } else {
-                                playerRoomStatus.setChecked(false);
-                            }
-
-                            userStoreId = userInfoDTO.getStoreId();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                databaseReference.addValueEventListener(userInfoValueEventListener);
             } else {
                 // User is signed out
-                userId = "";
                 MyLog.i(TAG, "onAuthStateChanged:signed_out");
                 showLoginStatusDescription(false);
+                showUserInfoRoomStatus(false);
+                cleanData();
 
             }
         }
@@ -154,6 +134,36 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                     signOut();
                     break;
             }
+
+        }
+    };
+
+    private ValueEventListener userInfoValueEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            UserInfoDTO userInfoDTO = dataSnapshot.getValue(UserInfoDTO.class);
+            if (userInfoDTO != null) {
+
+                if (dataSnapshot.hasChild("waitPlayerRoomDTO")) {
+                    tvUserInfoPlayerRoom.setText(userInfoDTO.getWaitPlayerRoomDTO().getInitiator());
+                    tvUserInfoPlayerRoomDate.setText(userInfoDTO.getWaitPlayerRoomDTO().getDate());
+
+                    if (userInfoDTO.getWaitPlayerRoomDTO().getRoomStatus() == 2) { //滿團
+                        playerRoomStatus.setChecked(true);
+                    } else {
+                        playerRoomStatus.setChecked(false);
+                    }
+                }
+
+                userStoreId = userInfoDTO.getStoreId();
+
+                showUserInfoRoomStatus(dataSnapshot.hasChild("storeId"));
+            }
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
 
         }
     };
@@ -226,7 +236,8 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         tvLoginDescription = (TextView) findViewById(R.id.login_description);
 
         rlUserInfoArea = (RelativeLayout) findViewById(R.id.rl_user_info_area);
-        tvUserInfoPlayerRoom = (TextView) findViewById(R.id.tv_user_info_play_room);
+        tvUserInfoPlayerRoom = (TextView) findViewById(R.id.tv_user_info_play_room_name);
+        tvUserInfoPlayerRoomDate = (TextView) findViewById(R.id.tv_user_info_play_room_date);
         playerRoomStatus = (Switch) findViewById(R.id.switch_control_room_status);
 
         playerRoomStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -271,8 +282,23 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     }
 
+    private void showUserInfoRoomStatus(boolean isOpenRoom) {
+
+        if (isOpenRoom) {
+            rlUserInfoArea.setVisibility(View.VISIBLE);
+        } else {
+            rlUserInfoArea.setVisibility(View.GONE);
+        }
+
+    }
+
     private void changeUserPlayerRoomStatus(boolean isFull) {
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
+
+        if (userId.equals("")) {
+            return;
+        }
+
         if (isFull) {
             databaseReference.child("waitPlayerRoomDTO").child("roomStatus").setValue(2);
         } else {
@@ -285,12 +311,23 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changePlayerRoomListRoomStatus(boolean isFull) {
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
+
+        if (userStoreId.equals("") || userId.equals("")) {
+            return;
+        }
+
         if (isFull) {
             databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(2);
         } else {
             databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(1);
         }
 
+    }
+
+    private void cleanData() {
+        userAccountProvider = "";
+        userId = "";
+        userStoreId = "";
     }
 
     @Override
@@ -310,7 +347,11 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (databaseReference != null){
+            databaseReference.removeEventListener(userInfoValueEventListener);
+        }
         isLoading(false);
+        cleanData();
     }
 
     @Override
@@ -432,6 +473,5 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         }
 
     }
-
 
 }
