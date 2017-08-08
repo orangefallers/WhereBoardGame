@@ -58,6 +58,7 @@
     <string name="login_already_login">已登入</string>
     <string name="login_already_login_facebook">Facebook帳號 已登入</string>
     <string name="login_already_login_google">Gmail帳號 已登入</string>
+    <string name="login_play_room_status_title">揪團狀態</string>
 
 
     <!--Map Activity-->

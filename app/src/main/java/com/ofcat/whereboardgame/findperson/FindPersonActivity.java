@@ -3,24 +3,37 @@ package com.ofcat.whereboardgame.findperson;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
+import com.ofcat.whereboardgame.config.AppConfig;
 import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
+import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
-import com.ofcat.whereboardgame.firebase.model.FireBaseModelApi;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
+import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SystemUtility;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,8 +56,11 @@ public class FindPersonActivity extends AppCompatActivity {
 
 
     private static final String TABLE_WAITPLYERROOM = FirebaseTableKey.TABLE_WAITPLYERROOM;
+    private static final String TABLE_USERINFO = FirebaseTableKey.TABLE_USER_INFO;
 
-    private FireBaseModelApi fireBaseModelApi;
+    private FireBaseModelApiImpl fireBaseModelApi;
+    private FirebaseAuth auth;
+    private FirebaseDatabase database;
 
     private WaitPlayerRoomDTO userWaitPlayerRoomDTO;
 
@@ -53,12 +69,15 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private String bgsPlace, bgsId, bgsTag;
     private String recordInitiator, recordTime, recordContact, recordContent;
+    private String userId = "", lastStoreId = "";
 
     private FindPersonAdapter adapter;
 
     private Button btnConfirm;
 
     private SharedPreferences sp;
+
+    private DatabaseReference databaseReference;
 
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -67,10 +86,8 @@ public class FindPersonActivity extends AppCompatActivity {
 
             switch (view.getId()) {
                 case R.id.btn_find_person_confirm:
-//                    uploadData();
                     if (adapter != null) {
-//                        adapter.notifyDataSetChanged();
-//                            Log.i("kevintest", "text = " + text);
+
                         if (userWaitPlayerRoomDTO == null) {
                             userWaitPlayerRoomDTO = new WaitPlayerRoomDTO();
                         }
@@ -82,6 +99,8 @@ public class FindPersonActivity extends AppCompatActivity {
                         userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
                         userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
                         userWaitPlayerRoomDTO.setAddressTag(bgsTag);
+                        userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
+                        userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
 
                         SaveDataToSP(adapter.getInfoTextArray()[2],
                                 adapter.getInfoTextArray()[3],
@@ -89,7 +108,6 @@ public class FindPersonActivity extends AppCompatActivity {
                                 adapter.getInfoTextArray()[5]);
 
                         uploadData(userWaitPlayerRoomDTO);
-
 
                     }
                     break;
@@ -103,26 +121,68 @@ public class FindPersonActivity extends AppCompatActivity {
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+//            Toast.makeText(FindPersonActivity.this, "onChildAdded = " + s,
+//                    Toast.LENGTH_SHORT).show();
+//            if (TABLE_WAITPLYERROOM.equals(s)) {
+//
+//            }
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//            Toast.makeText(FindPersonActivity.this, "onChildChange = " + s,
+//                    Toast.LENGTH_SHORT).show();
+//            if (TABLE_WAITPLYERROOM.equals(s)) {
+//                Toast.makeText(FindPersonActivity.this, "onChildChange = " + s,
+//                        Toast.LENGTH_SHORT).show();
+//            }
 
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+//            Toast.makeText(FindPersonActivity.this, "onChildRemove",
+//                    Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+//            Toast.makeText(FindPersonActivity.this, "onChildMove",
+//                    Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+//            Toast.makeText(FindPersonActivity.this, "onCancelled",
+//                    Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private FirebaseAuth.AuthStateListener stateListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                userId = user.getUid();
+                databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_USERINFO + "/" + userId);
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("storeId")) {
+                            lastStoreId = dataSnapshot.child("storeId").getValue(String.class);
+//                            Log.i("kevintest", " lastStoreId = " + lastStoreId);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            } else {
+                userId = null;
+            }
+
 
         }
     };
@@ -144,19 +204,43 @@ public class FindPersonActivity extends AppCompatActivity {
         initActionBar();
         initView();
 
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+//        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/" + bgsId);
+//        databaseReference.addChildEventListener(childEventListener);
 
-        if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl();
-            fireBaseModelApi.getDefaultDatabaseRef().addChildEventListener(childEventListener);
-        }
+//        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/$$WaitPlayerRoom_id");
 
+//        if (fireBaseModelApi == null) {
+//            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(TABLE_WAITPLYERROOM).addApiNote(bgsId);
+//            fireBaseModelApi.execute();
+//            fireBaseModelApi.getDefaultDatabaseRef().addChildEventListener(childEventListener);
+//        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        auth.addAuthStateListener(stateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        auth.removeAuthStateListener(stateListener);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (databaseReference != null) {
+            databaseReference.removeEventListener(childEventListener);
+        }
+
         if (fireBaseModelApi != null) {
             fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(childEventListener);
+            fireBaseModelApi = null;
         }
     }
 
@@ -172,16 +256,6 @@ public class FindPersonActivity extends AppCompatActivity {
 
         }
         rvFindPerson.setAdapter(adapter);
-//        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-//            @Override
-//            public void onChanged() {
-//                super.onChanged();
-//                for (String text : adapter.getInfoTextArray()) {
-//                    Log.i("kevintest", "text = " + text);
-//                }
-//            }
-//        });
-
         btnConfirm = (Button) findViewById(R.id.btn_find_person_confirm);
         btnConfirm.setOnClickListener(clickListener);
 
@@ -198,30 +272,49 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private void uploadData(WaitPlayerRoomDTO waitPlayerRoomDTO) {
 
-//        WaitPlayerRoomDTO waitPlayerRoomDTO = new WaitPlayerRoomDTO();
-//        waitPlayerRoomDTO.setContact("0979888720");
-//        waitPlayerRoomDTO.setContent("水世界團，禁帶外食，包日100元。拜託快來找我玩");
-//        waitPlayerRoomDTO.setDate("2017/5/21");
-//        waitPlayerRoomDTO.setInitiator("Orangefaller");
-//
-//        LocationDTO locationDTO = new LocationDTO(25.123321, 121.746898);
-//        waitPlayerRoomDTO.setLocation(locationDTO);
+//        String ur_key = fireBaseModelApi.getDefaultDatabaseRef().child(TABLE_WAITPLYERROOM + "/" + bgsId).push().getKey()
+//        String ur_key = databaseReference.child(TABLE_WAITPLYERROOM + "/" + bgsId).push().getKey();
 
-        String ur_key = fireBaseModelApi.getDefaultDatabaseRef().child(TABLE_WAITPLYERROOM + "/" + bgsId).push().getKey();
+        if (userId != null && !"".equals(userId)) {
+
+            databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/" + bgsId);
+            databaseReference.addChildEventListener(childEventListener);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/" + userId, waitPlayerRoomDTO);
+//            childUpdates.put("/" + ur_key, waitPlayerRoomDTO);
+
+//            fireBaseModelApi.getDefaultDatabaseRef().updateChildren(childUpdates);
+            databaseReference.updateChildren(childUpdates);
 
 
-        ArrayList<WaitPlayerRoomDTO> waitPlayerRoomDTOs = new ArrayList<>();
-        waitPlayerRoomDTOs.add(waitPlayerRoomDTO);
-        waitPlayerRoomDTOs.add(waitPlayerRoomDTO);
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + TABLE_WAITPLYERROOM + "/" + bgsId + "/" + ur_key, waitPlayerRoomDTO);
+            databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_USERINFO);
 
-        fireBaseModelApi.getDefaultDatabaseRef().updateChildren(childUpdates);
+            Map<String, Object> userInfoChildUpdates = new HashMap<>();
+            UserInfoDTO userInfoDTO = new UserInfoDTO();
+            userInfoDTO.setStoreId(bgsId);
+            userInfoDTO.setWaitPlayerRoomDTO(waitPlayerRoomDTO);
+            userInfoChildUpdates.put("/" + userId, userInfoDTO);
+
+            databaseReference.updateChildren(userInfoChildUpdates);
+
+            if (!lastStoreId.equals(bgsId) && !lastStoreId.equals("")) {
+                removeData(lastStoreId, userId);
+            }
+
+        } else {
+            MyLog.e("kevintest", "no auth!!!!!!");
+        }
+
 
     }
 
-    private void removeData() {
-        fireBaseModelApi.getDefaultDatabaseRef().child("/" + TABLE_WAITPLYERROOM + "/" + "100003").removeValue();
+    private void removeData(String storeId, String userId) {
+//        fireBaseModelApi.getDefaultDatabaseRef().child("/" + TABLE_WAITPLYERROOM + "/" + "100003").removeValue();
+        if (!storeId.equals("") && !userId.equals("")) {
+            databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/" + storeId + "/" + userId);
+            databaseReference.removeValue();
+        }
     }
 
     private void updateName() {
