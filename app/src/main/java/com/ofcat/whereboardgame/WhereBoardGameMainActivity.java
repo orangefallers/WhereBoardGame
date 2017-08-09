@@ -1,13 +1,9 @@
 package com.ofcat.whereboardgame;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-
-import com.ofcat.whereboardgame.home.HomeFragment;
-import com.ofcat.whereboardgame.report.ReportFragment;
 
 /**
  * Created by orangefaller on 2017/3/5.
@@ -31,20 +27,20 @@ public class WhereBoardGameMainActivity extends AppCompatActivity {
 
             switch (tab.getPosition()) {
                 case TAB_HOME:
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.main_container, HomeFragment.newInstance())
-                            .commit();
+//                    getFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.main_container, HomeFragment.newInstance())
+//                            .commit();
                     break;
                 case TAB_MAP:
                     break;
                 case TAB_FIND_SOMEONE:
                     break;
                 case TAB_REPORT:
-                    getFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.main_container, ReportFragment.newInstance())
-                            .commit();
+//                    getFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.main_container, ReportFragment.newInstance())
+//                            .commit();
                     break;
             }
 
@@ -77,10 +73,10 @@ public class WhereBoardGameMainActivity extends AppCompatActivity {
     }
 
     private void initFirstFragment() {
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_container, HomeFragment.newInstance())
-                .commit();
+//        getFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.main_container, HomeFragment.newInstance())
+//                .commit();
 
     }
 }
