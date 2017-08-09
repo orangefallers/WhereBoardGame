@@ -31,15 +31,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.adapter.MapInfoWindowAdapter;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
+import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest locationRequest;
 
     private FireBaseModelApiImpl fireBaseModelApi;
+    private FirebaseAuth auth;
 
     private Location currentLocation;
 
@@ -73,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AnimatorSet hideAnimationSet = null;
 
     private boolean isShowListChoose = false;
+    private boolean isUserLogin = false;
 
     private int listChoooseHeight;
 
@@ -114,7 +119,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 i++;
             }
 
-            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
+//            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
+            fireBaseModelApi.getDatabaseRef().addChildEventListener(playerRoomListChildEventListener);
         }
 
         @Override
@@ -124,21 +130,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-    private ValueEventListener playerRoomListValueEventListener = new ValueEventListener() {
+    private ChildEventListener playerRoomListChildEventListener = new ChildEventListener() {
         @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                if (storeMarkerMap.containsKey(child.getKey())) {
-                    Marker marker = storeMarkerMap.get(child.getKey());
-                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                }
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+//            Log.i(TAG, "map child Added data snap key = " + dataSnapshot.getKey());
+            String storeId = dataSnapshot.getKey();
+
+            if (storeMarkerMap.containsKey(storeId)) {
+                Marker marker = storeMarkerMap.get(storeId);
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }
+
+//            for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                Log.i(TAG, "map child add key = " + child.getKey());
+//            }
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//            for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                Log.i(TAG, "map child change key = " + child.getKey());
+//            }
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+//            Log.i(TAG, "map child Removed data snap key = " + dataSnapshot.getKey());
+
+            String storeId = dataSnapshot.getKey();
+
+            if (storeMarkerMap.containsKey(storeId)) {
+                Marker marker = storeMarkerMap.get(storeId);
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            }
+
+//            for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                Log.i(TAG, "map child Removed key = " + child.getKey());
+//            }
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            isUserLogin = user != null;
 
         }
     };
@@ -167,6 +216,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             fireBaseModelApi.execute();
 //            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
         }
+
+        auth = FirebaseAuth.getInstance();
 
 
     }
@@ -283,13 +334,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        auth.addAuthStateListener(authStateListener);
     }
 
     @Override
     protected void onStop() {
         googleApiClient.disconnect();
         super.onStop();
+        auth.removeAuthStateListener(authStateListener);
     }
 
     @Override
@@ -300,7 +357,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (fireBaseModelApi != null) {
-            fireBaseModelApi.removeValueEventListener(playerRoomListValueEventListener);
+//            fireBaseModelApi.removeValueEventListener(playerRoomListValueEventListener);
+            fireBaseModelApi.getDatabaseRef().removeEventListener(playerRoomListChildEventListener);
         }
     }
 
@@ -436,7 +494,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLan)
                     .title(getString(R.string.my_location))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             currentMarker.showInfoWindow();
             currentMarker.setTag(null);
             moveMap(latLan);
@@ -456,6 +514,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Intent intent;
             switch (view.getId()) {
                 case R.id.map_list_find_person_play:
+
+                    if (!isUserLogin) {
+                        intent = new Intent(MapsActivity.this, UserLoginActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
+
                     if (boardGameStoreId != null) {
                         intent = new Intent(MapsActivity.this, FindPersonActivity.class);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
