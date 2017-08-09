@@ -194,7 +194,7 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         rvPlayerRoomList.addItemDecoration(new LinearItemDecoration(this));
 
         if (adapter == null) {
-            adapter = new PlayerRoomListAdapter();
+            adapter = new PlayerRoomListAdapter(this);
             adapter.setAdapterListener(adapterListener);
         }
         rvPlayerRoomList.setAdapter(adapter);

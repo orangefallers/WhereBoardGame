@@ -1,5 +1,6 @@
 package com.ofcat.whereboardgame.joinplay;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +22,10 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<WaitPlayerRoomDTO> waitPlayerRoomDTOList;
 
+    private Context context;
 
-    public PlayerRoomListAdapter() {
+    public PlayerRoomListAdapter(Context context) {
+        this.context = context;
     }
 
     public void setDataList(List<WaitPlayerRoomDTO> list) {
@@ -49,7 +52,7 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (holder instanceof VHPlayerRoomItem) {
 
             String date = String.format("開團日：%s", waitPlayerRoomDTOList.get(position).getDate());
-            ((VHPlayerRoomItem) holder).render(getRoomStatus(waitPlayerRoomDTOList.get(position).getRoomStatus()),
+            ((VHPlayerRoomItem) holder).render(waitPlayerRoomDTOList.get(position).getRoomStatus(),
                     date,
                     waitPlayerRoomDTOList.get(position).getStoreName(),
                     waitPlayerRoomDTOList.get(position).getInitiator());
@@ -71,9 +74,9 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private String getRoomStatus(int roomStatus) {
         switch (roomStatus) {
             case 1:
-                return "O";
+                return "缺";
             case 2:
-                return "X";
+                return "滿";
             default:
                 return "";
         }
@@ -105,6 +108,27 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void render(String location, String title, String subTitle, String bottomTitle) {
             tvLocation.setText(location);
+            tvTitle.setText(title);
+            tvSubTitle.setText(subTitle);
+            tvBottomTitle.setText(bottomTitle);
+        }
+
+        public void render(int roomStatus, String title, String subTitle, String bottomTitle) {
+            switch (roomStatus) {
+                case 1:
+                    tvLocation.setText("缺");
+                    tvLocation.setBackgroundResource(R.drawable.ring_red);
+                    tvLocation.setTextColor(context.getResources().getColor(R.color.pink));
+                    break;
+                case 2:
+                    tvLocation.setText("滿");
+                    tvLocation.setBackgroundResource(R.drawable.ring_green);
+                    tvLocation.setTextColor(context.getResources().getColor(R.color.green_deep));
+                    break;
+                default:
+                    break;
+            }
+
             tvTitle.setText(title);
             tvSubTitle.setText(subTitle);
             tvBottomTitle.setText(bottomTitle);
