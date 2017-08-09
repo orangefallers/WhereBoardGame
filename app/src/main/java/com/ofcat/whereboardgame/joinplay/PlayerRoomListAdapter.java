@@ -48,12 +48,9 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VHPlayerRoomItem) {
 
-            String test = "Open";
-//            if (position % 2 == 0) {
-//                test = "Close";
-//            }
-            ((VHPlayerRoomItem) holder).render(test,
-                    waitPlayerRoomDTOList.get(position).getDate(),
+            String date = String.format("開團日：%s", waitPlayerRoomDTOList.get(position).getDate());
+            ((VHPlayerRoomItem) holder).render(getRoomStatus(waitPlayerRoomDTOList.get(position).getRoomStatus()),
+                    date,
                     waitPlayerRoomDTOList.get(position).getStoreName(),
                     waitPlayerRoomDTOList.get(position).getInitiator());
 
@@ -68,6 +65,18 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return waitPlayerRoomDTOList.size();
         }
         return 0;
+    }
+
+
+    private String getRoomStatus(int roomStatus) {
+        switch (roomStatus) {
+            case 1:
+                return "O";
+            case 2:
+                return "X";
+            default:
+                return "";
+        }
     }
 
     private LayoutInflater getLayoutInflater(ViewGroup parent) {
