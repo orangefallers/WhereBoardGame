@@ -27,6 +27,7 @@
     <string name="confirm">確認</string>
     <string name="upload">回報上傳</string>
     <string name="i_know">我知道了</string>
+    <string name="close">關閉</string>
 
 
     <string name="menu_report">我要回報</string>
@@ -85,8 +86,11 @@
         <item>店家消費方式、禁帶外食、報名方式等</item>
     </string-array>
 
+    <string name="findperson_success_title">完成揪團</string>
+    <string name="findperson_success_message">可以至揪團列表查看揪團訊息了!</string>
+
     <!--PlayerRoomList Activity-->
-    <string name="player_room_list_title">JOIN US !</string>
+    <string name="player_room_list_title">揪團列表</string>
     <string name="player_room_detail_content_title">其他注意事項</string>
     <string name="player_room_empty_message">目前尚未有人揪團</string>
  

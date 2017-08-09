@@ -1,10 +1,12 @@
 package com.ofcat.whereboardgame.findperson;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -79,6 +81,8 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
+    private AlertDialog successDialog;
+
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -87,7 +91,7 @@ public class FindPersonActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.btn_find_person_confirm:
                     if (adapter != null) {
-
+                        upLoading(true);
                         if (userWaitPlayerRoomDTO == null) {
                             userWaitPlayerRoomDTO = new WaitPlayerRoomDTO();
                         }
@@ -121,40 +125,43 @@ public class FindPersonActivity extends AppCompatActivity {
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//            Toast.makeText(FindPersonActivity.this, "onChildAdded = " + s,
+            upLoading(false);
+            String dataKey = dataSnapshot.getKey(); //應該要是UserId
+            if (userId.equals(dataKey)) {  //表示是自己更新的資料
+                showUpLoadSuccessDialog();
+            }
+
+//            Toast.makeText(FindPersonActivity.this, "onChildAdded = " + dataSnapshot.getKey(),
 //                    Toast.LENGTH_SHORT).show();
-//            if (TABLE_WAITPLYERROOM.equals(s)) {
-//
-//            }
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            Toast.makeText(FindPersonActivity.this, "onChildChange = " + s,
+            upLoading(false);
+            String dataKey = dataSnapshot.getKey(); //應該要是UserId
+            if (userId.equals(dataKey)) {  //表示是自己更新的資料
+                showUpLoadSuccessDialog();
+            }
+
+//            Toast.makeText(FindPersonActivity.this, "onChildChange = " + dataSnapshot.getKey(),
 //                    Toast.LENGTH_SHORT).show();
-//            if (TABLE_WAITPLYERROOM.equals(s)) {
-//                Toast.makeText(FindPersonActivity.this, "onChildChange = " + s,
-//                        Toast.LENGTH_SHORT).show();
-//            }
+
 
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            Toast.makeText(FindPersonActivity.this, "onChildRemove",
-//                    Toast.LENGTH_SHORT).show();
+            upLoading(false);
         }
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//            Toast.makeText(FindPersonActivity.this, "onChildMove",
-//                    Toast.LENGTH_SHORT).show();
+            upLoading(false);
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-//            Toast.makeText(FindPersonActivity.this, "onCancelled",
-//                    Toast.LENGTH_SHORT).show();
+            upLoading(false);
         }
     };
 
@@ -242,6 +249,8 @@ public class FindPersonActivity extends AppCompatActivity {
             fireBaseModelApi.getDefaultDatabaseRef().removeEventListener(childEventListener);
             fireBaseModelApi = null;
         }
+
+        successDialog = null;
     }
 
     private void initView() {
@@ -267,6 +276,10 @@ public class FindPersonActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
 
         }
+    }
+
+    private void upLoading(boolean isUpLoading) {
+        btnConfirm.setEnabled(!isUpLoading);
     }
 
 
@@ -399,6 +412,32 @@ public class FindPersonActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    private void showUpLoadSuccessDialog() {
+
+        if (isFinishing()){
+            return;
+        }
+
+        if (successDialog == null) {
+            successDialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.findperson_success_title)
+                    .setMessage(R.string.findperson_success_message)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    }).create();
+            successDialog.show();
+        } else if (!successDialog.isShowing()) {
+            successDialog.show();
+        }
+
+    }
 }
 
 
