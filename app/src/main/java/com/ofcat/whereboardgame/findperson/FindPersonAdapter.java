@@ -1,9 +1,9 @@
 package com.ofcat.whereboardgame.findperson;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -159,6 +159,10 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ((VHEditInfo) holder).setEditText(getInfoTextArray()[position]);
 
+            if (position == 2 || position == 3) {
+                ((VHEditInfo) holder).useEditTextSingleLine();
+            }
+
         }
 
 
@@ -281,6 +285,11 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public void setEditText(String text) {
             etInfo.setText(text);
+        }
+
+        public void useEditTextSingleLine() {
+            etInfo.setInputType(InputType.TYPE_CLASS_TEXT);
+            etInfo.setMaxLines(1);
         }
 
         public String getText() {

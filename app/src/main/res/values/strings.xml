@@ -17,7 +17,7 @@
     <string name="welcome_title">~看看附近哪兒有桌遊店~</string>
     <string name="go">GO</string>
     <string name="gotoMap">前往桌遊店地圖</string>
-    <string name="gotoPlayerRoom">哪兒有缺咖</string>
+    <string name="gotoPlayerRoom">查看揪團列表</string>
     <string name="report_store_info">回報桌遊店資訊</string>
     <string name="data_update">資料更新日期：%s</string>
 
@@ -73,14 +73,14 @@
     <string name="findperson_initiator">主揪稱呼</string>
     <string name="findperson_contact">聯絡方式</string>
     <string-array name="findperson_item_title_list">
-        <item>主揪稱呼</item>
+        <item>主揪稱呼或團名</item>
         <item>時間</item>
         <item>聯絡方式</item>
         <item>其他注意事項</item>
     </string-array>
 
     <string-array name="findperson_item_hint_list">
-        <item></item>
+        <item>主揪 阿翔 歡樂新手團</item>
         <item>13:00&#8211;20:00</item>
         <item>手機號碼、Line Id等</item>
         <item>店家消費方式、禁帶外食、報名方式等</item>

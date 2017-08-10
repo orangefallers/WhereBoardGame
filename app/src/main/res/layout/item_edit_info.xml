@@ -10,7 +10,6 @@
         android:id="@+id/tv_info_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/deep_gray"
         tools:text="Title" />
 
     <EditText
@@ -20,8 +19,8 @@
         android:layout_alignLeft="@id/tv_info_title"
         android:layout_alignStart="@id/tv_info_title"
         android:layout_below="@id/tv_info_title"
-        android:textColorHint="@color/w_gray"
         android:layout_marginTop="2dp"
-        android:maxLines="3" />
+        android:scrollHorizontally="true"
+        android:textColorHint="@color/w_gray" />
 
 </RelativeLayout>
