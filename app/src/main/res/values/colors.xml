@@ -16,6 +16,7 @@
     <color name="deep_gray">#333333</color>
     <color name="transparent">#00000000</color>
     <color name="brown">#a7563b</color>
+    <color name="brown_alpha_30">#33a7563b</color>
     <color name="brown_deep">#874444</color>
     <color name="brown_deep_02">#FF9999</color>
     <color name="red">#FF0000</color>
