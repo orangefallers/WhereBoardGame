@@ -1,14 +1,18 @@
 package com.ofcat.whereboardgame;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +30,7 @@ import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 import com.ofcat.whereboardgame.report.ReportActivity;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
+import com.ofcat.whereboardgame.util.MyLog;
 
 
 /**
@@ -40,6 +45,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private GetBoardGameStoreDataImpl boardGameStoreData;
     private FireBaseModelApiImpl fireBaseModelApi;
 
+    private AlertDialog upDateDialog;
+
     private TextView tvAppStatus;
     private TextView tvUpdateDate;
     private TextView tvSystemNotify;
@@ -47,6 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnReport;
     private Button btnLogin;
     private Button btnJoinPlay;
+    private Button btnIssueReport;
 
     private int debugCount = 0;
 
@@ -80,6 +88,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     break;
                 case R.id.btn_welcome_join_playroom:
                     startActivity(new Intent(WelcomeActivity.this, PlayerRoomListActivity.class));
+
+                    break;
+                case R.id.btn_welcome_issue_report:
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -157,7 +168,9 @@ public class WelcomeActivity extends AppCompatActivity {
         btnReport.setOnClickListener(clickListener);
         btnLogin.setOnClickListener(clickListener);
         btnJoinPlay.setOnClickListener(clickListener);
+        btnIssueReport.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
+
 
         if (boardGameStoreData == null) {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, null);
@@ -200,6 +213,8 @@ public class WelcomeActivity extends AppCompatActivity {
             fireBaseModelApi.removeValueEventListener(systemNotifyValueEventListener);
         }
 
+        upDateDialog = null;
+
     }
 
     @Override
@@ -227,6 +242,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnReport = (Button) findViewById(R.id.btn_welcome_report);
         btnLogin = (Button) findViewById(R.id.btn_welcome_login);
         btnJoinPlay = (Button) findViewById(R.id.btn_welcome_join_playroom);
+        btnIssueReport = (Button) findViewById(R.id.btn_welcome_issue_report);
 
     }
 
@@ -254,8 +270,68 @@ public class WelcomeActivity extends AppCompatActivity {
         if (configDTO != null) {
             btnReport.setEnabled(configDTO.isOpenReportFeature());
             btnGo.setEnabled(configDTO.isOpenWatchMapFeature());
+
+
+            showGoToUpdateAppDialog(
+                    configDTO.getOpenAppUpdateFeature().isOpenUpdate(),
+                    configDTO.getOpenAppUpdateFeature().isForcedUpdate(),
+                    configDTO.getOpenAppUpdateFeature().getUpdateTitle(),
+                    configDTO.getOpenAppUpdateFeature().getUpdateMessage());
+
         }
 
+    }
+
+
+    private void showGoToUpdateAppDialog(boolean isShow, boolean isForced, String title, String message) {
+
+        MyLog.i(TAG,"is show =" +isShow +" is forced = "+ isForced);
+        if (!isShow || isFinishing()) {
+            return;
+        }
+
+
+        String dialogTitle;
+        String dialogMessage;
+
+        if (title != null && !title.equals("")) {
+            dialogTitle = title;
+        } else {
+            dialogTitle = getString(R.string.update_dialog_title);
+        }
+
+        if (message != null && !message.equals("")) {
+            dialogMessage = message;
+        } else {
+            dialogMessage = getString(R.string.update_dialog_message);
+        }
+
+        if (upDateDialog == null) {
+            upDateDialog = new AlertDialog.Builder(this)
+                    .setTitle(dialogTitle)
+                    .setMessage(dialogMessage)
+                    .setCancelable(!isForced)
+                    .setPositiveButton(R.string.goto_update, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+
+
+                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                            MyLog.i(TAG, "package name = " + appPackageName);
+                            try {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                            } catch (ActivityNotFoundException anfe) {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                            }
+
+                            finish();
+                        }
+                    }).create();
+            upDateDialog.show();
+        } else if (!upDateDialog.isShowing()) {
+            upDateDialog.show();
+        }
     }
 
 }

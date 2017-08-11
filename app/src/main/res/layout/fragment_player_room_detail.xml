@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/deep_gray"
+                android:layout_marginTop="4dp"
                 android:textSize="20sp" />
 
             <View
@@ -45,6 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:layout_marginTop="4dp"
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
@@ -58,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/deep_gray"
+                android:layout_marginTop="4dp"
                 android:textSize="20sp" />
 
             <View
@@ -70,6 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:layout_marginTop="4dp"
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 

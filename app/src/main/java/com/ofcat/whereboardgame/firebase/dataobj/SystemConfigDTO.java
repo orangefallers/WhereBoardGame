@@ -12,6 +12,7 @@ public class SystemConfigDTO {
 
     private boolean OpenReportFeature;
 
+    private AppUpdateDTO OpenAppUpdateFeature;
 
     public SystemConfigDTO() {
     }
@@ -23,4 +24,13 @@ public class SystemConfigDTO {
     public boolean isOpenWatchMapFeature() {
         return OpenWatchMapFeature;
     }
+
+    public AppUpdateDTO getOpenAppUpdateFeature() {
+        if (OpenAppUpdateFeature == null) {
+            return new AppUpdateDTO();
+        }
+        return OpenAppUpdateFeature;
+    }
+
+
 }

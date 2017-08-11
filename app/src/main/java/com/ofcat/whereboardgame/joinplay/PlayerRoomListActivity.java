@@ -239,8 +239,6 @@ public class PlayerRoomListActivity extends AppCompatActivity {
         Collections.sort(list, new Comparator<WaitPlayerRoomDTO>() {
             @Override
             public int compare(WaitPlayerRoomDTO t0, WaitPlayerRoomDTO t1) {
-                long t0time = (long) t0.getTimeStampOrder();
-                long t1time = (long) t1.getTimeStampOrder();
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 try {
