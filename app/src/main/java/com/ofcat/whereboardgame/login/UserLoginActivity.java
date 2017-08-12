@@ -47,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.config.AppConfig;
+import com.ofcat.whereboardgame.findperson.FindPersonActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
@@ -82,10 +83,13 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private TextView tvUserInfoPlayerRoomDate;
     private Switch playerRoomStatus;
 
-
     private String userAccountProvider = "";
     private String userId = "";
     private String userStoreId = "";
+    private String userStoreName = "";
+    private String userStoreAddressTag = "";
+
+    private String roomDate = "目前揪團日期：%s";
 
     private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
@@ -133,6 +137,18 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                 case R.id.btn_sign_out:
                     signOut();
                     break;
+                case R.id.rl_user_info_area:
+
+                    if (userStoreId.equals("") || userStoreName.equals("") || userStoreAddressTag.equals("")) {
+                        break;
+                    }
+
+                    Intent intent = new Intent(UserLoginActivity.this, FindPersonActivity.class);
+                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, userStoreName);
+                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, userStoreId);
+                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, userStoreAddressTag);
+                    startActivity(intent);
+                    break;
             }
 
         }
@@ -146,7 +162,10 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
                 if (dataSnapshot.hasChild("waitPlayerRoomDTO")) {
                     tvUserInfoPlayerRoom.setText(userInfoDTO.getWaitPlayerRoomDTO().getInitiator());
-                    tvUserInfoPlayerRoomDate.setText(userInfoDTO.getWaitPlayerRoomDTO().getDate());
+                    tvUserInfoPlayerRoomDate.setText(String.format(roomDate, userInfoDTO.getWaitPlayerRoomDTO().getDate()));
+
+                    userStoreName = userInfoDTO.getWaitPlayerRoomDTO().getStoreName();
+                    userStoreAddressTag = userInfoDTO.getWaitPlayerRoomDTO().getAddressTag();
 
                     if (userInfoDTO.getWaitPlayerRoomDTO().getRoomStatus() == 2) { //滿團
                         playerRoomStatus.setChecked(true);
@@ -250,6 +269,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         btnFacebookLogin.setOnClickListener(clickListener);
         btnGoogleLogin.setOnClickListener(clickListener);
         btnSignOut.setOnClickListener(clickListener);
+        rlUserInfoArea.setOnClickListener(clickListener);
     }
 
     private void isLoading(boolean isLoad) {
@@ -347,7 +367,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (databaseReference != null){
+        if (databaseReference != null) {
             databaseReference.removeEventListener(userInfoValueEventListener);
         }
         isLoading(false);

@@ -31,6 +31,7 @@ import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.joinplay.PlayerRoomDetailFragment;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
 import com.ofcat.whereboardgame.util.SystemUtility;
@@ -76,6 +77,7 @@ public class FindPersonActivity extends AppCompatActivity {
     private FindPersonAdapter adapter;
 
     private Button btnConfirm;
+    private Button btnPreview;
 
     private SharedPreferences sp;
 
@@ -114,6 +116,24 @@ public class FindPersonActivity extends AppCompatActivity {
                         uploadData(userWaitPlayerRoomDTO);
 
                     }
+                    break;
+                case R.id.btn_find_person_preview:
+
+                    if (userWaitPlayerRoomDTO == null) {
+                        userWaitPlayerRoomDTO = new WaitPlayerRoomDTO();
+                    }
+
+                    userWaitPlayerRoomDTO.setStoreName(adapter.getInfoTextArray()[0]);
+                    userWaitPlayerRoomDTO.setDate(adapter.getInfoTextArray()[1]);
+                    userWaitPlayerRoomDTO.setInitiator(adapter.getInfoTextArray()[2]);
+                    userWaitPlayerRoomDTO.setTime(adapter.getInfoTextArray()[3]);
+                    userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
+                    userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
+                    userWaitPlayerRoomDTO.setAddressTag(bgsTag);
+                    userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
+                    userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
+
+                    switchDetailFragment(userWaitPlayerRoomDTO);
                     break;
                 default:
                     break;
@@ -266,7 +286,9 @@ public class FindPersonActivity extends AppCompatActivity {
         }
         rvFindPerson.setAdapter(adapter);
         btnConfirm = (Button) findViewById(R.id.btn_find_person_confirm);
+        btnPreview = (Button) findViewById(R.id.btn_find_person_preview);
         btnConfirm.setOnClickListener(clickListener);
+        btnPreview.setOnClickListener(clickListener);
 
     }
 
@@ -356,6 +378,17 @@ public class FindPersonActivity extends AppCompatActivity {
 
     }
 
+    private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack("player_room_detail")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_right)
+                .replace(R.id.rl_find_person_root, PlayerRoomDetailFragment.newInstance(roomDTO))
+                .commit();
+
+    }
+
+
     private void SaveDataToSP(String initiator, String time, String contact, String content) {
         sp.edit()
                 .putString(KEY_SP_INITIATOR, initiator)
@@ -416,7 +449,7 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private void showUpLoadSuccessDialog() {
 
-        if (isFinishing()){
+        if (isFinishing()) {
             return;
         }
 

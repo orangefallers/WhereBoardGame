@@ -2,6 +2,8 @@ package com.ofcat.whereboardgame.report.issue;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -40,6 +42,7 @@ public class IssueReportActivity extends AppCompatActivity {
 
     private SharedPreferences sp;
 
+    private TextView tvIssueInternetStatus;
     private EditText etIssueUserReport;
     private TextView tvSystemAnswer;
     private Button btnConfirm;
@@ -68,7 +71,7 @@ public class IssueReportActivity extends AppCompatActivity {
     private ChildEventListener issueChildEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            MyLog.i(TAG, "report user key = " + dataSnapshot.getKey());
+            MyLog.i(TAG, "report user key add = " + dataSnapshot.getKey());
             IssueReportDTO reportDTO = dataSnapshot.getValue(IssueReportDTO.class);
             MyLog.i(TAG, "report user message = " + reportDTO.getUserIssueReport());
 
@@ -81,7 +84,7 @@ public class IssueReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            MyLog.i(TAG, "report user key = " + dataSnapshot.getKey());
+            MyLog.i(TAG, "report user key change = " + dataSnapshot.getKey());
             IssueReportDTO reportDTO = dataSnapshot.getValue(IssueReportDTO.class);
             MyLog.i(TAG, "report user message = " + reportDTO.getUserIssueReport());
 
@@ -94,7 +97,7 @@ public class IssueReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-            MyLog.i(TAG, "report user key = " + dataSnapshot.getKey());
+            MyLog.i(TAG, "report user key remove = " + dataSnapshot.getKey());
             if (tempKey.equals(dataSnapshot.getKey())) {
                 showSystemAnswer(null);
                 showUserIssueReportMessage(null);
@@ -104,12 +107,12 @@ public class IssueReportActivity extends AppCompatActivity {
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            MyLog.i(TAG, "report user key move = " + dataSnapshot.getKey());
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            MyLog.i(TAG, "report user key cancel = " + databaseError.getMessage());
         }
     };
 
@@ -128,10 +131,21 @@ public class IssueReportActivity extends AppCompatActivity {
             fireBaseModelApi.getDatabaseRef().addChildEventListener(issueChildEventListener);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isConnectInternet()) {
+            tvIssueInternetStatus.setVisibility(View.VISIBLE);
+        } else {
+            tvIssueInternetStatus.setVisibility(View.GONE);
+        }
 
     }
 
     private void initView() {
+        tvIssueInternetStatus = (TextView) findViewById(R.id.tv_issue_internet_status);
         etIssueUserReport = (EditText) findViewById(R.id.et_issue_user_input_message);
         tvSystemAnswer = (TextView) findViewById(R.id.tv_issue_system_answer);
         btnConfirm = (Button) findViewById(R.id.btn_issue_report_confirm);
@@ -194,6 +208,17 @@ public class IssueReportActivity extends AppCompatActivity {
         } else {
             etIssueUserReport.setText(userIssueMsg);
         }
+
+    }
+
+    private boolean isConnectInternet() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        }
+        return false;
 
     }
 

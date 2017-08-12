@@ -16,9 +16,23 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tv_issue_internet_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="#CCCCCC"
+                android:gravity="center"
+                android:text="@string/no_internet"
+                android:textColor="#CC0000"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
                 android:id="@+id/tv_issue_user_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/tv_issue_internet_status"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:text="@string/issue_report_user_title"
