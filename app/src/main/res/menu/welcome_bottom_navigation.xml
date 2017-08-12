@@ -9,19 +9,12 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_account_box_black_24dp"
         android:title="@string/menu_room_list" />
-    <item
-        android:id="@+id/action_navigation"
-        android:icon="@drawable/ic_account_box_black_24dp"
-        android:title="@string/menu_issue_report" />
 
     <item
         android:id="@+id/action_other"
         android:icon="@drawable/ic_account_box_black_24dp"
         android:title="@string/menu_issue_report" />
 
-    <item
-        android:id="@+id/action_setting"
-        android:icon="@drawable/ic_account_box_black_24dp"
-        android:title="@string/menu_issue_report" />
+
 
 </menu>

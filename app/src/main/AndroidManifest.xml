@@ -70,10 +70,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".login.GoogleLoginActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".login.UserLoginActivity"
             android:screenOrientation="portrait" />
 
