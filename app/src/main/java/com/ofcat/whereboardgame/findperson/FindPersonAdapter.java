@@ -161,6 +161,8 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             if (position == 2 || position == 3) {
                 ((VHEditInfo) holder).useEditTextSingleLine();
+            } else if (position == 4 || position == 5) {
+                ((VHEditInfo) holder).setEditTextCustomBackground();
             }
 
         }
@@ -290,6 +292,10 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public void useEditTextSingleLine() {
             etInfo.setInputType(InputType.TYPE_CLASS_TEXT);
             etInfo.setMaxLines(1);
+        }
+
+        public void setEditTextCustomBackground() {
+            etInfo.setBackgroundResource(R.drawable.selector_edittext_black_frame);
         }
 
         public String getText() {

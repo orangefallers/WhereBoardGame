@@ -93,7 +93,7 @@ public class FindPersonActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.btn_find_person_confirm:
                     if (adapter != null) {
-                        upLoading(true);
+
                         if (userWaitPlayerRoomDTO == null) {
                             userWaitPlayerRoomDTO = new WaitPlayerRoomDTO();
                         }
@@ -113,7 +113,8 @@ public class FindPersonActivity extends AppCompatActivity {
                                 adapter.getInfoTextArray()[4],
                                 adapter.getInfoTextArray()[5]);
 
-                        uploadData(userWaitPlayerRoomDTO);
+//                        uploadData(userWaitPlayerRoomDTO);
+                        checkWaitPlayerRoomData(userWaitPlayerRoomDTO);
 
                     }
                     break;
@@ -378,6 +379,16 @@ public class FindPersonActivity extends AppCompatActivity {
 
     }
 
+    private void checkWaitPlayerRoomData(WaitPlayerRoomDTO roomDTO) {
+        if (!roomDTO.isCompleteDTO()) {
+            showErrorDataDialog();
+        } else {
+            upLoading(true);
+            uploadData(roomDTO);
+
+        }
+    }
+
     private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -469,6 +480,18 @@ public class FindPersonActivity extends AppCompatActivity {
         } else if (!successDialog.isShowing()) {
             successDialog.show();
         }
+
+    }
+
+    private void showErrorDataDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.findperson_dialog_error_data_message)
+                .setPositiveButton(R.string.i_know, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
 
     }
 }

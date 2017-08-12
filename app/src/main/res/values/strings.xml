@@ -81,9 +81,9 @@
     <string name="findperson_initiator">主揪稱呼</string>
     <string name="findperson_contact">聯絡方式</string>
     <string-array name="findperson_item_title_list">
-        <item>主揪稱呼或團名</item>
-        <item>時間</item>
-        <item>聯絡方式</item>
+        <item>主揪稱呼或團名*</item>
+        <item>時間*</item>
+        <item>聯絡方式*</item>
         <item>其他注意事項</item>
     </string-array>
 
@@ -96,6 +96,7 @@
 
     <string name="findperson_success_title">完成揪團</string>
     <string name="findperson_success_message">可以至揪團列表查看揪團訊息了!</string>
+    <string name="findperson_dialog_error_data_message">哎呀，您是不是忘了填*欄位資料了?</string>
 
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">揪團列表</string>

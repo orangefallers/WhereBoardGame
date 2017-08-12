@@ -122,4 +122,12 @@ public class WaitPlayerRoomDTO implements Serializable {
     public void setRoomStatus(int roomStatus) {
         this.roomStatus = roomStatus;
     }
+
+
+    public boolean isCompleteDTO() {
+        if (initiator.trim().equals("") || contact.trim().equals("") || time.trim().equals("")) {
+            return false;
+        }
+        return true;
+    }
 }
