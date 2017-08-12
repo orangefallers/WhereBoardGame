@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -52,11 +53,11 @@ public class IssueReportActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.btn_issue_report_confirm:
-
+                    showSystemAnswer(null);
                     issueUpload(etIssueUserReport.getText().toString());
                     break;
                 case R.id.btn_issue_report_clean:
-                    issueClean();
+                    showRemoveConfirmDialog();
                     break;
             }
 
@@ -152,9 +153,6 @@ public class IssueReportActivity extends AppCompatActivity {
             sp.edit().putString(KEY_SP_ISSUE_MESSAGE, tempKey).apply();
         }
 
-
-//        String ur_key = fireBaseModelApi.getDatabaseRef().push().getKey();
-
         IssueReportDTO issueReportDTO = new IssueReportDTO();
         issueReportDTO.setUserIssueReport(userIssueMessage);
         issueReportDTO.setSystemIssueAnswer("");
@@ -197,6 +195,23 @@ public class IssueReportActivity extends AppCompatActivity {
             etIssueUserReport.setText(userIssueMsg);
         }
 
+    }
+
+    private void showRemoveConfirmDialog() {
+        new AlertDialog.Builder(this).setTitle(R.string.issue_report_clean_confirm_dialog_title)
+                .setMessage(R.string.issue_report_clean_confirm_dialog_message)
+                .setPositiveButton(R.string.determine, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        issueClean();
+                        dialogInterface.dismiss();
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        }).show();
     }
 
 

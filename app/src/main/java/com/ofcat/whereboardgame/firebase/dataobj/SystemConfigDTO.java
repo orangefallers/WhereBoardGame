@@ -10,6 +10,12 @@ public class SystemConfigDTO {
 
     private boolean OpenWatchMapFeature;
 
+    private boolean OpenPlayerRoomListFeature;
+
+    private boolean OpenUserInfoFeature;
+
+    private boolean OpenSuggestionsFeature;
+
     private boolean OpenReportFeature;
 
     private AppUpdateDTO OpenAppUpdateFeature;
@@ -23,6 +29,18 @@ public class SystemConfigDTO {
 
     public boolean isOpenWatchMapFeature() {
         return OpenWatchMapFeature;
+    }
+
+    public boolean isOpenPlayerRoomListFeature() {
+        return OpenPlayerRoomListFeature;
+    }
+
+    public boolean isOpenUserInfoFeature() {
+        return OpenUserInfoFeature;
+    }
+
+    public boolean isOpenSuggestionsFeature() {
+        return OpenSuggestionsFeature;
     }
 
     public AppUpdateDTO getOpenAppUpdateFeature() {

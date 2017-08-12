@@ -32,6 +32,8 @@
     <string name="upload">回報上傳</string>
     <string name="i_know">我知道了</string>
     <string name="close">關閉</string>
+    <string name="cancel">取消</string>
+    <string name="determine">確定</string>
     <string name="goto_update">前往更新</string>
 
 
@@ -104,6 +106,8 @@
     <string name="issue_report_system_title">系統回覆：</string>
     <string name="issue_report_system_default_answer">已收到您的建議，謝謝</string>
     <string name="issue_report_clean">清除建議</string>
+    <string name="issue_report_clean_confirm_dialog_title">貼心提醒</string>
+    <string name="issue_report_clean_confirm_dialog_message">確定要清空您的建議?\n系統將不會紀錄此則建議</string>
 
 
 </resources>

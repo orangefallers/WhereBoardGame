@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.OnDisconnect;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
@@ -120,7 +121,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private ValueEventListener systemConfigValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            Log.i(TAG, "systemConfigValueEventListener");
+            MyLog.i(TAG, "systemConfigValueEventListener");
 //            GenericTypeIndicator<ArrayList<StoreDTO>> typeIndicator = new GenericTypeIndicator<ArrayList<StoreDTO>>() {
 //            };
 //            SystemConfigDTO systemConfigDTO;
@@ -133,8 +134,13 @@ public class WelcomeActivity extends AppCompatActivity {
 //                showSystemBulletinBoard(systemNotify);
 //            }
 
-            SystemConfigDTO systemConfigDTO = dataSnapshot.getValue(SystemConfigDTO.class);
-            settingSystemConfig(systemConfigDTO);
+            try {
+                SystemConfigDTO systemConfigDTO = dataSnapshot.getValue(SystemConfigDTO.class);
+                settingSystemConfig(systemConfigDTO);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 //            Log.i(TAG, "data = " + dataSnapshot.toString());
 
         }
@@ -165,7 +171,6 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         initView();
-
 
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);
@@ -273,6 +278,10 @@ public class WelcomeActivity extends AppCompatActivity {
         if (configDTO != null) {
             btnReport.setEnabled(configDTO.isOpenReportFeature());
             btnGo.setEnabled(configDTO.isOpenWatchMapFeature());
+
+            btnJoinPlay.setEnabled(configDTO.isOpenPlayerRoomListFeature());
+            btnLogin.setEnabled(configDTO.isOpenUserInfoFeature());
+            btnIssueReport.setEnabled(configDTO.isOpenSuggestionsFeature());
 
 
             showGoToUpdateAppDialog(
