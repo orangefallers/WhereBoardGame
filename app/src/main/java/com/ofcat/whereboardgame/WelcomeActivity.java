@@ -29,6 +29,7 @@ import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 import com.ofcat.whereboardgame.report.ReportActivity;
+import com.ofcat.whereboardgame.report.issue.IssueReportActivity;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
 
@@ -91,6 +92,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     break;
                 case R.id.btn_welcome_issue_report:
+                    startActivity(new Intent(WelcomeActivity.this, IssueReportActivity.class));
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -163,6 +165,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         initView();
+
 
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);

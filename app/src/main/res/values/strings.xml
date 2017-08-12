@@ -99,4 +99,11 @@
     <string name="player_room_detail_content_title">其他注意事項</string>
     <string name="player_room_empty_message">目前尚未有人揪團</string>
 
+    <!--IssueReport Activity-->
+    <string name="issue_report_user_title">您的建議：</string>
+    <string name="issue_report_system_title">系統回覆：</string>
+    <string name="issue_report_system_default_answer">已收到您的建議，謝謝</string>
+    <string name="issue_report_clean">清除建議</string>
+
+
 </resources>

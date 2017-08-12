@@ -11,6 +11,7 @@ public class FirebaseTableKey {
     public static final String TABLE_USER_INFO = "UserInfo";
     public static final String TABLE_SYSTEM_CONFIG = "SystemConfig";
     public static final String TABLE_SYSTEM_NOTIFICATION = "SystemNotification";
+    public static final String TABLE_SUGGESTIONS = "Suggestions";
 
 
 }
