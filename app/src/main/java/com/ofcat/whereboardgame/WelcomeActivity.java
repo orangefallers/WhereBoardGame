@@ -198,6 +198,15 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        String msg = intent.getStringExtra("msg");
+        if (msg != null)
+            MyLog.i(TAG, "msg:" + msg);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -297,7 +306,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void showGoToUpdateAppDialog(boolean isShow, boolean isForced, String title, String message) {
 
-        MyLog.i(TAG,"is show =" +isShow +" is forced = "+ isForced);
+        MyLog.i(TAG, "is show =" + isShow + " is forced = " + isForced);
         if (!isShow || isFinishing()) {
             return;
         }
