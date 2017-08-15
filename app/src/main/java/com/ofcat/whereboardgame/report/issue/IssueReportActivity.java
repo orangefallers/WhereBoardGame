@@ -19,10 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.firebase.dataobj.IssueReportDTO;
-import com.ofcat.whereboardgame.firebase.dataobj.StoreDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 import com.ofcat.whereboardgame.util.SystemUtility;
 
 import java.util.HashMap;
@@ -123,7 +123,10 @@ public class IssueReportActivity extends AppCompatActivity {
         initView();
         database = FirebaseDatabase.getInstance();
         sp = getSharedPreferences("BGS_DATA", MODE_PRIVATE);
-        tempKey = sp.getString(KEY_SP_ISSUE_MESSAGE, "");
+
+//        tempKey = sp.getString(KEY_SP_ISSUE_MESSAGE, "");
+        tempKey = sp.getString(SharedPreferenceKey.DATA_INSTANCE_ID, "");
+        sp.edit().putString(KEY_SP_ISSUE_MESSAGE, tempKey).apply();
 
         if (fireBaseModelApi == null) {
             fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(FirebaseTableKey.TABLE_SUGGESTIONS);
@@ -164,6 +167,7 @@ public class IssueReportActivity extends AppCompatActivity {
 
         if (tempKey.trim().equals("")) {
             tempKey = fireBaseModelApi.getDatabaseRef().push().getKey();
+            tempKey = "TEMP_" + tempKey;
             sp.edit().putString(KEY_SP_ISSUE_MESSAGE, tempKey).apply();
         }
 

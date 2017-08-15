@@ -7,4 +7,5 @@ package com.ofcat.whereboardgame.util;
 public class SharedPreferenceKey {
 
     public static final String DATA_UPDATE_DATE = "data_update_date";
+    public static final String DATA_INSTANCE_ID = "data_instance_id";
 }

@@ -151,6 +151,8 @@ public class PlayerRoomListActivity extends AppCompatActivity {
                 DatabaseReference childstore = databaseReference.child(FirebaseTableKey.TABLE_WAITPLYERROOM).child(queryStoreId);
                 childstore.addValueEventListener(playerRoomListByStoreIdValueEventListener);
 
+                tvEmptyMessage.setText(getString(R.string.player_room_empty_message_by_store));
+
             } else {
                 fireBaseModelApi = new FireBaseModelApiImpl()
                         .addApiNote(FirebaseTableKey.TABLE_WAITPLYERROOM);

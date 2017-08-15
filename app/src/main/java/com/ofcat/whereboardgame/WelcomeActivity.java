@@ -44,6 +44,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private final String TAG = WelcomeActivity.class.getSimpleName();
     private final static int permissionRequestCode = 24;
 
+    private final static String OPENPAGE_ISSUE_REPORT = "IssueReportActivity";
+    private boolean isOpenPageByIntent;
+
     private GetBoardGameStoreDataImpl boardGameStoreData;
     private FireBaseModelApiImpl fireBaseModelApi;
 
@@ -201,9 +204,12 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = getIntent();
-        String msg = intent.getStringExtra("msg");
-        if (msg != null)
-            MyLog.i(TAG, "msg:" + msg);
+        String openPage = intent.getStringExtra("openPage");
+        if (openPage != null && !isOpenPageByIntent) {
+            MyLog.i(TAG, "open:" + openPage);
+            openActivityByIntent(openPage);
+            isOpenPageByIntent = true;
+        }
     }
 
     @Override
@@ -231,6 +237,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         upDateDialog = null;
+        isOpenPageByIntent = false;
 
     }
 
@@ -301,6 +308,18 @@ public class WelcomeActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    /**
+     * 當使用者點推播時，如果有intent要開啟指定頁面
+     *
+     * @param openPage
+     */
+    private void openActivityByIntent(String openPage) {
+        if (OPENPAGE_ISSUE_REPORT.equals(openPage)) {
+            Intent intent = new Intent(this, IssueReportActivity.class);
+            startActivity(intent);
+        }
     }
 
 

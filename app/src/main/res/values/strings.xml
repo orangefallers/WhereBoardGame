@@ -102,6 +102,7 @@
     <string name="player_room_list_title">揪團列表</string>
     <string name="player_room_detail_content_title">其他注意事項</string>
     <string name="player_room_empty_message">目前尚未有人揪團</string>
+    <string name="player_room_empty_message_by_store">此地點目前尚未有人揪團</string>
 
     <!--IssueReport Activity-->
     <string name="issue_report_user_title">您的建議：</string>
