@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -81,7 +82,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private TextView tvLoginDescription;
     private TextView tvUserInfoPlayerRoom;
     private TextView tvUserInfoPlayerRoomDate;
-    private Switch playerRoomStatus;
+    private SwitchCompat playerRoomStatus;
 
     private String userAccountProvider = "";
     private String userId = "";
@@ -257,7 +258,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         rlUserInfoArea = (RelativeLayout) findViewById(R.id.rl_user_info_area);
         tvUserInfoPlayerRoom = (TextView) findViewById(R.id.tv_user_info_play_room_name);
         tvUserInfoPlayerRoomDate = (TextView) findViewById(R.id.tv_user_info_play_room_date);
-        playerRoomStatus = (Switch) findViewById(R.id.switch_control_room_status);
+        playerRoomStatus = (SwitchCompat) findViewById(R.id.switch_control_room_status);
 
         playerRoomStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
