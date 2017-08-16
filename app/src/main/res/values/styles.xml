@@ -24,4 +24,8 @@
     </style>
 
 
+    <style name="SwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
+        <item name="android:textColor">@color/selector_switch_textcolor</item>
+    </style>
+
 </resources>

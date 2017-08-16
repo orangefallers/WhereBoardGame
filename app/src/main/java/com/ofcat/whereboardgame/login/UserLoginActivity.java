@@ -476,9 +476,11 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         new AlertDialog.Builder(this)
                 .setTitle(R.string.login_fail)
                 .setMessage(message)
+                .setCancelable(false)
                 .setPositiveButton(R.string.i_know, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        isLoading(false);
                         dialogInterface.dismiss();
                     }
                 }).show();
