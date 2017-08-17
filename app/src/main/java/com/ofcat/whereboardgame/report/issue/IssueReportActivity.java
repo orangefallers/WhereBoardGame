@@ -126,7 +126,11 @@ public class IssueReportActivity extends AppCompatActivity {
 
 //        tempKey = sp.getString(KEY_SP_ISSUE_MESSAGE, "");
         tempKey = sp.getString(SharedPreferenceKey.DATA_INSTANCE_ID, "");
-        sp.edit().putString(KEY_SP_ISSUE_MESSAGE, tempKey).apply();
+        if (!tempKey.equals("")) {
+            sp.edit().putString(KEY_SP_ISSUE_MESSAGE, tempKey).apply();
+        } else {
+            tempKey = sp.getString(KEY_SP_ISSUE_MESSAGE, "");
+        }
 
         if (fireBaseModelApi == null) {
             fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(FirebaseTableKey.TABLE_SUGGESTIONS);
