@@ -22,10 +22,13 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.OnDisconnect;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
@@ -48,7 +51,10 @@ public class WelcomeActivity extends AppCompatActivity {
     private boolean isOpenPageByIntent;
 
     private GetBoardGameStoreDataImpl boardGameStoreData;
-    private FireBaseModelApiImpl fireBaseModelApi;
+    //    private FireBaseModelApiImpl fireBaseModelApi;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference systemConfig;
+    private DatabaseReference systemNotification;
 
     private AlertDialog upDateDialog;
 
@@ -157,15 +163,12 @@ public class WelcomeActivity extends AppCompatActivity {
     private ValueEventListener systemNotifyValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-//            Log.i(TAG, "systemNotifyValueEventListener");
             String systemNotify = dataSnapshot.getValue(String.class);
             showSystemBulletinBoard(systemNotify);
-//            Log.i(TAG, "data 02 = " + dataSnapshot.toString());
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-//            Log.e(TAG, "systemNotifyValueEventListener DatabaseError = " + databaseError.getMessage());
         }
     };
 
@@ -174,6 +177,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         initView();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);
@@ -187,16 +191,19 @@ public class WelcomeActivity extends AppCompatActivity {
             boardGameStoreData = new GetBoardGameStoreDataImpl(this, null);
         }
 
-        if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(FirebaseTableKey.TABLE_SYSTEM_CONFIG);
-            fireBaseModelApi.execute();
-            fireBaseModelApi.addValueEventListener(systemConfigValueEventListener);
 
-            fireBaseModelApi.cleanUrl();
-            fireBaseModelApi.addApiNote(FirebaseTableKey.TABLE_SYSTEM_NOTIFICATION);
-            fireBaseModelApi.execute();
-            fireBaseModelApi.addValueEventListener(systemNotifyValueEventListener);
-        }
+        FireBaseUrl systemUrl = new FireBaseUrl.Builder()
+                .addUrlNote(FirebaseTableKey.TABLE_SYSTEM_CONFIG)
+                .build();
+
+        systemConfig = firebaseDatabase.getReferenceFromUrl(systemUrl.getUrl());
+        systemConfig.addValueEventListener(systemConfigValueEventListener);
+
+        FireBaseUrl systemNotifyUrl = new FireBaseUrl.Builder()
+                .addUrlNote(FirebaseTableKey.TABLE_SYSTEM_NOTIFICATION)
+                .build();
+        systemNotification = firebaseDatabase.getReferenceFromUrl(systemNotifyUrl.getUrl());
+        systemNotification.addValueEventListener(systemNotifyValueEventListener);
 
     }
 
@@ -231,10 +238,9 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (fireBaseModelApi != null) {
-            fireBaseModelApi.removeValueEventListener(systemConfigValueEventListener);
-            fireBaseModelApi.removeValueEventListener(systemNotifyValueEventListener);
-        }
+
+        systemConfig.removeEventListener(systemConfigValueEventListener);
+        systemNotification.removeEventListener(systemNotifyValueEventListener);
 
         upDateDialog = null;
         isOpenPageByIntent = false;

@@ -20,6 +20,10 @@
         android:layout_alignStart="@id/tv_info_title"
         android:layout_below="@id/tv_info_title"
         android:layout_marginTop="2dp"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:paddingRight="8dp"
+        android:paddingEnd="8dp"
         android:scrollHorizontally="true"
         android:textColorHint="@color/w_gray" />
 

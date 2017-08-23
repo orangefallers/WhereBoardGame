@@ -15,10 +15,16 @@ import android.widget.Toast;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ofcat.whereboardgame.R;
+import com.ofcat.whereboardgame.config.AppConfig;
 import com.ofcat.whereboardgame.firebase.dataobj.StoreDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApi;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
+import com.ofcat.whereboardgame.util.FirebaseTableKey;
+import com.ofcat.whereboardgame.util.MyLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +37,10 @@ public class ReportActivity extends AppCompatActivity {
 
     private final String TAG = ReportActivity.class.getSimpleName();
 
-    private final static String TABLE_USER_REPORT = "UserReport";
+    private final static String TABLE_USER_REPORT = FirebaseTableKey.TABLE_USER_REPORT;
 
-    private FireBaseModelApiImpl fireBaseModelApi;
+    //    private FireBaseModelApiImpl fireBaseModelApi;
+    private DatabaseReference userReport;
 
     private Spinner spinnerStoreStatus;
     private EditText etStoreName;
@@ -115,20 +122,28 @@ public class ReportActivity extends AppCompatActivity {
         spinnerStoreStatus.setOnItemSelectedListener(itemSelectedListener);
         btnConfirm.setOnClickListener(clickListener);
 
-        if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(TABLE_USER_REPORT);
-            fireBaseModelApi.execute();
-            fireBaseModelApi.getDatabaseRef().addChildEventListener(childEventListener);
-        }
+        FireBaseUrl userReportUrl = new FireBaseUrl.Builder()
+                .addUrlNote(TABLE_USER_REPORT)
+                .build();
+
+        userReport = FirebaseDatabase.getInstance().getReferenceFromUrl(userReportUrl.getUrl());
+        userReport.addChildEventListener(childEventListener);
+
+//        if (fireBaseModelApi == null) {
+//            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(TABLE_USER_REPORT);
+//            fireBaseModelApi.execute();
+//            fireBaseModelApi.getDatabaseRef().addChildEventListener(childEventListener);
+//        }
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (fireBaseModelApi != null) {
-            fireBaseModelApi.getDatabaseRef().removeEventListener(childEventListener);
-        }
+        userReport.removeEventListener(childEventListener);
+//        if (fireBaseModelApi != null) {
+//            fireBaseModelApi.getDatabaseRef().removeEventListener(childEventListener);
+//        }
     }
 
     private void initView() {
@@ -150,7 +165,8 @@ public class ReportActivity extends AppCompatActivity {
     private void onClickConfirm(String name, String address, String status) {
         isClickUpload = true;
 
-        String ur_key = fireBaseModelApi.getDatabaseRef().child(TABLE_USER_REPORT).push().getKey();
+        String ur_key = userReport.push().getKey();
+//        MyLog.i(TAG, "ur_key = "+ur_key);
 
         StoreDTO ur_StoreDTO = new StoreDTO();
         ur_StoreDTO.setStoreName(name);
@@ -158,9 +174,9 @@ public class ReportActivity extends AppCompatActivity {
         ur_StoreDTO.setStoreStatus(status);
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/" + TABLE_USER_REPORT + "/" + ur_key, ur_StoreDTO);
+        childUpdates.put("/" + ur_key, ur_StoreDTO);
 
-        fireBaseModelApi.getDefaultDatabaseRef().updateChildren(childUpdates);
+        userReport.updateChildren(childUpdates);
 
     }
 

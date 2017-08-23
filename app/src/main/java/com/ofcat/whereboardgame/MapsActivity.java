@@ -493,7 +493,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         currentLocation = location;
 //        Log.i(TAG, "OnLocationChanged");
-        MyLog.i(TAG, "location.getLatitude() = " + location.getLatitude() + " location.getLongitude() = " + location.getLongitude());
         LatLng latLan = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (currentMarker == null) {
