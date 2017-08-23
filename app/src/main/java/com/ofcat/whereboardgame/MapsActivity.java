@@ -44,6 +44,7 @@ import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
+import com.ofcat.whereboardgame.util.MyLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +52,9 @@ import java.util.HashMap;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final String TAG = MapsActivity.class.getSimpleName();
+
+    private final double defaultLat = 24.190254;
+    private final double defaultLng = 120.811551;
 
     private GoogleMap mMap;
 
@@ -61,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseAuth auth;
 
     private Location currentLocation;
+    private LatLng defaultLatLan = new LatLng(defaultLat, defaultLng);
 
     private Marker currentMarker;
 
@@ -374,6 +379,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        moveMap(defaultLatLan, 10);
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setInfoWindowAdapter(new MapInfoWindowAdapter(this));
@@ -446,10 +452,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void moveMap(LatLng place) {
+    private void moveMap(LatLng place, int zoom) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(place)
-                .zoom(15)
+                .zoom(zoom)
                 .build();
 
 //        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -487,7 +493,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         currentLocation = location;
 //        Log.i(TAG, "OnLocationChanged");
-
+        MyLog.i(TAG, "location.getLatitude() = " + location.getLatitude() + " location.getLongitude() = " + location.getLongitude());
         LatLng latLan = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (currentMarker == null) {
@@ -497,7 +503,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
             currentMarker.showInfoWindow();
             currentMarker.setTag(null);
-            moveMap(latLan);
+            moveMap(latLan, 15);
         } else {
             currentMarker.setPosition(latLan);
         }
