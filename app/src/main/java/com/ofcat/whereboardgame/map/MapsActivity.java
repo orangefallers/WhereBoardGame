@@ -1,14 +1,17 @@
-package com.ofcat.whereboardgame;
+package com.ofcat.whereboardgame.map;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.adapter.MapInfoWindowAdapter;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
@@ -44,7 +48,6 @@ import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
-import com.ofcat.whereboardgame.util.MyLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +89,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private int listChoooseHeight;
 
-    private String boardGameStoreName, boardGameStoreId, boardGameStoreTag;
+    private String boardGameStoreName, boardGameStoreId, boardGameStoreTag, boardGameStoreAddress;
+    private double boardGameStoreLat, boardGameStoreLng;
 
     private HashMap<String, Marker> storeMarkerMap = new HashMap<>();
 
@@ -394,16 +398,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 boardGameStoreName = marker.getTitle();
+                boardGameStoreLat = marker.getPosition().latitude;
+                boardGameStoreLng = marker.getPosition().longitude;
 
                 if (marker.getTag() != null) {
                     StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
 
                     boardGameStoreId = infoDTO.getStoreId();
+                    boardGameStoreAddress = infoDTO.getAddress();
                     boardGameStoreTag = infoDTO.getAddress().substring(0, 2);
+
 
                 } else {
                     boardGameStoreId = null;
                     boardGameStoreTag = null;
+                    boardGameStoreAddress = null;
                     if (isShowListChoose) {
                         hideListAnimation();
                     }
@@ -423,7 +432,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onInfoWindowClick(Marker marker) {
 
                 if (marker.getTag() != null) {
-                    StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
+//                    StoreInfoDTO infoDTO = (StoreInfoDTO) marker.getTag();
 
 //                    boardGameStoreName = marker.getTitle();
 
@@ -531,6 +540,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, boardGameStoreName);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, boardGameStoreId);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, boardGameStoreTag);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_LAT, boardGameStoreLat);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_LNG, boardGameStoreLng);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ADDRESS, boardGameStoreAddress);
                         startActivity(intent);
                     }
                     break;

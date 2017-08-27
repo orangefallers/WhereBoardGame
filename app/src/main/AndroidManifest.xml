@@ -50,7 +50,13 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".map.MapsActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+            android:name=".map.SingleStoreMapActivity"
             android:screenOrientation="portrait">
 
         </activity>

@@ -28,6 +28,8 @@ public class WaitPlayerRoomDTO implements Serializable {
 
     private String addressTag;
 
+    private String storeAddress;
+
     private String timeStamp;
 
     private Object timeStampOrder;
@@ -97,6 +99,14 @@ public class WaitPlayerRoomDTO implements Serializable {
 
     public void setAddressTag(String addressTag) {
         this.addressTag = addressTag;
+    }
+
+    public String getStoreAddress() {
+        return storeAddress;
+    }
+
+    public void setStoreAddress(String storeAddress) {
+        this.storeAddress = storeAddress;
     }
 
     public String getTimeStamp() {

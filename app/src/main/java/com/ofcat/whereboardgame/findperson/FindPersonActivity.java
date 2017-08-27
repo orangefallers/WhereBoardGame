@@ -51,6 +51,9 @@ public class FindPersonActivity extends AppCompatActivity {
     public static final String KEY_FINDPERSON_BGS_PLACE = "key_findperson_bgs_place";
     public static final String KEY_FINDPERSON_BGS_ID = "key_findperson_bgs_id";
     public static final String KEY_FINDPERSON_BGS_PLACE_TAG = "key_findperson_bgs_place_tag";
+    public static final String KEY_FINDPERSON_BGS_ADDRESS = "key_findperson_bgs_address";
+    public static final String KEY_FINDPERSON_BGS_LAT = "key_findperson_bgs_lat";
+    public static final String KEY_FINDPERSON_BGS_LNG = "key_findperson_bgs_lng";
 
     public static final String KEY_SP_INITIATOR = "sp_key_initiator";
     public static final String KEY_SP_TIME = "sp_key_time";
@@ -70,9 +73,10 @@ public class FindPersonActivity extends AppCompatActivity {
     private RecyclerView rvFindPerson;
     private DatePickerDialog datePickerDialog;
 
-    private String bgsPlace, bgsId, bgsTag;
+    private String bgsPlace, bgsId, bgsTag, bgsAddress;
     private String recordInitiator, recordTime, recordContact, recordContent;
     private String userId = "", lastStoreId = "";
+    private double bgsLat, bgsLng;
 
     private FindPersonAdapter adapter;
 
@@ -105,8 +109,10 @@ public class FindPersonActivity extends AppCompatActivity {
                         userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
                         userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
                         userWaitPlayerRoomDTO.setAddressTag(bgsTag);
+                        userWaitPlayerRoomDTO.setStoreAddress(bgsAddress);
                         userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                         userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
+                        userWaitPlayerRoomDTO.setLocation(new LocationDTO(bgsLat, bgsLng));
 
                         SaveDataToSP(adapter.getInfoTextArray()[2],
                                 adapter.getInfoTextArray()[3],
@@ -220,8 +226,11 @@ public class FindPersonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_findperson);
         bgsPlace = getIntent().getStringExtra(KEY_FINDPERSON_BGS_PLACE);
+        bgsAddress = getIntent().getStringExtra(KEY_FINDPERSON_BGS_ADDRESS);
         bgsId = getIntent().getStringExtra(KEY_FINDPERSON_BGS_ID);
         bgsTag = getIntent().getStringExtra(KEY_FINDPERSON_BGS_PLACE_TAG);
+        bgsLat = getIntent().getDoubleExtra(KEY_FINDPERSON_BGS_LAT, 0);
+        bgsLng = getIntent().getDoubleExtra(KEY_FINDPERSON_BGS_LNG, 0);
 
         sp = getSharedPreferences("BGS_DATA", MODE_PRIVATE);
         recordInitiator = sp.getString(KEY_SP_INITIATOR, "");

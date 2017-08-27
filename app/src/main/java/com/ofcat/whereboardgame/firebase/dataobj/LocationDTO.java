@@ -1,10 +1,12 @@
 package com.ofcat.whereboardgame.firebase.dataobj;
 
+import java.io.Serializable;
+
 /**
  * Created by orangefaller on 2017/5/1.
  */
 
-public class LocationDTO {
+public class LocationDTO implements Serializable{
 
     private double latitude;
     private double longitude;
