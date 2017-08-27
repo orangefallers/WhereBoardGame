@@ -2,8 +2,10 @@ package com.ofcat.whereboardgame;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,6 +17,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,6 +41,7 @@ import com.ofcat.whereboardgame.report.ReportActivity;
 import com.ofcat.whereboardgame.report.issue.IssueReportActivity;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 
 
 /**
@@ -57,6 +63,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private DatabaseReference systemNotification;
 
     private AlertDialog upDateDialog;
+
+    private SharedPreferences sharedPreferences;
 
     private TextView tvAppStatus;
     private TextView tvUpdateDate;
@@ -177,6 +185,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         initView();
+        sharedPreferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         btnGo.setOnClickListener(clickListener);
@@ -205,6 +214,28 @@ public class WelcomeActivity extends AppCompatActivity {
         systemNotification = firebaseDatabase.getReferenceFromUrl(systemNotifyUrl.getUrl());
         systemNotification.addValueEventListener(systemNotifyValueEventListener);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.welcome_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_notify:
+                boolean check = item.isChecked();
+                MyLog.i(TAG, " menu item check = " + check);
+                item.setIcon(!check ? R.drawable.ic_notifications_white_24dp : R.drawable.ic_notifications_off_white_24dp);
+                item.setChecked(!check);
+                settingMenuNotify(!check);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -301,7 +332,7 @@ public class WelcomeActivity extends AppCompatActivity {
             btnReport.setEnabled(configDTO.isOpenReportFeature());
             btnGo.setEnabled(configDTO.isOpenWatchMapFeature());
 
-            btnJoinPlay.setEnabled(configDTO.isOpenPlayerRoomListFeature());
+//            btnJoinPlay.setEnabled(configDTO.isOpenPlayerRoomListFeature());
             btnLogin.setEnabled(configDTO.isOpenUserInfoFeature());
             btnIssueReport.setEnabled(configDTO.isOpenSuggestionsFeature());
 
@@ -326,6 +357,12 @@ public class WelcomeActivity extends AppCompatActivity {
             Intent intent = new Intent(this, IssueReportActivity.class);
             startActivity(intent);
         }
+    }
+
+    private void settingMenuNotify(boolean isUse) {
+        sharedPreferences.edit()
+                .putBoolean(SharedPreferenceKey.SETTING_INFO_NOTIFY, isUse)
+                .apply();
     }
 
 

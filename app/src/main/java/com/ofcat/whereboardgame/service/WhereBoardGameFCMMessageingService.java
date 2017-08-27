@@ -2,12 +2,14 @@ package com.ofcat.whereboardgame.service;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 
 /**
  * Created by orangefaller on 2017/8/13.
@@ -52,23 +54,29 @@ public class WhereBoardGameFCMMessageingService extends FirebaseMessagingService
 
 
     private void sendNotification(RemoteMessage.Notification notification) {
-        // 取得NotificationManager物件
-        NotificationManager manager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
-        // 建立NotificationCompat.Builder物件
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.wbg_logo)
-                        .setContentTitle(notification.getTitle())
-                        .setContentText(notification.getBody())
-                        .setAutoCancel(true);
 
-        int ntfId = (int) System.currentTimeMillis();
-        // 使用BASIC_ID為編號發出通知
-        manager.notify(ntfId, builder.build());
-        // 更新BASIC_ID編號的通知
-        // manager.notify(BASIC_ID, notificationNew);
-        // 清除BASIC_ID編號的通知
-        // manager.cancel(BASIC_ID);
+        SharedPreferences sp = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        boolean isCanNotify = sp.getBoolean(SharedPreferenceKey.SETTING_INFO_NOTIFY, false);
+//        Log.i(TAG,"isCanNotify = "+ isCanNotify);
+        if (isCanNotify) {
+            // 取得NotificationManager物件
+            NotificationManager manager = (NotificationManager)
+                    getSystemService(Context.NOTIFICATION_SERVICE);
+            // 建立NotificationCompat.Builder物件
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.wbg_logo)
+                            .setContentTitle(notification.getTitle())
+                            .setContentText(notification.getBody())
+                            .setAutoCancel(true);
+
+            int ntfId = (int) System.currentTimeMillis();
+            // 使用BASIC_ID為編號發出通知
+            manager.notify(ntfId, builder.build());
+            // 更新BASIC_ID編號的通知
+            // manager.notify(BASIC_ID, notificationNew);
+            // 清除BASIC_ID編號的通知
+            // manager.cancel(BASIC_ID);
+        }
     }
 }
