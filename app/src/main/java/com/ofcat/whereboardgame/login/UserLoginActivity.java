@@ -69,6 +69,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private FirebaseAuth auth;
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
+    private DatabaseReference roomDatabaseRef;
 
     private CallbackManager mCallbackManager;
 
@@ -91,6 +92,12 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private String userStoreAddressTag = "";
 
     private String roomDate = "目前揪團日期：%s";
+
+    /**
+     *  用來判斷roomlist下該user開的揪團房有沒有過期被刪掉
+     *  false為空資料
+     */
+    private boolean isRoomHasChildern;
 
     private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
         @Override
@@ -178,8 +185,26 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                 userStoreId = userInfoDTO.getStoreId();
 
                 showUserInfoRoomStatus(dataSnapshot.hasChild("storeId"));
+
+                if (roomDatabaseRef == null) {
+                    roomDatabaseRef = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM + "/" + userStoreId + "/" + userId);
+                    roomDatabaseRef.addValueEventListener(roomValueListener);
+                }
             }
 
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    private ValueEventListener roomValueListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            MyLog.i(TAG, " room list has children = " + dataSnapshot.hasChildren());
+            isRoomHasChildern = dataSnapshot.hasChildren();
         }
 
         @Override
@@ -333,7 +358,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private void changePlayerRoomListRoomStatus(boolean isFull) {
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
 
-        if (userStoreId.equals("") || userId.equals("")) {
+        if (userStoreId.equals("") || userId.equals("")|| !isRoomHasChildern) {
             return;
         }
 
@@ -370,7 +395,14 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         super.onDestroy();
         if (databaseReference != null) {
             databaseReference.removeEventListener(userInfoValueEventListener);
+            databaseReference = null;
         }
+
+        if (roomDatabaseRef != null){
+            roomDatabaseRef.removeEventListener(roomValueListener);
+            roomDatabaseRef = null;
+        }
+
         isLoading(false);
         cleanData();
     }
