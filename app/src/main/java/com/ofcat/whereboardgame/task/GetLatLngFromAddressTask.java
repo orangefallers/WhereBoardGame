@@ -7,7 +7,6 @@ import android.os.AsyncTask;
  */
 
 public class GetLatLngFromAddressTask extends AsyncTask<Object, Object, String> {
-d
     @Override
     protected String doInBackground(Object... params) {
         return null;
