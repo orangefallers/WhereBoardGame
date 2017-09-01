@@ -9,7 +9,7 @@ import com.ofcat.whereboardgame.config.AppConfig;
 import com.ofcat.whereboardgame.dataobj.EntryDTO;
 import com.ofcat.whereboardgame.dataobj.FeedDTO;
 import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
-import com.ofcat.whereboardgame.task.GetMapTask;
+import com.ofcat.whereboardgame.task.GetHttpConnectionTask;
 import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 
 import org.json.JSONException;
@@ -37,12 +37,12 @@ public class GetBoardGameStoreDataImpl {
     private ArrayList<StoreInfoDTO> storeInfoDTOs;
     private String dateNewFormat;
 
-    private GetMapTask getMapTask;
+    private GetHttpConnectionTask getHttpConnectionTask;
 
     private StoreDataImplListener storeDataImplListener;
 
 
-    private GetMapTask.onMapTaskListener taskListener = new GetMapTask.onMapTaskListener() {
+    private GetHttpConnectionTask.onMapTaskListener taskListener = new GetHttpConnectionTask.onMapTaskListener() {
         @Override
         public void onSuccess(String response) {
             JSONObject result;
@@ -85,9 +85,9 @@ public class GetBoardGameStoreDataImpl {
     }
 
     public void startLoadData() {
-        if (getMapTask == null) {
-            getMapTask = new GetMapTask(storeApiUrlByList, taskListener);
-            getMapTask.execute();
+        if (getHttpConnectionTask == null) {
+            getHttpConnectionTask = new GetHttpConnectionTask(storeApiUrlByList, taskListener);
+            getHttpConnectionTask.execute();
         }
 
     }

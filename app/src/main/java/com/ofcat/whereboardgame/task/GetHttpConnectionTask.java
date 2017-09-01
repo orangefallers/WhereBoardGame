@@ -12,25 +12,30 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by kevin_hsieh on 2017/8/29.
+ * Created by orangefaller on 2017/1/14.
  */
 
-public class GetLatLngFromAddressTask extends AsyncTask<Object, Object, String> {
-
-    private onLatLngTaskListener listener;
+public class GetHttpConnectionTask extends AsyncTask<Object, Object, String> {
 
     private String url;
 
-    public GetLatLngFromAddressTask(String url, onLatLngTaskListener listener) {
+    private onMapTaskListener listener;
+
+    public GetHttpConnectionTask(String url, onMapTaskListener listener) {
+
         this.url = url;
+
         this.listener = listener;
+
+        // https://docs.google.com/spreadsheets/d/128wH1tdLJHe9D-EyPoyVcALt4I8s43DVuG5VulL9_cU/pubhtml?gid=0&single=true
     }
 
     @Override
-    protected String doInBackground(Object... params) {
+    protected String doInBackground(Object[] objects) {
 
         HttpsURLConnection connection = null;
         String response = "";
+        InputStream inputStream;
 
         try {
             URL url = new URL(this.url);
@@ -44,10 +49,13 @@ public class GetLatLngFromAddressTask extends AsyncTask<Object, Object, String> 
             int statusCode = connection.getResponseCode();
 
             if (statusCode == 200) {
+//                inputStream = new BufferedInputStream(connection.getInputStream());
+//                String response = HttpUtil.convertInputStreamToString(inputStream);
+
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
                 StringBuilder sb = new StringBuilder();
-                String line;
+                String line = null;
                 while ((line = reader.readLine()) != null) {
                     sb.append(line + "\n");
                 }
@@ -67,19 +75,24 @@ public class GetLatLngFromAddressTask extends AsyncTask<Object, Object, String> 
         }
 
         return response;
+
+
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        if (listener != null) {
-            listener.onSuccess(result);
+    protected void onPostExecute(String response) {
+        super.onPostExecute(response);
+//        Log.i("Result", "json = " + response);
+
+        if (this.listener !=null){
+            listener.onSuccess(response);
         }
     }
 
-    public interface onLatLngTaskListener {
+    public interface onMapTaskListener {
         void onSuccess(String response);
 
         void onFail();
     }
+
 }

@@ -24,6 +24,38 @@
     </style>
 
 
+    <style name="TextViewStyle_single_line">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/deep_gray</item>
+    </style>
+
+    <style name="EditTextStyle_default">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:textColorHint">@color/w_gray</item>
+    </style>
+
+    <style name="EditTextStyle_single_line">
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColorHint">@color/w_gray</item>
+    </style>
+
+    <style name="EditTextStyle_multiple_line">
+        <item name="android:padding">8dp</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textColorHint">@color/w_gray</item>
+        <item name="android:background">@drawable/selector_edittext_black_frame</item>
+    </style>
+
     <style name="SwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
         <item name="android:textColor">@color/selector_switch_textcolor</item>
     </style>

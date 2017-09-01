@@ -14,17 +14,12 @@
 
     <EditText
         android:id="@+id/et_info"
+        style="@style/EditTextStyle_default"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/tv_info_title"
         android:layout_alignStart="@id/tv_info_title"
         android:layout_below="@id/tv_info_title"
-        android:layout_marginTop="2dp"
-        android:paddingLeft="8dp"
-        android:paddingStart="8dp"
-        android:paddingRight="8dp"
-        android:paddingEnd="8dp"
-        android:scrollHorizontally="true"
-        android:textColorHint="@color/w_gray" />
+        android:layout_marginTop="2dp" />
 
 </RelativeLayout>

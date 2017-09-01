@@ -104,6 +104,10 @@
             android:name=".report.issue.IssueReportActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".findperson.CustomFindPersonActivity"
+            android:screenOrientation="portrait" />
+
         <service android:name=".service.WhereBoardGameFCMInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -111,20 +115,19 @@
         </service>
 
 
-        <service
-            android:name=".service.WhereBoardGameFCMMessageingService">
+        <service android:name=".service.WhereBoardGameFCMMessageingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
         <!-- [END firebase_iid_service] -->
         <!--<service android:name=".MyJobService"-->
-            <!--android:exported="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>-->
-            <!--</intent-filter>-->
+        <!--android:exported="false">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>-->
+        <!--</intent-filter>-->
         <!--</service>-->
 
     </application>

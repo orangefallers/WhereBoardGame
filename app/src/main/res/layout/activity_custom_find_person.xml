@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_custom_find_person_date"
+                style="@style/TextViewStyle_single_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_date_range_black_24dp"
+                android:drawableRight="@mipmap/ic_date_range_black_24dp"
+                tools:text="這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字" />
+
+            <TextView
+                android:id="@+id/tv_place_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_findperson_place_title"
+                tools:text="Title" />
+
+            <EditText
+                android:id="@+id/et_place_info"
+                style="@style/EditTextStyle_single_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_initiator_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_findperson_initiator_title"
+                tools:text="Title" />
+
+            <EditText
+                android:id="@+id/et_initiator_info"
+                style="@style/EditTextStyle_single_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_time_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_findperson_time_title"
+                tools:text="Title" />
+
+            <EditText
+                android:id="@+id/et_time_info"
+                style="@style/EditTextStyle_single_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_contact_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_findperson_contact_title"
+                tools:text="Title" />
+
+            <EditText
+                android:id="@+id/et_contact_info"
+                style="@style/EditTextStyle_multiple_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/tv_other_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_findperson_other_title"
+                tools:text="Title" />
+
+            <EditText
+                android:id="@+id/et_other_info"
+                style="@style/EditTextStyle_multiple_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
@@ -73,6 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnLogin;
     private Button btnJoinPlay;
     private Button btnIssueReport;
+    private Button btnCustomFindPerson;
 
     private int debugCount = 0;
 
@@ -110,6 +112,10 @@ public class WelcomeActivity extends AppCompatActivity {
                     break;
                 case R.id.btn_welcome_issue_report:
                     startActivity(new Intent(WelcomeActivity.this, IssueReportActivity.class));
+
+                    break;
+                case R.id.btn_welcome_custom_find_person:
+                    startActivity(new Intent(WelcomeActivity.this, CustomFindPersonActivity.class));
 
                     break;
                 case R.id.tv_welcome_data_update_date:
@@ -192,6 +198,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(clickListener);
         btnJoinPlay.setOnClickListener(clickListener);
         btnIssueReport.setOnClickListener(clickListener);
+        btnCustomFindPerson.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
 
@@ -303,6 +310,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.btn_welcome_login);
         btnJoinPlay = (Button) findViewById(R.id.btn_welcome_join_playroom);
         btnIssueReport = (Button) findViewById(R.id.btn_welcome_issue_report);
+        btnCustomFindPerson = (Button) findViewById(R.id.btn_welcome_custom_find_person);
 
     }
 

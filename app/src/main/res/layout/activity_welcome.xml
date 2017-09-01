@@ -62,6 +62,14 @@
             android:text="@string/gotoPlayerRoom" />
 
         <Button
+            android:id="@+id/btn_welcome_custom_find_person"
+            style="@style/MainButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_welcome_tab_custom_find_person" />
+
+
+        <Button
             android:id="@+id/btn_welcome_report"
             style="@style/MainButton"
             android:layout_width="match_parent"

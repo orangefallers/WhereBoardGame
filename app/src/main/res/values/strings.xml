@@ -11,6 +11,7 @@
     <string name="main_welcome_tab_map">GO</string>
     <string name="main_welcome_tab_find_someone">揪團去</string>
     <string name="main_welcome_tab_report">我要回報</string>
+    <string name="main_welcome_tab_custom_find_person">自訂揪團</string>
 
     <string name="update_dialog_title">建議更新</string>
     <string name="update_dialog_message">已有新版的APP，建議您前往更新下載。以獲得更完善的服務</string>
@@ -98,6 +99,14 @@
     <string name="findperson_success_title">完成揪團</string>
     <string name="findperson_success_message">可以至揪團列表查看揪團訊息了!</string>
     <string name="findperson_dialog_error_data_message">哎呀，您是不是忘了填*欄位資料了?</string>
+
+    <!--Custom find person Activity-->
+    <string name="custom_findperson_title">自訂揪團</string>
+    <string name="custom_findperson_place_title">揪團地點*</string>
+    <string name="custom_findperson_initiator_title">主揪稱呼或團名*</string>
+    <string name="custom_findperson_time_title">時間*</string>
+    <string name="custom_findperson_contact_title">聯絡方式*</string>
+    <string name="custom_findperson_other_title">其他注意事項</string>
 
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">揪團列表</string>
