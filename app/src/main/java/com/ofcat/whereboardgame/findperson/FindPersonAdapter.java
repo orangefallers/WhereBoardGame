@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
+import com.ofcat.whereboardgame.util.DateUtility;
 
 import java.util.Calendar;
 
@@ -63,29 +64,7 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setSelectDate(int year, int month, int dayofmonth) {
         selectCalendar.set(year, month, dayofmonth);
-        this.nowDate = (month + 1) + "/" + dayofmonth + "(" + getDayOfWeek(selectCalendar) + ")";
-    }
-
-    private String getDayOfWeek(Calendar calendar) {
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        switch (dayOfWeek) {
-            case Calendar.SUNDAY:
-                return "日";
-            case Calendar.MONDAY:
-                return "一";
-            case Calendar.TUESDAY:
-                return "二";
-            case Calendar.WEDNESDAY:
-                return "三";
-            case Calendar.THURSDAY:
-                return "四";
-            case Calendar.FRIDAY:
-                return "五";
-            case Calendar.SATURDAY:
-                return "六";
-            default:
-                return "";
-        }
+        this.nowDate = DateUtility.getCustomFormatDate(selectCalendar);
     }
 
     public void setUserEditRecord(String initiator, String time, String contact, String content) {
@@ -101,7 +80,7 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (infoTextArray == null) {
             infoTextArray = new String[getItemCount()];
         }
-        Log.i("kevintest", "set info = " + info + " pos = " + position);
+//        Log.i("kevintest", "set info = " + info + " pos = " + position);
         if (position >= 0 && position < getItemCount()) {
             infoTextArray[position] = info;
         }
@@ -129,19 +108,19 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.i("kevintest", "onBindViewHolder pos = " + position);
+//        Log.i("kevintest", "onBindViewHolder pos = " + position);
         if (holder instanceof VHTextInfo) {
 
             switch (position) {
                 case 0:
-                    String text = String.format("揪團地點：%s", bgsPlace);
+                    String text = String.format(ctx.getResources().getString(R.string.findperson_place), bgsPlace);
                     ((VHTextInfo) holder).setTextInfo(text);
                     ((VHTextInfo) holder).showIcon(false);
 
                     setInfoTextArray(bgsPlace, position);
                     break;
                 case 1:
-                    String date = String.format("揪團日期：%s", nowDate);
+                    String date = String.format(ctx.getResources().getString(R.string.findperson_date), nowDate);
                     ((VHTextInfo) holder).setTextInfo(date);
                     ((VHTextInfo) holder).setIconRes(R.mipmap.ic_date_range_black_24dp);
                     ((VHTextInfo) holder).showIcon(true);

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_custom_input_store_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_findperson_place_title" />
+
+    <EditText
+        android:id="@+id/et_custom_input_store_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_custom_input_store_name"
+        android:hint="@string/custom_findperson_place_hint"
+        android:maxLines="3" />
+
+    <TextView
+        android:id="@+id/tv_custom_input_store_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_custom_input_store_name"
+        android:text="@string/custom_findperson_address_title" />
+
+    <EditText
+        android:id="@+id/et_custom_input_store_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_custom_input_store_address"
+        android:hint="@string/custom_findperson_address_hint"
+        android:maxLines="3" />
+
+    <FrameLayout
+        android:id="@+id/map_custom_input_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_custom_input_button_area"
+        android:layout_below="@id/et_custom_input_store_address"
+        android:layout_margin="6dp"
+        android:visibility="invisible"
+        tools:context="com.ofcat.whereboardgame.findperson.CustomFindPersonActivity" />
+
+    <LinearLayout
+        android:id="@+id/ll_custom_input_button_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_custom_input_position_preview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/custom_findperson_position_preview" />
+
+        <Button
+            android:id="@+id/btn_custom_input_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/confirm" />
+
+    </LinearLayout>
+
+</RelativeLayout>

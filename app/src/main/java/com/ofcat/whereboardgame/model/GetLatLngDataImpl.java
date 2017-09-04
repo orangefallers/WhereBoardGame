@@ -102,10 +102,10 @@ public class GetLatLngDataImpl {
         try {
             String encodeAddress = URLEncoder.encode(inputAddress, "UTF-8");
             String url = addressUrl + encodeAddress + "&language=" + LANGUAGE + "&key=" + API_KEY;
-            if (getTask == null) {
-                getTask = new GetHttpConnectionTask(url, listener);
-                getTask.execute();
-            }
+//            if (getTask == null) {
+            getTask = new GetHttpConnectionTask(url, listener);
+            getTask.execute();
+//            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             if (latLngDataImplListener != null) {

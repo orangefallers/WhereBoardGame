@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_find_person_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ScrollView
+        android:layout_above="@+id/ll_custom_find_person_button_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,6 +26,11 @@
                 android:drawableRight="@mipmap/ic_date_range_black_24dp"
                 tools:text="這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字這是一段很長的文字" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+
             <TextView
                 android:id="@+id/tv_place_title"
                 android:layout_width="match_parent"
@@ -31,12 +38,27 @@
                 android:text="@string/custom_findperson_place_title"
                 tools:text="Title" />
 
-            <EditText
-                android:id="@+id/et_place_info"
-                style="@style/EditTextStyle_single_line"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" />
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_place_info"
+                    style="@style/EditTextStyle_single_line"
+                    android:hint="@string/custom_findperson_place_hint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btn_input_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/custom_findperson_input_address" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_initiator_title"
@@ -48,6 +70,7 @@
             <EditText
                 android:id="@+id/et_initiator_info"
                 style="@style/EditTextStyle_single_line"
+                android:hint="@string/custom_findperson_initiator_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" />
@@ -62,6 +85,7 @@
             <EditText
                 android:id="@+id/et_time_info"
                 style="@style/EditTextStyle_single_line"
+                android:hint="@string/custom_findperson_time_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" />
@@ -76,6 +100,7 @@
             <EditText
                 android:id="@+id/et_contact_info"
                 style="@style/EditTextStyle_multiple_line"
+                android:hint="@string/custom_findperson_contact_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" />
@@ -90,6 +115,7 @@
             <EditText
                 android:id="@+id/et_other_info"
                 style="@style/EditTextStyle_multiple_line"
+                android:hint="@string/custom_findperson_other_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" />
@@ -98,4 +124,27 @@
 
     </ScrollView>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_custom_find_person_button_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_custom_find_person_preview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/preview" />
+
+        <Button
+            android:id="@+id/btn_custom_person_confirm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/confirm" />
+
+    </LinearLayout>
+
+</RelativeLayout>
