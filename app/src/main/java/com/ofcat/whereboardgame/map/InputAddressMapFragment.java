@@ -3,12 +3,14 @@ package com.ofcat.whereboardgame.map;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +32,7 @@ import com.ofcat.whereboardgame.adapter.MapInfoWindowAdapter;
 import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
 import com.ofcat.whereboardgame.model.GetLatLngDataImpl;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 
 /**
  * Created by orangefaller on 2017/9/3.
@@ -40,6 +43,8 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
     private final String TAG = InputAddressMapFragment.class.getSimpleName();
 
     private LatLng defaultPosition = new LatLng(23.9179637, 120.6775054);
+
+    private SharedPreferences sp;
 
     private GetLatLngDataImpl getLatLngData;
 
@@ -57,9 +62,10 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
     private GoogleMap map;
     private Marker storeMarker;
 
-    private String storeName;
-    private String storeAddress;
-    private String previewAddress;
+    private String storeName = "";
+    private String storeAddress = "";
+    private String previewAddress = "";
+    private String recordStoreName, recordStoreAddress;
     private double storeLat = 0.0, storeLng = 0.0;
 
     private boolean isShowPreview;
@@ -71,7 +77,7 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
             switch (view.getId()) {
                 case R.id.btn_custom_input_position_preview:
                     isShowPreview = true;
-                    closeKeyBorad(view);
+                    closeKeyBoard(view);
 
 
                     storeName = etStoreName.getText().toString();
@@ -90,12 +96,13 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
                     storeName = etStoreName.getText().toString();
                     storeAddress = etStoreAddress.getText().toString().trim();
 
+                    SaveDataToSP(storeName, storeAddress);
                     if (storeName.equals("")) {
                         showErrorEmptyStoreNameDialog();
                         break;
                     }
 
-                    if (!previewAddress.equals(storeAddress)) {
+                    if (!storeAddress.equals("") && !previewAddress.equals(storeAddress)) {
                         previewMap(storeAddress);
                     } else {
                         if (listener != null) {
@@ -130,6 +137,10 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = getActivity().getSharedPreferences("BGS_DATA", Context.MODE_PRIVATE);
+        recordStoreName = sp.getString(SharedPreferenceKey.KEY_SP_STORE_PLACE, "");
+        recordStoreAddress = sp.getString(SharedPreferenceKey.KEY_SP_STORE_ADDRESS, "");
+
         if (getLatLngData == null) {
             getLatLngData = new GetLatLngDataImpl(latLngDataImplListener);
         }
@@ -139,14 +150,23 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_input_address, container, false);
+
+        //避免fragment touch 事件穿透到後面的View
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+
         initView(view);
-        view.findViewById(R.id.map_custom_input_preview);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initData();
 
         MapFragment mapFragment = MapFragment.newInstance();
         getActivity().getFragmentManager()
@@ -168,12 +188,24 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
         btnConfirm.setOnClickListener(clickListener);
     }
 
+    private void initData() {
+        etStoreName.setText(recordStoreName);
+        etStoreAddress.setText(recordStoreAddress);
+    }
+
     private void previewMap(String address) {
         showProgress(true);
         btnMapPreview.setEnabled(false);
         if (getLatLngData != null) {
             getLatLngData.getLatLngByAddress(address);
         }
+    }
+
+    private void SaveDataToSP(String storeName, String storeAddress) {
+        sp.edit()
+                .putString(SharedPreferenceKey.KEY_SP_STORE_PLACE, storeName)
+                .putString(SharedPreferenceKey.KEY_SP_STORE_ADDRESS, storeAddress)
+                .apply();
     }
 
     @Override
@@ -246,7 +278,7 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
 
     }
 
-    private void closeKeyBorad(View view) {
+    private void closeKeyBoard(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
@@ -274,6 +306,7 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
             showProgress(false);
             btnMapPreview.setEnabled(true);
             if (map != null) {
+
                 storeLat = latitude;
                 storeLng = longitude;
 
@@ -292,6 +325,7 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
                         storeMarker.setTitle(storeName);
                         storeMarker.setSnippet(address);
                     }
+                    storeMarker.hideInfoWindow();
 
                     moveMap(position, 17);
                 } else {

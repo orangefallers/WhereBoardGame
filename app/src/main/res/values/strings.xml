@@ -119,6 +119,13 @@
     <string name="custom_findperson_position_preview">地圖預覽</string>
     <string name="custom_findperson_dialog_error_empty_address_message">尚未輸入地址\n無法顯示位置!</string>
     <string name="custom_findperson_dialog_error_empty_store_message">請輸入揪團地點!</string>
+    <string name="custom_findperson_empty_place">請按我輸入地點</string>
+
+
+
+
+
+
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">揪團列表</string>
     <string name="player_room_detail_content_title">其他注意事項</string>

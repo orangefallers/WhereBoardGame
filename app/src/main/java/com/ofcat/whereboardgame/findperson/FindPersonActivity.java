@@ -34,6 +34,7 @@ import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomDetailFragment;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
 import com.ofcat.whereboardgame.util.SystemUtility;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -54,11 +55,6 @@ public class FindPersonActivity extends AppCompatActivity {
     public static final String KEY_FINDPERSON_BGS_ADDRESS = "key_findperson_bgs_address";
     public static final String KEY_FINDPERSON_BGS_LAT = "key_findperson_bgs_lat";
     public static final String KEY_FINDPERSON_BGS_LNG = "key_findperson_bgs_lng";
-
-    public static final String KEY_SP_INITIATOR = "sp_key_initiator";
-    public static final String KEY_SP_TIME = "sp_key_time";
-    public static final String KEY_SP_CONTACT = "sp_key_contact";
-    public static final String KEY_SP_CONTENT = "sp_key_content";
 
 
     private static final String TABLE_WAITPLYERROOM = FirebaseTableKey.TABLE_WAITPLYERROOM;
@@ -233,10 +229,10 @@ public class FindPersonActivity extends AppCompatActivity {
         bgsLng = getIntent().getDoubleExtra(KEY_FINDPERSON_BGS_LNG, 0);
 
         sp = getSharedPreferences("BGS_DATA", MODE_PRIVATE);
-        recordInitiator = sp.getString(KEY_SP_INITIATOR, "");
-        recordTime = sp.getString(KEY_SP_TIME, "");
-        recordContact = sp.getString(KEY_SP_CONTACT, "");
-        recordContent = sp.getString(KEY_SP_CONTENT, "");
+        recordInitiator = sp.getString(SharedPreferenceKey.KEY_SP_INITIATOR, "");
+        recordTime = sp.getString(SharedPreferenceKey.KEY_SP_TIME, "");
+        recordContact = sp.getString(SharedPreferenceKey.KEY_SP_CONTACT, "");
+        recordContent = sp.getString(SharedPreferenceKey.KEY_SP_CONTENT, "");
 
         initActionBar();
         initView();
@@ -411,10 +407,10 @@ public class FindPersonActivity extends AppCompatActivity {
 
     private void SaveDataToSP(String initiator, String time, String contact, String content) {
         sp.edit()
-                .putString(KEY_SP_INITIATOR, initiator)
-                .putString(KEY_SP_TIME, time)
-                .putString(KEY_SP_CONTACT, contact)
-                .putString(KEY_SP_CONTENT, content)
+                .putString(SharedPreferenceKey.KEY_SP_INITIATOR, initiator)
+                .putString(SharedPreferenceKey.KEY_SP_TIME, time)
+                .putString(SharedPreferenceKey.KEY_SP_CONTACT, contact)
+                .putString(SharedPreferenceKey.KEY_SP_CONTENT, content)
                 .apply();
     }
 

@@ -1,22 +1,22 @@
 package com.ofcat.whereboardgame.findperson;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
-import com.ofcat.whereboardgame.joinplay.PlayerRoomDetailFragment;
 import com.ofcat.whereboardgame.map.InputAddressMapFragment;
 import com.ofcat.whereboardgame.model.GetLatLngDataImpl;
 import com.ofcat.whereboardgame.util.DateUtility;
 import com.ofcat.whereboardgame.util.MyLog;
+import com.ofcat.whereboardgame.util.SharedPreferenceKey;
+import com.ofcat.whereboardgame.util.StringUtility;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
@@ -32,18 +32,23 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private final String TAG = CustomFindPersonActivity.class.getSimpleName();
 
     private final String TEST_ADDRESS = "新北市板橋區松江街72巷28號";
+    private SharedPreferences sp;
 
-    private TextView tvdate;
+    private TextView tvPlace;
+    private TextView tvDate;
     private EditText etStore;
     private EditText etInitiator;
     private EditText etTime;
     private EditText etContact;
     private EditText etOther;
-    private Button btnAddress;
+//    private Button btnAddress;
 
 
     private Calendar now;
     private String nowDate;
+    private String recordStorePlace, recordInitiator, recordTime, recordContact, recordContent;
+    private String storePlace, storeAddress;
+    private double storeLat, storeLng;
 
 
     private GetLatLngDataImpl getLatLngData;
@@ -70,8 +75,18 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                 case R.id.tv_custom_find_person_date:
                     showDateDialog(view, now);
                     break;
-                case R.id.btn_input_address:
+                case R.id.tv_custom_find_person_place:
                     switchInputAddressFragment();
+                    break;
+                case R.id.btn_custom_input_confirm:
+
+                    String initiator = etInitiator.getText().toString();
+                    String time = etTime.getText().toString();
+                    String contact = etContact.getText().toString();
+                    String content = etOther.getText().toString();
+
+
+                    SaveDataToSP(initiator, time, contact, content);
                     break;
             }
 
@@ -82,6 +97,14 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_find_person);
+        sp = getSharedPreferences("BGS_DATA", MODE_PRIVATE);
+        recordStorePlace = sp.getString(SharedPreferenceKey.KEY_SP_STORE_PLACE, "");
+        recordInitiator = sp.getString(SharedPreferenceKey.KEY_SP_INITIATOR, "");
+        recordTime = sp.getString(SharedPreferenceKey.KEY_SP_TIME, "");
+        recordContact = sp.getString(SharedPreferenceKey.KEY_SP_CONTACT, "");
+        recordContent = sp.getString(SharedPreferenceKey.KEY_SP_CONTENT, "");
+
+
         initActionBar();
         initView();
         initDate();
@@ -92,16 +115,18 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     }
 
     private void initView() {
-        tvdate = (TextView) findViewById(R.id.tv_custom_find_person_date);
-        etStore = (EditText) findViewById(R.id.et_place_info);
+        tvPlace = (TextView) findViewById(R.id.tv_custom_find_person_place);
+        tvDate = (TextView) findViewById(R.id.tv_custom_find_person_date);
+//        etStore = (EditText) findViewById(R.id.et_place_info);
         etInitiator = (EditText) findViewById(R.id.et_initiator_info);
         etTime = (EditText) findViewById(R.id.et_time_info);
         etContact = (EditText) findViewById(R.id.et_contact_info);
         etOther = (EditText) findViewById(R.id.et_other_info);
-        btnAddress = (Button) findViewById(R.id.btn_input_address);
+//        btnAddress = (Button) findViewById(R.id.btn_input_address);
 
-        tvdate.setOnClickListener(clickListener);
-        btnAddress.setOnClickListener(clickListener);
+        tvPlace.setOnClickListener(clickListener);
+        tvDate.setOnClickListener(clickListener);
+//        btnAddress.setOnClickListener(clickListener);
 
     }
 
@@ -114,9 +139,23 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     }
 
     private void initDate() {
+
+        if (StringUtility.isEmpty(recordStorePlace)) {
+            String emptyStr = getResources().getString(R.string.custom_findperson_empty_place);
+            tvPlace.setText(getPlaceStr(emptyStr));
+        } else {
+            tvPlace.setText(getPlaceStr(recordStorePlace));
+        }
+
         now = Calendar.getInstance();
         nowDate = DateUtility.getCustomFormatDate(now);
-        tvdate.setText(getDateStr(nowDate));
+        tvDate.setText(getDateStr(nowDate));
+
+        etInitiator.setText(recordInitiator);
+        etTime.setText(recordTime);
+        etContact.setText(recordContact);
+        etOther.setText(recordContent);
+
     }
 
     @Override
@@ -138,6 +177,10 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                 .replace(R.id.custom_find_person_root_layout, InputAddressMapFragment.newInstance())
                 .commit();
 
+    }
+
+    private String getPlaceStr(String place) {
+        return String.format(getResources().getString(R.string.findperson_place), place);
     }
 
     private String getDateStr(String date) {
@@ -165,19 +208,35 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
 
     }
 
+    private void SaveDataToSP(String initiator, String time, String contact, String content) {
+        sp.edit()
+                .putString(SharedPreferenceKey.KEY_SP_INITIATOR, initiator)
+                .putString(SharedPreferenceKey.KEY_SP_TIME, time)
+                .putString(SharedPreferenceKey.KEY_SP_CONTACT, contact)
+                .putString(SharedPreferenceKey.KEY_SP_CONTENT, content)
+                .apply();
+    }
+
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             Calendar selectCalendar = Calendar.getInstance();
             selectCalendar.set(year, monthOfYear, dayOfMonth);
             nowDate = DateUtility.getCustomFormatDate(selectCalendar);
-            tvdate.setText(getDateStr(nowDate));
+            tvDate.setText(getDateStr(nowDate));
 
         }
     };
 
     @Override
     public void onFragmentResult(String storeName, String address, double storeLat, double storeLng) {
+        storePlace = storeName;
+        storeAddress = address;
+        this.storeLat = storeLat;
+        this.storeLng = storeLng;
         MyLog.i(TAG, "store = " + storeName + " address = " + address + " lat = " + storeLat + " lng = " + storeLng);
+
+        tvPlace.setText(getPlaceStr(storePlace));
+
     }
 }
