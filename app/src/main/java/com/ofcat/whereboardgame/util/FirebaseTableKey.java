@@ -14,6 +14,8 @@ public class FirebaseTableKey {
     public static final String TABLE_SYSTEM_CONFIG = AppConfig.FIREBASE_ROOT_TABLE + "SystemConfig";
     public static final String TABLE_SYSTEM_NOTIFICATION = AppConfig.FIREBASE_ROOT_TABLE + "SystemNotification";
     public static final String TABLE_SUGGESTIONS = AppConfig.FIREBASE_ROOT_TABLE + "Suggestions";
+    public static final String TABLE_CUSTOM_WAITPLAYERROOM = AppConfig.FIREBASE_ROOT_TABLE + "CustomWaitPlayerRoom";
 
+    public static final String CUSTOM_STORE_ID = "000999";
 
 }

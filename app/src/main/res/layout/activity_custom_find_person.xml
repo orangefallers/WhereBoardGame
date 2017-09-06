@@ -151,7 +151,7 @@
             android:text="@string/preview" />
 
         <Button
-            android:id="@+id/btn_custom_person_confirm"
+            android:id="@+id/btn_custom_find_person_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

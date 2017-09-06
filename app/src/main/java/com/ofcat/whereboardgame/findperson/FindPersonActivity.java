@@ -31,6 +31,7 @@ import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
+import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomDetailFragment;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
@@ -351,10 +352,28 @@ public class FindPersonActivity extends AppCompatActivity {
     }
 
     private void removeData(String storeId, String userId) {
-//        fireBaseModelApi.getDefaultDatabaseRef().child("/" + TABLE_WAITPLYERROOM + "/" + "100003").removeValue();
+
         if (!storeId.equals("") && !userId.equals("")) {
-            databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/" + storeId + "/" + userId);
-            databaseReference.removeValue();
+
+            if (storeId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+                FireBaseUrl customRoomUrl = new FireBaseUrl.Builder()
+                        .addUrlNote(FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM)
+                        .addUrlNote(userId)
+                        .build();
+                databaseReference = database.getReferenceFromUrl(customRoomUrl.getUrl());
+                databaseReference.removeValue();
+            } else {
+                FireBaseUrl storeRoomUrl = new FireBaseUrl.Builder()
+                        .addUrlNote(FirebaseTableKey.TABLE_WAITPLYERROOM)
+                        .addUrlNote(storeId)
+                        .addUrlNote(userId)
+                        .build();
+                databaseReference = database.getReferenceFromUrl(storeRoomUrl.getUrl());
+                databaseReference.removeValue();
+            }
+
+//            databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + TABLE_WAITPLYERROOM + "/" + storeId + "/" + userId);
+//            databaseReference.removeValue();
         }
     }
 
