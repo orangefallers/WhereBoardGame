@@ -48,8 +48,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.config.AppConfig;
+import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
+import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 import com.ofcat.whereboardgame.util.MyLog;
 
@@ -70,6 +72,8 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
     private DatabaseReference roomDatabaseRef;
+    private DatabaseReference customRoomDatabaseRef;
+
 
     private CallbackManager mCallbackManager;
 
@@ -94,8 +98,8 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private String roomDate = "目前揪團日期：%s";
 
     /**
-     *  用來判斷roomlist下該user開的揪團房有沒有過期被刪掉
-     *  false為空資料
+     * 用來判斷roomlist下該user開的揪團房有沒有過期被刪掉
+     * false為空資料
      */
     private boolean isRoomHasChildern;
 
@@ -151,11 +155,20 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                         break;
                     }
 
-                    Intent intent = new Intent(UserLoginActivity.this, FindPersonActivity.class);
-                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, userStoreName);
-                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, userStoreId);
-                    intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, userStoreAddressTag);
-                    startActivity(intent);
+                    if (userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+
+                        Intent intent = new Intent(UserLoginActivity.this, CustomFindPersonActivity.class);
+                        startActivity(intent);
+
+                    } else {
+
+                        Intent intent = new Intent(UserLoginActivity.this, FindPersonActivity.class);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, userStoreName);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, userStoreId);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, userStoreAddressTag);
+                        startActivity(intent);
+                    }
+
                     break;
             }
 
@@ -186,10 +199,33 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
                 showUserInfoRoomStatus(dataSnapshot.hasChild("storeId"));
 
-                if (roomDatabaseRef == null) {
-                    roomDatabaseRef = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM + "/" + userStoreId + "/" + userId);
-                    roomDatabaseRef.addValueEventListener(roomValueListener);
+                if (userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+
+                    if (customRoomDatabaseRef == null) {
+                        FireBaseUrl customRoomListUrl = new FireBaseUrl.Builder()
+                                .addUrlNote(FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM)
+                                .addUrlNote(userId)
+                                .build();
+                        customRoomDatabaseRef = database.getReferenceFromUrl(customRoomListUrl.getUrl());
+                        customRoomDatabaseRef.addValueEventListener(customRoomValueListener);
+
+                    }
+
+                } else {
+
+                    if (roomDatabaseRef == null) {
+                        FireBaseUrl roomListUrl = new FireBaseUrl.Builder()
+                                .addUrlNote(FirebaseTableKey.TABLE_WAITPLYERROOM)
+                                .addUrlNote(userStoreId)
+                                .addUrlNote(userId)
+                                .build();
+
+                        roomDatabaseRef = database.getReferenceFromUrl(roomListUrl.getUrl());
+                        roomDatabaseRef.addValueEventListener(roomValueListener);
+                    }
+
                 }
+
             }
 
         }
@@ -204,6 +240,19 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             MyLog.i(TAG, " room list has children = " + dataSnapshot.hasChildren());
+            isRoomHasChildern = dataSnapshot.hasChildren();
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    private ValueEventListener customRoomValueListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            MyLog.i(TAG, " custom room list has children = " + dataSnapshot.hasChildren());
             isRoomHasChildern = dataSnapshot.hasChildren();
         }
 
@@ -341,7 +390,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private void changeUserPlayerRoomStatus(boolean isFull) {
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
 
-        if (userId.equals("")) {
+        if (userId.equals("") || userStoreId.equals("")) {
             return;
         }
 
@@ -351,14 +400,19 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             databaseReference.child("waitPlayerRoomDTO").child("roomStatus").setValue(1);
         }
 
-        changePlayerRoomListRoomStatus(isFull);
+
+        if (userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+            changePlayerCustomRoomListRoomStatus(isFull);
+        } else {
+            changePlayerRoomListRoomStatus(isFull);
+        }
 
     }
 
     private void changePlayerRoomListRoomStatus(boolean isFull) {
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
 
-        if (userStoreId.equals("") || userId.equals("")|| !isRoomHasChildern) {
+        if (userStoreId.equals("") || userId.equals("") || !isRoomHasChildern) {
             return;
         }
 
@@ -366,6 +420,21 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(2);
         } else {
             databaseReference.child(userStoreId).child(userId).child("roomStatus").setValue(1);
+        }
+
+    }
+
+    private void changePlayerCustomRoomListRoomStatus(boolean isFull) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM);
+
+        if (!userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID) || userId.equals("") || !isRoomHasChildern) {
+            return;
+        }
+
+        if (isFull) {
+            databaseReference.child(userId).child("roomStatus").setValue(2);
+        } else {
+            databaseReference.child(userId).child("roomStatus").setValue(1);
         }
 
     }
@@ -398,10 +467,16 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             databaseReference = null;
         }
 
-        if (roomDatabaseRef != null){
+        if (roomDatabaseRef != null) {
             roomDatabaseRef.removeEventListener(roomValueListener);
             roomDatabaseRef = null;
         }
+
+        if (customRoomDatabaseRef != null) {
+            customRoomDatabaseRef.removeEventListener(customRoomValueListener);
+            customRoomDatabaseRef = null;
+        }
+
 
         isLoading(false);
         cleanData();
