@@ -134,7 +134,7 @@ public class WaitPlayerRoomDTO implements Serializable {
     }
 
     public boolean isCompleteDTO() {
-        if (initiator.trim().equals("") || contact.trim().equals("") || time.trim().equals("")) {
+        if (initiator.trim().equals("") || contact.trim().equals("") || time.trim().equals("") || storeName.trim().equals("")) {
             return false;
         }
         return true;

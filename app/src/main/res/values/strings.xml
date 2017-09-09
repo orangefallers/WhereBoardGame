@@ -107,7 +107,7 @@
     <string name="custom_findperson_place_hint">一品萱泡沫紅茶店</string>
     <string name="custom_findperson_input_address">輸入地址</string>
     <string name="custom_findperson_address_title">揪團地址</string>
-    <string name="custom_findperson_address_hint">XX市XX區XX路XX號</string>
+    <string name="custom_findperson_address_hint">XX市XX區XX路XX號(非必填)</string>
     <string name="custom_findperson_initiator_title">主揪稱呼或團名*</string>
     <string name="custom_findperson_initiator_hint">主揪 阿翔 歡樂新手團</string>
     <string name="custom_findperson_time_title">時間*</string>
@@ -120,11 +120,7 @@
     <string name="custom_findperson_dialog_error_empty_address_message">尚未輸入地址\n無法顯示位置!</string>
     <string name="custom_findperson_dialog_error_empty_store_message">請輸入揪團地點!</string>
     <string name="custom_findperson_empty_place">請按我輸入地點</string>
-
-
-
-
-
+    <string name="custom_findperson_dialog_error_data_message">哎呀，您是不是忘了填*欄位資料或「揪團地點」了?</string>
 
     <!--PlayerRoomList Activity-->
     <string name="player_room_list_title">揪團列表</string>

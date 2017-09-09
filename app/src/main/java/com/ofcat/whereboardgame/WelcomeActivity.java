@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,12 +57,14 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private final static String OPENPAGE_ISSUE_REPORT = "IssueReportActivity";
     private boolean isOpenPageByIntent;
+    private boolean isUserLogin = false;
 
     private GetBoardGameStoreDataImpl boardGameStoreData;
     //    private FireBaseModelApiImpl fireBaseModelApi;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference systemConfig;
     private DatabaseReference systemNotification;
+    private FirebaseAuth auth;
 
     private AlertDialog upDateDialog;
 
@@ -115,6 +119,12 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     break;
                 case R.id.btn_welcome_custom_find_person:
+                    if (!isUserLogin) {
+                        intent = new Intent(WelcomeActivity.this, UserLoginActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
+
                     startActivity(new Intent(WelcomeActivity.this, CustomFindPersonActivity.class));
 
                     break;
@@ -185,6 +195,14 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     };
 
+    private FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            isUserLogin = user != null;
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,6 +210,7 @@ public class WelcomeActivity extends AppCompatActivity {
         initView();
         sharedPreferences = getSharedPreferences("DATA", Context.MODE_PRIVATE);
         firebaseDatabase = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         btnGo.setOnClickListener(clickListener);
         btnReport.setOnClickListener(clickListener);
@@ -247,6 +266,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         Intent intent = getIntent();
         String openPage = intent.getStringExtra("openPage");
         if (openPage != null && !isOpenPageByIntent) {
@@ -260,6 +280,8 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        auth.addAuthStateListener(authStateListener);
+
         if (!isConnectInternet()) {
             tvAppStatus.setVisibility(View.VISIBLE);
             tvAppStatus.setText(getString(R.string.no_internet));
@@ -270,6 +292,12 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         tvUpdateDate.setText(String.format(getResources().getString(R.string.data_update), boardGameStoreData.getDataUpdateDate()));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        auth.removeAuthStateListener(authStateListener);
     }
 
     @Override

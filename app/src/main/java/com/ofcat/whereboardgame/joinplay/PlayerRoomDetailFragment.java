@@ -1,17 +1,21 @@
 package com.ofcat.whereboardgame.joinplay;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
+import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.map.SingleStoreMapActivity;
+import com.ofcat.whereboardgame.util.MyLog;
 
 /**
  * Created by orangefaller on 2017/6/24.
@@ -19,6 +23,7 @@ import com.ofcat.whereboardgame.map.SingleStoreMapActivity;
 
 public class PlayerRoomDetailFragment extends Fragment {
 
+    private final String TAG = PlayerRoomDetailFragment.class.getSimpleName();
     private static final String KEY_BUNDLE_ROOMDTO = "key_bundle_roomdto";
 
     private WaitPlayerRoomDTO currentRoomDTO;
@@ -82,6 +87,14 @@ public class PlayerRoomDetailFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        LocationDTO locationDTO = currentRoomDTO.getLocation();
+        showLocationIcon(locationDTO != null);
+
+    }
+
     private void initView(View view) {
         tvInitiator = (TextView) view.findViewById(R.id.tv_room_detail_initiator);
         tvStore = (TextView) view.findViewById(R.id.tv_room_detail_store);
@@ -102,4 +115,17 @@ public class PlayerRoomDetailFragment extends Fragment {
         tvContact.setText(String.format(contact, roomDTO.getContact()));
         tvOtherContent.setText(roomDTO.getContent());
     }
+
+    private void showLocationIcon(boolean isShow) {
+        if (isShow) {
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_location_on_black_24dp);
+            tvStore.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+            tvStore.setEnabled(true);
+        } else {
+            tvStore.setCompoundDrawables(null, null, null, null);
+            tvStore.setEnabled(false);
+        }
+
+    }
+
 }

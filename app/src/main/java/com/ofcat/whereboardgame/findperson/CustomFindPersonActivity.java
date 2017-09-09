@@ -1,11 +1,17 @@
 package com.ofcat.whereboardgame.findperson;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -26,6 +32,7 @@ import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
+import com.ofcat.whereboardgame.joinplay.PlayerRoomDetailFragment;
 import com.ofcat.whereboardgame.map.InputAddressMapFragment;
 import com.ofcat.whereboardgame.model.GetLatLngDataImpl;
 import com.ofcat.whereboardgame.util.DateUtility;
@@ -65,8 +72,7 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private EditText etTime;
     private EditText etContact;
     private EditText etOther;
-    private Button btnConfirm;
-
+    private Button btnConfirm, btnPreview;
 
     private String userId = "", lastStoreId = "";
     private Calendar now;
@@ -79,32 +85,43 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private GetLatLngDataImpl getLatLngData;
 
     private DatePickerDialog datePickerDialog;
+    private AlertDialog successDialog;
 
 
     private ChildEventListener customChildEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+            upLoading(false);
+            MyLog.i(TAG, "data snap show key = " + dataSnapshot.getKey());
+            String dataKey = dataSnapshot.getKey(); //應該要是UserId
+            if (userId.equals(dataKey)) {  //表示是自己更新的資料
+                showUpLoadSuccessDialog();
+            }
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+            upLoading(false);
+            MyLog.i(TAG, "data snap show key = " + dataSnapshot.getKey());
+            String dataKey = dataSnapshot.getKey(); //應該要是UserId
+            if (userId.equals(dataKey)) {  //表示是自己更新的資料
+                showUpLoadSuccessDialog();
+            }
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+            upLoading(false);
         }
 
         @Override
         public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            upLoading(false);
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
-
+            upLoading(false);
         }
     };
 
@@ -123,6 +140,11 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            String initiator;
+            String time;
+            String contact;
+            String content;
+
             switch (view.getId()) {
                 case R.id.tv_custom_find_person_date:
                     showDateDialog(view, now);
@@ -132,10 +154,10 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                     break;
                 case R.id.btn_custom_find_person_confirm:
 
-                    String initiator = etInitiator.getText().toString();
-                    String time = etTime.getText().toString();
-                    String contact = etContact.getText().toString();
-                    String content = etOther.getText().toString();
+                    initiator = etInitiator.getText().toString();
+                    time = etTime.getText().toString();
+                    contact = etContact.getText().toString();
+                    content = etOther.getText().toString();
 
                     SaveDataToSP(initiator, time, contact, content);
 
@@ -154,13 +176,46 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                     customWaitPlayerRoomDTO.setStoreAddress(storeAddress);
                     customWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                     customWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
-                    customWaitPlayerRoomDTO.setLocation(new LocationDTO(storeLat, storeLng));
-
-                    uploadData(customWaitPlayerRoomDTO);
-
-                    if (!StringUtility.isEmpty(lastStoreId) && !lastStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)){
-                        removeData(lastStoreId, userId);
+                    if (storeLat == 0.0 && storeLng == 0.0) {
+                        customWaitPlayerRoomDTO.setLocation(null);
+                    } else {
+                        customWaitPlayerRoomDTO.setLocation(new LocationDTO(storeLat, storeLng));
                     }
+
+//                    uploadData(customWaitPlayerRoomDTO);
+
+                    checkWaitPlayerRoomData(customWaitPlayerRoomDTO);
+
+
+                    break;
+                case R.id.btn_custom_find_person_preview:
+                    initiator = etInitiator.getText().toString();
+                    time = etTime.getText().toString();
+                    contact = etContact.getText().toString();
+                    content = etOther.getText().toString();
+
+                    if (customWaitPlayerRoomDTO == null) {
+                        customWaitPlayerRoomDTO = new WaitPlayerRoomDTO();
+                    }
+
+                    customWaitPlayerRoomDTO.setStoreName(storePlace);
+                    customWaitPlayerRoomDTO.setDate(nowDate);
+                    customWaitPlayerRoomDTO.setInitiator(initiator);
+                    customWaitPlayerRoomDTO.setTime(time);
+                    customWaitPlayerRoomDTO.setContact(contact);
+                    customWaitPlayerRoomDTO.setContent(content);
+                    customWaitPlayerRoomDTO.setAddressTag("自訂");
+                    customWaitPlayerRoomDTO.setStoreAddress(storeAddress);
+                    customWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
+                    customWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
+
+                    if (storeLat == 0.0 && storeLng == 0.0) {
+                        customWaitPlayerRoomDTO.setLocation(null);
+                    } else {
+                        customWaitPlayerRoomDTO.setLocation(new LocationDTO(storeLat, storeLng));
+                    }
+
+                    switchDetailFragment(customWaitPlayerRoomDTO);
 
                     break;
             }
@@ -217,7 +272,6 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         auth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        initFirebase();
         initActionBar();
         initView();
         initDate();
@@ -235,10 +289,12 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         etContact = (EditText) findViewById(R.id.et_contact_info);
         etOther = (EditText) findViewById(R.id.et_other_info);
         btnConfirm = (Button) findViewById(R.id.btn_custom_find_person_confirm);
+        btnPreview = (Button) findViewById(R.id.btn_custom_find_person_preview);
 
         tvPlace.setOnClickListener(clickListener);
         tvDate.setOnClickListener(clickListener);
         btnConfirm.setOnClickListener(clickListener);
+        btnPreview.setOnClickListener(clickListener);
 
 
     }
@@ -256,7 +312,7 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         if (StringUtility.isEmpty(recordStorePlace)) {
             String emptyStr = getResources().getString(R.string.custom_findperson_empty_place);
             storePlace = "";
-            tvPlace.setText(getPlaceStr(emptyStr));
+            tvPlace.setText(getHighLightOfRed(emptyStr).insert(0, getPlaceStr("")));
         } else {
             storePlace = recordStorePlace;
             tvPlace.setText(getPlaceStr(recordStorePlace));
@@ -270,16 +326,6 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         etTime.setText(recordTime);
         etContact.setText(recordContact);
         etOther.setText(recordContent);
-
-    }
-
-    private void initFirebase() {
-        FireBaseUrl customUrl = new FireBaseUrl.Builder()
-                .addUrlNote(FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM)
-                .build();
-
-        customWaitPlayerRoom = firebaseDatabase.getReferenceFromUrl(customUrl.getUrl());
-        customWaitPlayerRoom.addChildEventListener(customChildEventListener);
 
     }
 
@@ -325,12 +371,46 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
 
     }
 
+    private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack("player_room_detail")
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_right)
+                .replace(R.id.custom_find_person_root_layout, PlayerRoomDetailFragment.newInstance(roomDTO))
+                .commit();
+
+    }
+
     private String getPlaceStr(String place) {
         return String.format(getResources().getString(R.string.findperson_place), place);
     }
 
     private String getDateStr(String date) {
         return String.format(getString(R.string.findperson_date), date);
+    }
+
+    private SpannableStringBuilder getHighLightOfRed(String inputStr) {
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(inputStr);
+        ForegroundColorSpan redForegroundSpan = new ForegroundColorSpan(Color.RED);
+        stringBuilder.setSpan(redForegroundSpan, 0, inputStr.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return stringBuilder;
+    }
+
+    private void checkWaitPlayerRoomData(WaitPlayerRoomDTO roomDTO) {
+        if (!roomDTO.isCompleteDTO()) {
+            showErrorDataDialog();
+        } else {
+            upLoading(true);
+            uploadData(roomDTO);
+
+            if (!StringUtility.isEmpty(lastStoreId) && !lastStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+                removeData(lastStoreId, userId);
+            }
+        }
+    }
+
+    private void upLoading(boolean isUpLoading) {
+        btnConfirm.setEnabled(!isUpLoading);
     }
 
     private void showDateDialog(View view, Calendar calendar) {
@@ -356,20 +436,25 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
 
     private void uploadData(WaitPlayerRoomDTO waitPlayerRoomDTO) {
 
-        Map<String, Object> customChildUpdates = new HashMap<>();
-        customChildUpdates.put("/" + userId, waitPlayerRoomDTO);
+        if (userId != null && !userId.equals("")) {
 
-        customWaitPlayerRoom.updateChildren(customChildUpdates);
+            FireBaseUrl customUrl = new FireBaseUrl.Builder()
+                    .addUrlNote(FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM)
+                    .build();
 
+            customWaitPlayerRoom = firebaseDatabase.getReferenceFromUrl(customUrl.getUrl());
+            customWaitPlayerRoom.addChildEventListener(customChildEventListener);
 
-//        Map<String, Object> userInfoChildUpdates = new HashMap<>();
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setStoreId(FirebaseTableKey.CUSTOM_STORE_ID);
-        userInfoDTO.setWaitPlayerRoomDTO(waitPlayerRoomDTO);
-//        userInfoChildUpdates.put("/", userInfoDTO);
+            Map<String, Object> customChildUpdates = new HashMap<>();
+            customChildUpdates.put("/" + userId, waitPlayerRoomDTO);
 
-//        userinfo.updateChildren(userInfoChildUpdates);
-        userinfo.setValue(userInfoDTO);
+            customWaitPlayerRoom.updateChildren(customChildUpdates);
+
+            UserInfoDTO userInfoDTO = new UserInfoDTO();
+            userInfoDTO.setStoreId(FirebaseTableKey.CUSTOM_STORE_ID);
+            userInfoDTO.setWaitPlayerRoomDTO(waitPlayerRoomDTO);
+            userinfo.setValue(userInfoDTO);
+        }
 
     }
 
@@ -415,6 +500,43 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
 
         }
     };
+
+    private void showUpLoadSuccessDialog() {
+
+        if (isFinishing()) {
+            return;
+        }
+
+        if (successDialog == null) {
+            successDialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.findperson_success_title)
+                    .setMessage(R.string.findperson_success_message)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    }).create();
+            successDialog.show();
+        } else if (!successDialog.isShowing()) {
+            successDialog.show();
+        }
+
+    }
+
+    private void showErrorDataDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.custom_findperson_dialog_error_data_message)
+                .setPositiveButton(R.string.i_know, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+
+    }
 
     @Override
     public void onFragmentResult(String storeName, String address, double storeLat, double storeLng) {

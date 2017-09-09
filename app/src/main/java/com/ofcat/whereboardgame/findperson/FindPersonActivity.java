@@ -134,8 +134,10 @@ public class FindPersonActivity extends AppCompatActivity {
                     userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
                     userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
                     userWaitPlayerRoomDTO.setAddressTag(bgsTag);
+                    userWaitPlayerRoomDTO.setStoreAddress(bgsAddress);
                     userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                     userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
+                    userWaitPlayerRoomDTO.setLocation(new LocationDTO(bgsLat, bgsLng));
 
                     switchDetailFragment(userWaitPlayerRoomDTO);
                     break;
@@ -422,7 +424,6 @@ public class FindPersonActivity extends AppCompatActivity {
                 .commit();
 
     }
-
 
     private void SaveDataToSP(String initiator, String time, String contact, String content) {
         sp.edit()
