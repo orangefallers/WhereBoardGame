@@ -101,6 +101,10 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".joinplay.PlayerStoreRoomListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".report.issue.IssueReportActivity"
             android:screenOrientation="portrait" />
 

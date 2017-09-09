@@ -46,6 +46,7 @@ import com.ofcat.whereboardgame.dataobj.StoreInfoDTO;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
 import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
+import com.ofcat.whereboardgame.joinplay.PlayerStoreRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
 
@@ -548,8 +549,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     break;
                 case R.id.map_list_who_play:
                     if (boardGameStoreId != null) {
-                        intent = new Intent(MapsActivity.this, PlayerRoomListActivity.class);
-                        intent.putExtra(PlayerRoomListActivity.KEY_PLAYERROOMLIST_STORE_ID, boardGameStoreId);
+                        intent = new Intent(MapsActivity.this, PlayerStoreRoomListActivity.class);
+                        intent.putExtra(PlayerStoreRoomListActivity.KEY_PLAYERROOMLIST_STORE_ID, boardGameStoreId);
                         startActivity(intent);
                     }
 
