@@ -2,10 +2,12 @@ package com.ofcat.whereboardgame.joinplay;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +18,6 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
-import com.ofcat.whereboardgame.firebase.model.FireBaseModelApiImpl;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
 
@@ -33,20 +34,15 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 只顯示單一桌遊店家的揪團列表
  * Created by orangefaller on 2017/9/9.
  */
 
-public class PlayerStoreRoomListActivity extends AppCompatActivity {
-
-    public static final String KEY_PLAYERROOMLIST_STORE_ID = "key_player_room_list_store_id";
-
-//    private FireBaseModelApiImpl fireBaseModelApi;
+public class PlayerCustomRoomFragment extends Fragment {
 
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference playerRoomList;
+    private DatabaseReference customRoomAllList;
 
-    private RecyclerView rvPlayerStoreRoomList;
+    private RecyclerView rvPlayerRoomList;
     private PlayerRoomListAdapter adapter;
 
     private TextView tvEmptyMessage;
@@ -54,36 +50,35 @@ public class PlayerStoreRoomListActivity extends AppCompatActivity {
     private Set<String> keySet = new LinkedHashSet<>();
     private List<WaitPlayerRoomDTO> waitPlayerRoomDTOList = new ArrayList<>();
 
-    private String queryStoreId = "";
 
-    private ValueEventListener playerStoreRoomListValueEventListener = new ValueEventListener() {
+    private ValueEventListener customRoomListValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
 
-            if (!dataSnapshot.exists()) {
-                return;
-            }
+//
+//            GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator1 = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
+//            };
+//            HashMap<String, WaitPlayerRoomDTO> waitPlayerRoomDTOHashMap = dataSnapshot.getValue(typeIndicator1);
 
-//            dataSnapshot.getRef().orderByChild("date");
-
-            GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>> typeIndicator1 = new GenericTypeIndicator<HashMap<String, WaitPlayerRoomDTO>>() {
-            };
-            HashMap<String, WaitPlayerRoomDTO> waitPlayerRoomDTOHashMap = dataSnapshot.getValue(typeIndicator1);
-
-            for (Map.Entry entry : waitPlayerRoomDTOHashMap.entrySet()) {
-                WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
-                String key = (String) entry.getKey();
-
-                if (null != keySet && !keySet.contains(key)) {
-                    keySet.add(key);
+            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                WaitPlayerRoomDTO roomDTO = child.getValue(WaitPlayerRoomDTO.class);
+                if (waitPlayerRoomDTOList != null) {
                     waitPlayerRoomDTOList.add(roomDTO);
                 }
-
             }
+
+//            for (Map.Entry entry : waitPlayerRoomDTOHashMap.entrySet()) {
+//                WaitPlayerRoomDTO roomDTO = (WaitPlayerRoomDTO) entry.getValue();
+//                if (waitPlayerRoomDTOList != null) {
+//                    waitPlayerRoomDTOList.add(roomDTO);
+//                }
+//            }
+
 
             if (waitPlayerRoomDTOList != null) {
                 showEmptyMessage(waitPlayerRoomDTOList.isEmpty());
                 sortListByDate(waitPlayerRoomDTOList);
+
             }
 
             adapter.setDataList(waitPlayerRoomDTOList);
@@ -97,87 +92,69 @@ public class PlayerStoreRoomListActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player_store_room_list);
-        queryStoreId = getIntent().getStringExtra(KEY_PLAYERROOMLIST_STORE_ID);
-        initActionBar();
-        initView();
+    public static PlayerCustomRoomFragment newInstance() {
+        PlayerCustomRoomFragment fragment = new PlayerCustomRoomFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         firebaseDatabase = FirebaseDatabase.getInstance();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_custom_room_list, container, false);
+        initView(view);
 
         if (keySet == null) {
             keySet = new LinkedHashSet<>();
         }
 
-        if (queryStoreId != null && !queryStoreId.equals("")) {
-
-            FireBaseUrl storeRoomListUrl = new FireBaseUrl.Builder()
-                    .addUrlNote(FirebaseTableKey.TABLE_WAITPLYERROOM)
-                    .addUrlNote(queryStoreId)
-                    .build();
-
-            playerRoomList = firebaseDatabase.getReferenceFromUrl(storeRoomListUrl.getUrl());
-            playerRoomList.addValueEventListener(playerStoreRoomListValueEventListener);
-
-            tvEmptyMessage.setText(getString(R.string.player_room_empty_message_by_store));
-
-        }
-
-
+        return view;
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        if (playerRoomList != null) {
-            playerRoomList.removeEventListener(playerStoreRoomListValueEventListener);
-            playerRoomList = null;
-        }
-
-        keySet.clear();
-        keySet = null;
-
-        waitPlayerRoomDTOList.clear();
-        waitPlayerRoomDTOList = null;
+        FireBaseUrl customRoomAllListUrl = new FireBaseUrl.Builder()
+                .addUrlNote(FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM)
+                .build();
+        customRoomAllList = firebaseDatabase.getReferenceFromUrl(customRoomAllListUrl.getUrl());
+        customRoomAllList.addValueEventListener(customRoomListValueEventListener);
     }
 
-    private void initView() {
-        rvPlayerStoreRoomList = (RecyclerView) findViewById(R.id.rv_player_single_store_room_list);
-        rvPlayerStoreRoomList.setLayoutManager(new LinearLayoutManager(this));
-        rvPlayerStoreRoomList.addItemDecoration(new LinearItemDecoration(this));
+    private void initView(View view) {
+
+        rvPlayerRoomList = (RecyclerView) view.findViewById(R.id.rv_player_custom_room_list);
+        rvPlayerRoomList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPlayerRoomList.addItemDecoration(new LinearItemDecoration(getActivity()));
 
         if (adapter == null) {
-            adapter = new PlayerRoomListAdapter(this);
+            adapter = new PlayerRoomListAdapter(getActivity());
             adapter.setAdapterListener(adapterListener);
         }
-        rvPlayerStoreRoomList.setAdapter(adapter);
+        rvPlayerRoomList.setAdapter(adapter);
 
-        tvEmptyMessage = (TextView) findViewById(R.id.tv_player_single_store_room_empty_msg);
-
+        tvEmptyMessage = (TextView) view.findViewById(R.id.tv_player_custom_room_empty_msg);
     }
-
-    private void initActionBar() {
-        try {
-            getSupportActionBar().setTitle(R.string.player_room_list_title);
-        } catch (NullPointerException e) {
-
-        }
-    }
-
 
     private void showEmptyMessage(boolean isEmpty) {
         tvEmptyMessage.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     private void switchDetailFragment(WaitPlayerRoomDTO roomDTO) {
-        getSupportFragmentManager()
+        getActivity()
+                .getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack("player_room_detail")
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_right)
-                .replace(R.id.rl_player_store_room_list_root, PlayerRoomDetailFragment.newInstance(roomDTO))
+                .replace(R.id.rl_player_room_list_root, PlayerRoomDetailFragment.newInstance(roomDTO))
                 .commit();
 
     }
@@ -207,5 +184,4 @@ public class PlayerStoreRoomListActivity extends AppCompatActivity {
             }
         });
     }
-
 }
