@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
@@ -27,6 +28,7 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private static final int VIEWTYPE_TEXT_INFO = 1;
     private static final int VIEWTYPE_EDIT_INFO = 2;
     private static final int VIEWTYPE_EDIT_INFO_TWO = 3;
+    private static final int VIEWTYPE_SPINNER_INFO = 4;
 
     private Context ctx;
 
@@ -69,10 +71,10 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setUserEditRecord(String initiator, String time, String contact, String content) {
 
-        setInfoTextArray(initiator, 2);
-        setInfoTextArray(time, 3);
-        setInfoTextArray(contact, 4);
-        setInfoTextArray(content, 5);
+        setInfoTextArray(initiator, 4);
+        setInfoTextArray(time, 5);
+        setInfoTextArray(contact, 6);
+        setInfoTextArray(content, 7);
 
     }
 
@@ -100,6 +102,9 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             case VIEWTYPE_EDIT_INFO_TWO:
                 View dateTimeView = inflater.inflate(R.layout.item_edit_info_two, parent, false);
                 return new VHEditInfoTwo(dateTimeView);
+            case VIEWTYPE_SPINNER_INFO:
+                View spinnerView = inflater.inflate(R.layout.item_spinner_person_info, parent, false);
+                return new VHSpinnerPersonInfo(spinnerView);
             default:
                 return null;
         }
@@ -132,18 +137,25 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
 
         } else if (holder instanceof VHEditInfo) {
-            ((VHEditInfo) holder).setTvInfoTile(titleArray[position - 2]);
+            ((VHEditInfo) holder).setTvInfoTile(titleArray[position - 4]);
 
-            ((VHEditInfo) holder).setEditHint(hintArray[position - 2]);
+            ((VHEditInfo) holder).setEditHint(hintArray[position - 4]);
 
             ((VHEditInfo) holder).setEditText(getInfoTextArray()[position]);
 
-            if (position == 2 || position == 3) {
+            if (position == 4 || position == 5) {
                 ((VHEditInfo) holder).useEditTextSingleLine();
-            } else if (position == 4 || position == 5) {
+            } else if (position == 6 || position == 7) {
                 ((VHEditInfo) holder).setEditTextCustomBackground();
             }
 
+        } else if (holder instanceof VHSpinnerPersonInfo) {
+
+            if (position == 2) {
+                ((VHSpinnerPersonInfo) holder).setTextInfo(ctx.getResources().getString(R.string.custom_findperson_current_person));
+            }else if (position == 3){
+                ((VHSpinnerPersonInfo) holder).setTextInfo(ctx.getResources().getString(R.string.custom_findperson_need_person));
+            }
         }
 
 
@@ -154,6 +166,8 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public int getItemViewType(int position) {
         if (position <= 1) {
             return VIEWTYPE_TEXT_INFO;
+        } else if (position <= 3) {
+            return VIEWTYPE_SPINNER_INFO;
         } else {
             return VIEWTYPE_EDIT_INFO;
         }
@@ -162,7 +176,7 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return 6;
+        return 8;
     }
 
     public void setBoardGameStorePlace(String place) {
@@ -314,12 +328,43 @@ public class FindPersonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
+    private class VHSpinnerPersonInfo extends RecyclerView.ViewHolder implements AdapterView.OnItemSelectedListener {
+
+        private Spinner spinnerInfo;
+        private TextView tvTextInfo;
+
+        public VHSpinnerPersonInfo(View itemView) {
+            super(itemView);
+            tvTextInfo = (TextView) itemView.findViewById(R.id.tv_info_title);
+            spinnerInfo = (Spinner) itemView.findViewById(R.id.spinner_item);
+            spinnerInfo.setOnItemSelectedListener(this);
+        }
+
+        public void setTextInfo(String text) {
+            tvTextInfo.setText(text);
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+            if (adapterListener != null) {
+                adapterListener.onSpinnerItemSelect(view, position, getAdapterPosition());
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    }
+
     public interface AdapterListener {
         void onEditClick(View view, boolean hasFocus, String text, int position);
 
         void onTextClick(View view, int position);
 
         void onDateClick(View view, Calendar calendar);
+
+        void onSpinnerItemSelect(View view, int selectPosition, int adapterPosition);
 
     }
 }

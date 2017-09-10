@@ -97,6 +97,32 @@
         <item>店家消費方式、禁帶外食、報名方式等</item>
     </string-array>
 
+    <string-array name="findperson_person_number">
+        <item>不顯示</item>
+        <item>1人</item>
+        <item>2人</item>
+        <item>3人</item>
+        <item>4人</item>
+        <item>5人</item>
+        <item>6人</item>
+        <item>7人</item>
+        <item>8人</item>
+        <item>9人</item>
+        <item>10人</item>
+        <item>11人</item>
+        <item>12人</item>
+        <item>13人</item>
+        <item>14人</item>
+        <item>15人</item>
+        <item>16人</item>
+        <item>17人</item>
+        <item>18人</item>
+        <item>19人</item>
+        <item>20人</item>
+        <item>21人以上</item>
+
+    </string-array>
+
     <string name="findperson_success_title">完成揪團</string>
     <string name="findperson_success_message">可以至揪團列表查看揪團訊息了!</string>
     <string name="findperson_dialog_error_data_message">哎呀，您是不是忘了填*欄位資料了?</string>
@@ -108,6 +134,8 @@
     <string name="custom_findperson_input_address">輸入地址</string>
     <string name="custom_findperson_address_title">揪團地址</string>
     <string name="custom_findperson_address_hint">XX市XX區XX路XX號(非必填)</string>
+    <string name="custom_findperson_current_person">目前人數：</string>
+    <string name="custom_findperson_need_person">徵求人數：</string>
     <string name="custom_findperson_initiator_title">主揪稱呼或團名*</string>
     <string name="custom_findperson_initiator_hint">主揪 阿翔 歡樂新手團</string>
     <string name="custom_findperson_time_title">時間*</string>

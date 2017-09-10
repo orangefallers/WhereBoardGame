@@ -74,6 +74,8 @@ public class FindPersonActivity extends AppCompatActivity {
     private String recordInitiator, recordTime, recordContact, recordContent;
     private String userId = "", lastStoreId = "";
     private double bgsLat, bgsLng;
+    private int bgsCurrentPerson = -1;
+    private int bgsNeedPerson = -1;
 
     private FindPersonAdapter adapter;
 
@@ -101,20 +103,22 @@ public class FindPersonActivity extends AppCompatActivity {
 
                         userWaitPlayerRoomDTO.setStoreName(adapter.getInfoTextArray()[0]);
                         userWaitPlayerRoomDTO.setDate(adapter.getInfoTextArray()[1]);
-                        userWaitPlayerRoomDTO.setInitiator(adapter.getInfoTextArray()[2]);
-                        userWaitPlayerRoomDTO.setTime(adapter.getInfoTextArray()[3]);
-                        userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
-                        userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
+                        userWaitPlayerRoomDTO.setInitiator(adapter.getInfoTextArray()[4]);
+                        userWaitPlayerRoomDTO.setTime(adapter.getInfoTextArray()[5]);
+                        userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[6]);
+                        userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[7]);
                         userWaitPlayerRoomDTO.setAddressTag(bgsTag);
                         userWaitPlayerRoomDTO.setStoreAddress(bgsAddress);
                         userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                         userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
                         userWaitPlayerRoomDTO.setLocation(new LocationDTO(bgsLat, bgsLng));
+                        userWaitPlayerRoomDTO.setCurrentPerson(bgsCurrentPerson);
+                        userWaitPlayerRoomDTO.setNeedPerson(bgsNeedPerson);
 
-                        SaveDataToSP(adapter.getInfoTextArray()[2],
-                                adapter.getInfoTextArray()[3],
-                                adapter.getInfoTextArray()[4],
-                                adapter.getInfoTextArray()[5]);
+                        SaveDataToSP(adapter.getInfoTextArray()[4],
+                                adapter.getInfoTextArray()[5],
+                                adapter.getInfoTextArray()[6],
+                                adapter.getInfoTextArray()[7]);
 
 //                        uploadData(userWaitPlayerRoomDTO);
                         checkWaitPlayerRoomData(userWaitPlayerRoomDTO);
@@ -129,15 +133,17 @@ public class FindPersonActivity extends AppCompatActivity {
 
                     userWaitPlayerRoomDTO.setStoreName(adapter.getInfoTextArray()[0]);
                     userWaitPlayerRoomDTO.setDate(adapter.getInfoTextArray()[1]);
-                    userWaitPlayerRoomDTO.setInitiator(adapter.getInfoTextArray()[2]);
-                    userWaitPlayerRoomDTO.setTime(adapter.getInfoTextArray()[3]);
-                    userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[4]);
-                    userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[5]);
+                    userWaitPlayerRoomDTO.setInitiator(adapter.getInfoTextArray()[4]);
+                    userWaitPlayerRoomDTO.setTime(adapter.getInfoTextArray()[5]);
+                    userWaitPlayerRoomDTO.setContact(adapter.getInfoTextArray()[6]);
+                    userWaitPlayerRoomDTO.setContent(adapter.getInfoTextArray()[7]);
                     userWaitPlayerRoomDTO.setAddressTag(bgsTag);
                     userWaitPlayerRoomDTO.setStoreAddress(bgsAddress);
                     userWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                     userWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
                     userWaitPlayerRoomDTO.setLocation(new LocationDTO(bgsLat, bgsLng));
+                    userWaitPlayerRoomDTO.setCurrentPerson(bgsCurrentPerson);
+                    userWaitPlayerRoomDTO.setNeedPerson(bgsNeedPerson);
 
                     switchDetailFragment(userWaitPlayerRoomDTO);
                     break;
@@ -468,6 +474,16 @@ public class FindPersonActivity extends AppCompatActivity {
 
             datePickerDialog.show(getFragmentManager(), "KevinDatePicker");
 
+        }
+
+        @Override
+        public void onSpinnerItemSelect(View view, int selectPosition, int adapterPosition) {
+            MyLog.i("kevintest", " spinner select = " + selectPosition + " adapter = " + adapterPosition);
+            if (adapterPosition == 2) {
+                bgsCurrentPerson = selectPosition;
+            } else if (adapterPosition == 3) {
+                bgsNeedPerson = selectPosition;
+            }
         }
     };
 

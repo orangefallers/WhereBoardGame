@@ -37,6 +37,12 @@ public class WaitPlayerRoomDTO implements Serializable {
     //1 is 缺人     2 is 滿團
     private int roomStatus = 1;
 
+    //目前人數
+    private int currentPerson;
+
+    //需要揪的人數
+    private int needPerson;
+
     public String getInitiator() {
         return initiator;
     }
@@ -131,6 +137,22 @@ public class WaitPlayerRoomDTO implements Serializable {
 
     public void setRoomStatus(int roomStatus) {
         this.roomStatus = roomStatus;
+    }
+
+    public int getCurrentPerson() {
+        return currentPerson;
+    }
+
+    public void setCurrentPerson(int currentPerson) {
+        this.currentPerson = currentPerson;
+    }
+
+    public int getNeedPerson() {
+        return needPerson;
+    }
+
+    public void setNeedPerson(int needPerson) {
+        this.needPerson = needPerson;
     }
 
     public boolean isCompleteDTO() {

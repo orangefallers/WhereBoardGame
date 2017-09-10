@@ -14,8 +14,10 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,6 +75,8 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private EditText etContact;
     private EditText etOther;
     private Button btnConfirm, btnPreview;
+    private Spinner spinnerCurrentPerson, spinnerNeedPerson;
+
 
     private String userId = "", lastStoreId = "";
     private Calendar now;
@@ -80,6 +84,8 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
     private String recordStorePlace, recordInitiator, recordTime, recordContact, recordContent;
     private String storePlace, storeAddress;
     private double storeLat, storeLng;
+    private int currentPerson = -1;
+    private int needPerson = -1;
 
     private WaitPlayerRoomDTO customWaitPlayerRoomDTO;
     private GetLatLngDataImpl getLatLngData;
@@ -176,6 +182,8 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                     customWaitPlayerRoomDTO.setStoreAddress(storeAddress);
                     customWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                     customWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
+                    customWaitPlayerRoomDTO.setCurrentPerson(currentPerson);
+                    customWaitPlayerRoomDTO.setNeedPerson(needPerson);
                     if (storeLat == 0.0 && storeLng == 0.0) {
                         customWaitPlayerRoomDTO.setLocation(null);
                     } else {
@@ -208,7 +216,8 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
                     customWaitPlayerRoomDTO.setStoreAddress(storeAddress);
                     customWaitPlayerRoomDTO.setTimeStamp(SystemUtility.getTimeStamp());
                     customWaitPlayerRoomDTO.setTimeStampOrder(ServerValue.TIMESTAMP);
-
+                    customWaitPlayerRoomDTO.setCurrentPerson(currentPerson);
+                    customWaitPlayerRoomDTO.setNeedPerson(needPerson);
                     if (storeLat == 0.0 && storeLng == 0.0) {
                         customWaitPlayerRoomDTO.setLocation(null);
                     } else {
@@ -275,6 +284,7 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         initActionBar();
         initView();
         initDate();
+        setSpinnerListener();
 
         if (getLatLngData == null) {
             getLatLngData = new GetLatLngDataImpl(latLngDataImplListener);
@@ -290,6 +300,9 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
         etOther = (EditText) findViewById(R.id.et_other_info);
         btnConfirm = (Button) findViewById(R.id.btn_custom_find_person_confirm);
         btnPreview = (Button) findViewById(R.id.btn_custom_find_person_preview);
+        spinnerCurrentPerson = (Spinner) findViewById(R.id.spinner_current_person);
+        spinnerNeedPerson = (Spinner) findViewById(R.id.spinner_need_person);
+
 
         tvPlace.setOnClickListener(clickListener);
         tvDate.setOnClickListener(clickListener);
@@ -500,6 +513,32 @@ public class CustomFindPersonActivity extends AppCompatActivity implements Input
 
         }
     };
+
+    private void setSpinnerListener() {
+        spinnerCurrentPerson.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    currentPerson = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spinnerNeedPerson.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    needPerson = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
 
     private void showUpLoadSuccessDialog() {
 
