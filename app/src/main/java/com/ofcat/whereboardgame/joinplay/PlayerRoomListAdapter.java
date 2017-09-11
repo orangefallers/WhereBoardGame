@@ -11,6 +11,7 @@ import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by orangefaller on 2017/6/22.
@@ -59,6 +60,22 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             ((VHPlayerRoomItem) holder).setLocationTag(
                     waitPlayerRoomDTOList.get(position).getAddressTag());
+
+
+            String currentPersonStr = getCurrentPersonStr(waitPlayerRoomDTOList.get(position).getCurrentPerson());
+            if (currentPersonStr.equals("")) {
+                ((VHPlayerRoomItem) holder).setCurrentPersonText("", false);
+            } else {
+                ((VHPlayerRoomItem) holder).setCurrentPersonText(currentPersonStr, true);
+            }
+
+            String needPersonStr = getNeedPersonStr(waitPlayerRoomDTOList.get(position).getNeedPerson());
+            if (needPersonStr.equals("")) {
+                ((VHPlayerRoomItem) holder).setNeedPersonText("", false);
+            } else {
+                ((VHPlayerRoomItem) holder).setNeedPersonText(needPersonStr, true);
+
+            }
         }
     }
 
@@ -70,15 +87,23 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return 0;
     }
 
+    private String getCurrentPersonStr(int currentPerson) {
+        if (currentPerson > 0 && currentPerson < 21) {
+            return String.format(Locale.getDefault(), "目前人數：%d人", currentPerson);
+        } else if (currentPerson >= 21) {
+            return String.format(Locale.getDefault(), "目前人數：%d人以上", currentPerson);
+        } else {
+            return "";
+        }
+    }
 
-    private String getRoomStatus(int roomStatus) {
-        switch (roomStatus) {
-            case 1:
-                return "缺";
-            case 2:
-                return "滿";
-            default:
-                return "";
+    private String getNeedPersonStr(int currentPerson) {
+        if (currentPerson > 0 && currentPerson < 21) {
+            return String.format(Locale.getDefault(), "徵求人數：%d人", currentPerson);
+        } else if (currentPerson >= 21) {
+            return String.format(Locale.getDefault(), "徵求人數：%d人以上", currentPerson);
+        } else {
+            return "";
         }
     }
 
@@ -92,6 +117,8 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView tvTitle;
         private TextView tvSubTitle;
         private TextView tvBottomTitle;
+        private TextView tvBottomSubTitleLeft;
+        private TextView tvBottomSubTitleRight;
         private TextView tvLocationTag;
 
         public VHPlayerRoomItem(View itemView) {
@@ -101,6 +128,8 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             tvTitle = (TextView) itemView.findViewById(R.id.tv_item_title);
             tvSubTitle = (TextView) itemView.findViewById(R.id.tv_item_sub_title);
             tvBottomTitle = (TextView) itemView.findViewById(R.id.tv_item_bottom_title);
+            tvBottomSubTitleLeft = (TextView) itemView.findViewById(R.id.tv_item_bottom_sub_title_left);
+            tvBottomSubTitleRight = (TextView) itemView.findViewById(R.id.tv_item_bottom_sub_title_right);
             tvLocationTag = (TextView) itemView.findViewById(R.id.tv_item_title_tag);
 
             itemView.setOnClickListener(this);
@@ -136,6 +165,16 @@ public class PlayerRoomListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void setLocationTag(String locationTag) {
             tvLocationTag.setText(locationTag);
+        }
+
+        public void setCurrentPersonText(String bottomSubTitle, boolean isShow) {
+            tvBottomSubTitleLeft.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            tvBottomSubTitleLeft.setText(bottomSubTitle);
+        }
+
+        public void setNeedPersonText(String bottomSubTitle, boolean isShow) {
+            tvBottomSubTitleRight.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            tvBottomSubTitleRight.setText(bottomSubTitle);
         }
 
         @Override

@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ofcat.whereboardgame.R;
@@ -16,6 +17,8 @@ import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.WaitPlayerRoomDTO;
 import com.ofcat.whereboardgame.map.SingleStoreMapActivity;
 import com.ofcat.whereboardgame.util.MyLog;
+
+import java.util.Locale;
 
 /**
  * Created by orangefaller on 2017/6/24.
@@ -34,6 +37,11 @@ public class PlayerRoomDetailFragment extends Fragment {
     private TextView tvTime;
     private TextView tvContact;
     private TextView tvOtherContent;
+
+    private LinearLayout llCurrentPerson;
+    private LinearLayout llNeedPerson;
+    private TextView tvCurrentPerson;
+    private TextView tvNeedPerson;
 
 
     private String initiator = "主揪稱呼：%s";
@@ -92,6 +100,8 @@ public class PlayerRoomDetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         LocationDTO locationDTO = currentRoomDTO.getLocation();
         showLocationIcon(locationDTO != null);
+        showCurrentPerson(currentRoomDTO.getCurrentPerson());
+        showNeedPerson(currentRoomDTO.getNeedPerson());
 
     }
 
@@ -102,6 +112,11 @@ public class PlayerRoomDetailFragment extends Fragment {
         tvTime = (TextView) view.findViewById(R.id.tv_room_detail_time);
         tvContact = (TextView) view.findViewById(R.id.tv_room_detail_contact);
         tvOtherContent = (TextView) view.findViewById(R.id.tv_room_detail_other_content);
+
+        llCurrentPerson = (LinearLayout) view.findViewById(R.id.ll_current_person_area);
+        llNeedPerson = (LinearLayout) view.findViewById(R.id.ll_need_person_area);
+        tvCurrentPerson = (TextView) view.findViewById(R.id.tv_room_detail_current_person);
+        tvNeedPerson = (TextView) view.findViewById(R.id.tv_room_detail_need_person);
 
         tvStore.setOnClickListener(clickListener);
 
@@ -124,6 +139,32 @@ public class PlayerRoomDetailFragment extends Fragment {
         } else {
             tvStore.setCompoundDrawables(null, null, null, null);
             tvStore.setEnabled(false);
+        }
+
+    }
+
+    private void showCurrentPerson(int currentPerson) {
+        if (currentPerson > 0 && currentPerson < 21) {
+            llCurrentPerson.setVisibility(View.VISIBLE);
+            tvCurrentPerson.setText(String.format(Locale.getDefault(), "目前人數：%d人", currentPerson));
+        } else if (currentPerson >= 21) {
+            llCurrentPerson.setVisibility(View.VISIBLE);
+            tvCurrentPerson.setText(String.format(Locale.getDefault(), "目前人數：%d人以上", currentPerson));
+        } else {
+            llCurrentPerson.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void showNeedPerson(int needPerson) {
+        if (needPerson > 0 && needPerson < 21) {
+            llNeedPerson.setVisibility(View.VISIBLE);
+            tvNeedPerson.setText(String.format(Locale.getDefault(), "徵求人數：%d人", needPerson));
+        } else if (needPerson >= 21) {
+            llNeedPerson.setVisibility(View.VISIBLE);
+            tvNeedPerson.setText(String.format(Locale.getDefault(), "徵求人數：%d人以上", needPerson));
+        } else {
+            llNeedPerson.setVisibility(View.GONE);
         }
 
     }

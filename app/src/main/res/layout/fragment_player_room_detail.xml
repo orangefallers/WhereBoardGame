@@ -32,10 +32,10 @@
                 android:id="@+id/tv_room_detail_store"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/deep_gray"
-                android:drawableRight="@drawable/ic_location_on_black_24dp"
-                android:drawableEnd="@drawable/ic_location_on_black_24dp"
                 android:layout_marginTop="4dp"
+                android:drawableEnd="@drawable/ic_location_on_black_24dp"
+                android:drawableRight="@drawable/ic_location_on_black_24dp"
+                android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
             <View
@@ -47,8 +47,8 @@
                 android:id="@+id/tv_room_detail_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:layout_marginTop="4dp"
+                android:text=""
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
@@ -61,8 +61,8 @@
                 android:id="@+id/tv_room_detail_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/deep_gray"
                 android:layout_marginTop="4dp"
+                android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
             <View
@@ -74,8 +74,8 @@
                 android:id="@+id/tv_room_detail_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
                 android:layout_marginTop="4dp"
+                android:text=""
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
@@ -83,6 +83,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/ll_current_person_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_room_detail_current_person"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/deep_gray"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_need_person_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_room_detail_need_person"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/deep_gray"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_room_other_content_title"
@@ -99,9 +143,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:autoLink="web"
                 android:background="@drawable/rect_primary_frame"
                 android:padding="4dp"
-                android:autoLink="web"
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 
