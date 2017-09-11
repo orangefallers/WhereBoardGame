@@ -14,6 +14,7 @@ public class AppUpdateDTO {
 
     private String updateTitle;
     private String updateMessage;
+    private String updateToVersion;
 
     public AppUpdateDTO() {
     }
@@ -32,5 +33,9 @@ public class AppUpdateDTO {
 
     public String getUpdateMessage() {
         return updateMessage;
+    }
+
+    public String getUpdateToVersion() {
+        return updateToVersion;
     }
 }

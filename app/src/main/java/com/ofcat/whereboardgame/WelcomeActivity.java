@@ -376,7 +376,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     configDTO.getOpenAppUpdateFeature().isOpenUpdate(),
                     configDTO.getOpenAppUpdateFeature().isForcedUpdate(),
                     configDTO.getOpenAppUpdateFeature().getUpdateTitle(),
-                    configDTO.getOpenAppUpdateFeature().getUpdateMessage());
+                    configDTO.getOpenAppUpdateFeature().getUpdateMessage(),
+                    configDTO.getOpenAppUpdateFeature().getUpdateToVersion());
 
         }
 
@@ -401,11 +402,21 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
 
-    private void showGoToUpdateAppDialog(boolean isShow, boolean isForced, String title, String message) {
+    private void showGoToUpdateAppDialog(boolean isShow, boolean isForced, String title, String message, String appVersion) {
 
         MyLog.i(TAG, "is show =" + isShow + " is forced = " + isForced);
         if (!isShow || isFinishing()) {
             return;
+        }
+
+        try {
+            //如果已經是指定的version(最新的version)，則不顯示更新訊息
+            String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            if (versionName.equals(appVersion)) {
+                return;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
 
 
