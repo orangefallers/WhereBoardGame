@@ -9,11 +9,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -88,6 +90,8 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private TextView tvUserInfoPlayerRoom;
     private TextView tvUserInfoPlayerRoomDate;
     private SwitchCompat playerRoomStatus;
+    private Spinner spinnerCurrentPerson, spinnerNeedPerson;
+
 
     private String userAccountProvider = "";
     private String userId = "";
@@ -193,6 +197,9 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                     } else {
                         playerRoomStatus.setChecked(false);
                     }
+
+                    spinnerCurrentPerson.setSelection(userInfoDTO.getWaitPlayerRoomDTO().getCurrentPerson());
+                    spinnerNeedPerson.setSelection(userInfoDTO.getWaitPlayerRoomDTO().getNeedPerson());
                 }
 
                 userStoreId = userInfoDTO.getStoreId();
@@ -341,6 +348,49 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
             }
         });
 
+        spinnerCurrentPerson = (Spinner) findViewById(R.id.spinner_user_info_current_person);
+        spinnerCurrentPerson.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (userStoreId != null && !userStoreId.equals("")) {
+
+                    changeUserPlayerCurrentPerson(position);
+
+                    if (userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+                        changePlayerCustomRoomCurrentPerson(position);
+                    } else {
+                        changePlayerRoomCurrentPerson(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerNeedPerson = (Spinner) findViewById(R.id.spinner_user_info_need_person);
+        spinnerNeedPerson.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (userStoreId != null && !userStoreId.equals("")) {
+
+                    changeUserPlayerNeedPerson(position);
+
+                    if (userStoreId.equals(FirebaseTableKey.CUSTOM_STORE_ID)) {
+                        changePlayerCustomRoomNeedPerson(position);
+                    } else {
+                        changePlayerRoomNeedPerson(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         btnFacebookLogin.setOnClickListener(clickListener);
         btnGoogleLogin.setOnClickListener(clickListener);
         btnSignOut.setOnClickListener(clickListener);
@@ -436,6 +486,41 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
         } else {
             databaseReference.child(userId).child("roomStatus").setValue(1);
         }
+
+    }
+
+    private void changeUserPlayerCurrentPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
+
+        databaseReference.child("waitPlayerRoomDTO").child("currentPerson").setValue(person);
+    }
+
+    private void changeUserPlayerNeedPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
+
+        databaseReference.child("waitPlayerRoomDTO").child("needPerson").setValue(person);
+    }
+
+    private void changePlayerRoomCurrentPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
+        databaseReference.child(userStoreId).child(userId).child("currentPerson").setValue(person);
+
+    }
+
+    private void changePlayerCustomRoomCurrentPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM);
+        databaseReference.child(userId).child("currentPerson").setValue(person);
+
+    }
+
+    private void changePlayerRoomNeedPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
+        databaseReference.child(userStoreId).child(userId).child("needPerson").setValue(person);
+    }
+
+    private void changePlayerCustomRoomNeedPerson(int person) {
+        databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM);
+        databaseReference.child(userId).child("needPerson").setValue(person);
 
     }
 
