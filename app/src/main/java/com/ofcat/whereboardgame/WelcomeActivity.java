@@ -16,6 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ofcat.whereboardgame.adapter.WelcomeButtonAdapter;
 import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
@@ -70,6 +73,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+//    private RecyclerView rlWelcomeButtonArea;
     private TextView tvAppStatus;
     private TextView tvUpdateDate;
     private TextView tvSystemNotify;
@@ -340,7 +344,17 @@ public class WelcomeActivity extends AppCompatActivity {
         btnIssueReport = (Button) findViewById(R.id.btn_welcome_issue_report);
         btnCustomFindPerson = (Button) findViewById(R.id.btn_welcome_custom_find_person);
 
+//        rlWelcomeButtonArea = (RecyclerView) findViewById(R.id.rl_welcome_button_area);
+
     }
+
+
+//    private void initRecyclerView() {
+//        rlWelcomeButtonArea.addItemDecoration(new MarginDecoration(this));
+//        rlWelcomeButtonArea.setHasFixedSize(true);
+//        rlWelcomeButtonArea.setLayoutManager(new GridLayoutManager(this, 2));
+//        rlWelcomeButtonArea.setAdapter(new WelcomeButtonAdapter(this));
+//    }
 
     private boolean isConnectInternet() {
 

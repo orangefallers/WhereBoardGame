@@ -35,6 +35,8 @@
                 android:layout_marginTop="4dp"
                 android:drawableEnd="@drawable/ic_location_on_black_24dp"
                 android:drawableRight="@drawable/ic_location_on_black_24dp"
+                android:drawableTint="@color/red"
+                android:drawableTintMode="add"
                 android:textColor="@color/deep_gray"
                 android:textSize="20sp" />
 

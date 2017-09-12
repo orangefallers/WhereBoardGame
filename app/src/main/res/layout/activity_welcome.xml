@@ -38,6 +38,114 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginStart="20dp">
+
+        <Button
+            android:id="@+id/btn_welcome_go"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/gotoMap"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_welcome_store_find_person"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_welcome_tab_store_find_person"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
+            app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_go" />
+
+        <Button
+            android:id="@+id/btn_welcome_report"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/report_store_info"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
+            app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_store_find_person"/>
+
+        <Button
+            android:id="@+id/btn_welcome_issue_report"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_issue_report"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
+            app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_report"/>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/vertical_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"
+            tools:layout_editor_absoluteX="172dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <Button
+            android:id="@+id/btn_welcome_join_playroom"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/gotoPlayerRoom"
+            app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_welcome_custom_find_person"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_welcome_tab_custom_find_person"
+            app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_welcome_join_playroom" />
+
+        <Button
+            android:id="@+id/btn_welcome_login"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/login_title"
+            app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_welcome_custom_find_person" />
+
+        <Button
+            android:id="@+id/btn_welcome_board_game_knowledge"
+            style="@style/MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_welcome_tab_board_game_knowledge"
+            app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
+            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_welcome_login" />
+
+    </android.support.constraint.ConstraintLayout>
+
     <LinearLayout
         android:id="@+id/ll_welcome_button_area"
         android:layout_width="match_parent"
@@ -45,50 +153,8 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp">
-
-        <Button
-            android:id="@+id/btn_welcome_go"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/gotoMap" />
-
-        <Button
-            android:id="@+id/btn_welcome_join_playroom"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/gotoPlayerRoom" />
-
-        <Button
-            android:id="@+id/btn_welcome_custom_find_person"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/main_welcome_tab_custom_find_person" />
-
-
-        <Button
-            android:id="@+id/btn_welcome_report"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/report_store_info" />
-
-        <Button
-            android:id="@+id/btn_welcome_login"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_title" />
-
-        <Button
-            android:id="@+id/btn_welcome_issue_report"
-            style="@style/MainButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_issue_report" />
+        android:padding="10dp"
+        android:visibility="invisible">
 
     </LinearLayout>
 

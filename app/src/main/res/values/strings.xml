@@ -12,6 +12,19 @@
     <string name="main_welcome_tab_find_someone">揪團去</string>
     <string name="main_welcome_tab_report">我要回報</string>
     <string name="main_welcome_tab_custom_find_person">自訂揪團</string>
+    <string name="main_welcome_tab_store_find_person">桌遊店揪團</string>
+    <string name="main_welcome_tab_board_game_knowledge">桌遊小知識</string>
+
+    <string-array name="main_welcome_button_list">
+        <item>前往桌遊店地圖</item>
+        <item>查看揪團列表</item>
+        <item>桌遊店揪團</item>
+        <item>自訂揪團</item>
+        <item>回報桌遊店資訊</item>
+        <item>使用者資訊</item>
+        <item>建議事項</item>
+        <item>桌遊小知識</item>
+    </string-array>
 
     <string name="update_dialog_title">建議更新</string>
     <string name="update_dialog_message">已有新版的APP，建議您前往更新下載。以獲得更完善的服務</string>
