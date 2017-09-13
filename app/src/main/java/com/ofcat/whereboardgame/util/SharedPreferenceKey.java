@@ -17,4 +17,6 @@ public class SharedPreferenceKey {
     public static final String KEY_SP_CONTENT = "sp_key_content";
 
     public static final String SETTING_INFO_NOTIFY = "setting_info_notify";
+
+    public static final String KEY_SP_STORE_TAB_POSITION = "sp_key_store_tab_position";
 }

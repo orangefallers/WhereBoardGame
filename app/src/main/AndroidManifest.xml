@@ -112,6 +112,10 @@
             android:name=".findperson.CustomFindPersonActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".findperson.StoreListActivity"
+            android:screenOrientation="portrait" />
+
         <service android:name=".service.WhereBoardGameFCMInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

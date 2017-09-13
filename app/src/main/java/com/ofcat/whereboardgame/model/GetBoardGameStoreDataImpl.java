@@ -30,6 +30,7 @@ public class GetBoardGameStoreDataImpl {
 
     private final String storeUrlByCells = "https://spreadsheets.google.com/feeds/cells/128wH1tdLJHe9D-EyPoyVcALt4I8s43DVuG5VulL9_cU/1/public/values?alt=json";
     private final String storeApiUrlByList = AppConfig.STORE_URL;
+    private String storeApiHostByList = AppConfig.STORE_URL_HOST;
 
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -40,7 +41,6 @@ public class GetBoardGameStoreDataImpl {
     private GetHttpConnectionTask getHttpConnectionTask;
 
     private StoreDataImplListener storeDataImplListener;
-
 
     private GetHttpConnectionTask.onMapTaskListener taskListener = new GetHttpConnectionTask.onMapTaskListener() {
         @Override
@@ -66,6 +66,7 @@ public class GetBoardGameStoreDataImpl {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                onFail();
             }
 
 
@@ -73,7 +74,9 @@ public class GetBoardGameStoreDataImpl {
 
         @Override
         public void onFail() {
-
+            if (storeDataImplListener != null) {
+                storeDataImplListener.onFail("資料讀取發生錯誤");
+            }
         }
     };
 
@@ -92,9 +95,16 @@ public class GetBoardGameStoreDataImpl {
 
     }
 
+    public void startLoadData(int excelIndex) {
+        String storeUrl = storeApiHostByList + "/" + excelIndex + "/public/values?alt=json";
+        getHttpConnectionTask = new GetHttpConnectionTask(storeUrl, taskListener);
+        getHttpConnectionTask.execute();
+
+    }
+
     public String getDataUpdateDate() {
         if (sharedPreferences != null) {
-           return sharedPreferences.getString(SharedPreferenceKey.DATA_UPDATE_DATE,"");
+            return sharedPreferences.getString(SharedPreferenceKey.DATA_UPDATE_DATE, "");
         }
 
         return "";
@@ -160,6 +170,8 @@ public class GetBoardGameStoreDataImpl {
         void onSimpleStoreDataList(ArrayList<StoreInfoDTO> storeInfoDTOs);
 
         void onUpdateData(String date);
+
+        void onFail(String errorMessage);
 
     }
 }

@@ -49,6 +49,7 @@ import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
 import com.ofcat.whereboardgame.joinplay.PlayerStoreRoomListActivity;
 import com.ofcat.whereboardgame.login.UserLoginActivity;
 import com.ofcat.whereboardgame.model.GetBoardGameStoreDataImpl;
+import com.ofcat.whereboardgame.util.FirebaseTableKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,6 +139,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            TimeZone.setDefault(TimeZone.getTimeZone("GTM+8"));
 
         }
+
+        @Override
+        public void onFail(String errorMessage) {
+
+        }
     };
 
     private ChildEventListener playerRoomListChildEventListener = new ChildEventListener() {
@@ -222,7 +228,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         if (fireBaseModelApi == null) {
-            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote("WaitPlayerRoom");
+            fireBaseModelApi = new FireBaseModelApiImpl().addApiNote(FirebaseTableKey.TABLE_WAITPLYERROOM);
             fireBaseModelApi.execute();
 //            fireBaseModelApi.addValueEventListener(playerRoomListValueEventListener);
         }

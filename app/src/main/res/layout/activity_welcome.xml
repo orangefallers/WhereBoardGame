@@ -55,7 +55,6 @@
             android:text="@string/gotoMap"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -120,7 +119,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
             app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_welcome_join_playroom" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_join_playroom" />
 
         <Button
             android:id="@+id/btn_welcome_login"
@@ -131,7 +130,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
             app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_welcome_custom_find_person" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_custom_find_person" />
 
         <Button
             android:id="@+id/btn_welcome_board_game_knowledge"
@@ -140,9 +139,8 @@
             android:layout_height="wrap_content"
             android:text="@string/main_welcome_tab_board_game_knowledge"
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_welcome_login" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_login" />
 
     </android.support.constraint.ConstraintLayout>
 

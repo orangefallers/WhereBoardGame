@@ -36,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ofcat.whereboardgame.adapter.WelcomeButtonAdapter;
 import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
+import com.ofcat.whereboardgame.findperson.StoreListActivity;
 import com.ofcat.whereboardgame.firebase.dataobj.SystemConfigDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.joinplay.PlayerRoomListActivity;
@@ -83,6 +84,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnJoinPlay;
     private Button btnIssueReport;
     private Button btnCustomFindPerson;
+    private Button btnStoreFindPerson;
 
     private int debugCount = 0;
 
@@ -130,7 +132,15 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
 
                     startActivity(new Intent(WelcomeActivity.this, CustomFindPersonActivity.class));
+                    break;
+                case R.id.btn_welcome_store_find_person:
+                    if (!isUserLogin) {
+                        intent = new Intent(WelcomeActivity.this, UserLoginActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
 
+                    startActivity(new Intent(WelcomeActivity.this, StoreListActivity.class));
                     break;
                 case R.id.tv_welcome_data_update_date:
                     debugCount++;
@@ -222,6 +232,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnJoinPlay.setOnClickListener(clickListener);
         btnIssueReport.setOnClickListener(clickListener);
         btnCustomFindPerson.setOnClickListener(clickListener);
+        btnStoreFindPerson.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
 
@@ -343,6 +354,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnJoinPlay = (Button) findViewById(R.id.btn_welcome_join_playroom);
         btnIssueReport = (Button) findViewById(R.id.btn_welcome_issue_report);
         btnCustomFindPerson = (Button) findViewById(R.id.btn_welcome_custom_find_person);
+        btnStoreFindPerson = (Button) findViewById(R.id.btn_welcome_store_find_person);
 
 //        rlWelcomeButtonArea = (RecyclerView) findViewById(R.id.rl_welcome_button_area);
 
