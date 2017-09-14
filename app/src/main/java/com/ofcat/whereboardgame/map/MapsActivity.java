@@ -120,7 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     MarkerOptions options = new MarkerOptions()
                             .title(storeInfoDTO.getStoreName())
                             .snippet(storeInfoDTO.getAddress())
-                            .position(storeLatLng);
+                            .position(storeLatLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_red));
 
                     Marker marker = mMap.addMarker(options);
                     marker.setTag(storeInfoDTO);
@@ -155,7 +156,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             if (storeMarkerMap.containsKey(storeId)) {
                 Marker marker = storeMarkerMap.get(storeId);
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_deep_green));
             }
 
 //            for (DataSnapshot child : dataSnapshot.getChildren()) {
@@ -515,7 +517,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentMarker = mMap.addMarker(new MarkerOptions()
                     .position(latLan)
                     .title(getString(R.string.my_location))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_deep_yellow)));
             currentMarker.showInfoWindow();
             currentMarker.setTag(null);
             moveMap(latLan, 15);

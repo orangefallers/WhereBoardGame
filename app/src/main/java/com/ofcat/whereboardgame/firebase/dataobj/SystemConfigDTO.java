@@ -18,6 +18,12 @@ public class SystemConfigDTO {
 
     private boolean OpenReportFeature;
 
+    private boolean OpenStoreFindPersonFeature;
+
+    private boolean OpenCustomFindPersonFeature;
+
+    private boolean OpenBoardGameKnowledge;
+
     private AppUpdateDTO OpenAppUpdateFeature;
 
     public SystemConfigDTO() {
@@ -41,6 +47,18 @@ public class SystemConfigDTO {
 
     public boolean isOpenSuggestionsFeature() {
         return OpenSuggestionsFeature;
+    }
+
+    public boolean isOpenStoreFindPersonFeature() {
+        return OpenStoreFindPersonFeature;
+    }
+
+    public boolean isOpenCustomFindPersonFeature() {
+        return OpenCustomFindPersonFeature;
+    }
+
+    public boolean isOpenBoardGameKnowledge() {
+        return OpenBoardGameKnowledge;
     }
 
     public AppUpdateDTO getOpenAppUpdateFeature() {

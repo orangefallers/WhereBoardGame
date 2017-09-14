@@ -85,6 +85,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnIssueReport;
     private Button btnCustomFindPerson;
     private Button btnStoreFindPerson;
+    private Button btnBGKnowledge;
 
     private int debugCount = 0;
 
@@ -141,6 +142,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
 
                     startActivity(new Intent(WelcomeActivity.this, StoreListActivity.class));
+                    break;
+                case R.id.btn_welcome_board_game_knowledge:
                     break;
                 case R.id.tv_welcome_data_update_date:
                     debugCount++;
@@ -233,6 +236,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnIssueReport.setOnClickListener(clickListener);
         btnCustomFindPerson.setOnClickListener(clickListener);
         btnStoreFindPerson.setOnClickListener(clickListener);
+        btnBGKnowledge.setOnClickListener(clickListener);
         tvUpdateDate.setOnClickListener(clickListener);
 
 
@@ -355,6 +359,7 @@ public class WelcomeActivity extends AppCompatActivity {
         btnIssueReport = (Button) findViewById(R.id.btn_welcome_issue_report);
         btnCustomFindPerson = (Button) findViewById(R.id.btn_welcome_custom_find_person);
         btnStoreFindPerson = (Button) findViewById(R.id.btn_welcome_store_find_person);
+        btnBGKnowledge = (Button) findViewById(R.id.btn_welcome_board_game_knowledge);
 
 //        rlWelcomeButtonArea = (RecyclerView) findViewById(R.id.rl_welcome_button_area);
 
@@ -393,10 +398,12 @@ public class WelcomeActivity extends AppCompatActivity {
             btnReport.setEnabled(configDTO.isOpenReportFeature());
             btnGo.setEnabled(configDTO.isOpenWatchMapFeature());
 
-//            btnJoinPlay.setEnabled(configDTO.isOpenPlayerRoomListFeature());
+            btnJoinPlay.setEnabled(configDTO.isOpenPlayerRoomListFeature());
             btnLogin.setEnabled(configDTO.isOpenUserInfoFeature());
             btnIssueReport.setEnabled(configDTO.isOpenSuggestionsFeature());
-
+            btnStoreFindPerson.setEnabled(configDTO.isOpenStoreFindPersonFeature());
+            btnCustomFindPerson.setEnabled(configDTO.isOpenCustomFindPersonFeature());
+            btnBGKnowledge.setEnabled(configDTO.isOpenBoardGameKnowledge());
 
             showGoToUpdateAppDialog(
                     configDTO.getOpenAppUpdateFeature().isOpenUpdate(),
