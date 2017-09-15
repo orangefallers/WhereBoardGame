@@ -146,6 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:autoLink="web"
+                android:textIsSelectable="true"
                 android:background="@drawable/rect_primary_frame"
                 android:padding="4dp"
                 android:textColor="@color/deep_gray"

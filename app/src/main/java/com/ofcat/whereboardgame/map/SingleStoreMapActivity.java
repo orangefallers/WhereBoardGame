@@ -145,7 +145,7 @@ public class SingleStoreMapActivity extends FragmentActivity implements OnMapRea
             myLocationMarker = singleStoreMap.addMarker(new MarkerOptions()
                     .position(latLan)
                     .title(getString(R.string.my_location))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_deep_yellow)));
 //            myLocationMarker.showInfoWindow();
 //            myLocationMarker .setTag(null);
         } else {
@@ -169,7 +169,7 @@ public class SingleStoreMapActivity extends FragmentActivity implements OnMapRea
                     .position(storeLatLng)
                     .title(storeName)
                     .snippet(storeAddress)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_deep_green)));
             storeMarker.showInfoWindow();
         }
 

@@ -490,35 +490,65 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     private void changeUserPlayerCurrentPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
 
         databaseReference.child("waitPlayerRoomDTO").child("currentPerson").setValue(person);
     }
 
     private void changeUserPlayerNeedPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_USER_INFO + "/" + userId);
 
         databaseReference.child("waitPlayerRoomDTO").child("needPerson").setValue(person);
     }
 
     private void changePlayerRoomCurrentPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
         databaseReference.child(userStoreId).child(userId).child("currentPerson").setValue(person);
 
     }
 
     private void changePlayerCustomRoomCurrentPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM);
         databaseReference.child(userId).child("currentPerson").setValue(person);
 
     }
 
     private void changePlayerRoomNeedPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_WAITPLYERROOM);
         databaseReference.child(userStoreId).child(userId).child("needPerson").setValue(person);
     }
 
     private void changePlayerCustomRoomNeedPerson(int person) {
+
+        if(!isRoomHasChildern){
+            return;
+        }
+
         databaseReference = database.getReferenceFromUrl(AppConfig.FIREBASE_URL + "/" + FirebaseTableKey.TABLE_CUSTOM_WAITPLAYERROOM);
         databaseReference.child(userId).child("needPerson").setValue(person);
 

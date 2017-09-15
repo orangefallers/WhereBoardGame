@@ -319,7 +319,7 @@ public class InputAddressMapFragment extends Fragment implements OnMapReadyCallb
                                 .position(position)
                                 .title(storeName)
                                 .snippet(address)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_red)));
                     } else {
                         storeMarker.setPosition(position);
                         storeMarker.setTitle(storeName);

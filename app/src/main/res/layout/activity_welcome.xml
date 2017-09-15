@@ -64,7 +64,6 @@
             android:layout_height="wrap_content"
             android:text="@string/main_welcome_tab_store_find_person"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
             app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
             app:layout_constraintTop_toBottomOf="@+id/btn_welcome_go" />
 
@@ -75,9 +74,8 @@
             android:layout_height="wrap_content"
             android:text="@string/report_store_info"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
             app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_store_find_person"/>
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_store_find_person" />
 
         <Button
             android:id="@+id/btn_welcome_issue_report"
@@ -86,9 +84,8 @@
             android:layout_height="wrap_content"
             android:text="@string/menu_issue_report"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/vertical_guideline"
             app:layout_constraintRight_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_report"/>
+            app:layout_constraintTop_toBottomOf="@+id/btn_welcome_report" />
 
         <android.support.constraint.Guideline
             android:id="@+id/vertical_guideline"
@@ -96,7 +93,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5"
-            tools:layout_editor_absoluteX="172dp"
+            tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
 
         <Button
@@ -106,7 +103,6 @@
             android:layout_height="wrap_content"
             android:text="@string/gotoPlayerRoom"
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -117,7 +113,6 @@
             android:layout_height="wrap_content"
             android:text="@string/main_welcome_tab_custom_find_person"
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_welcome_join_playroom" />
 
@@ -128,7 +123,6 @@
             android:layout_height="wrap_content"
             android:text="@string/login_title"
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
-            app:layout_constraintLeft_toRightOf="@id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_welcome_custom_find_person" />
 
@@ -138,6 +132,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/main_welcome_tab_board_game_knowledge"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@+id/vertical_guideline"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_welcome_login" />

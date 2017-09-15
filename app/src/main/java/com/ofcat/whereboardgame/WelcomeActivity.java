@@ -170,9 +170,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private ValueEventListener systemConfigValueEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            MyLog.i(TAG, "systemConfigValueEventListener");
-//            GenericTypeIndicator<ArrayList<StoreDTO>> typeIndicator = new GenericTypeIndicator<ArrayList<StoreDTO>>() {
-//            };
+//            MyLog.i(TAG, "systemConfigValueEventListener");
 //            SystemConfigDTO systemConfigDTO;
 //            if (dataSnapshot.child("SystemConfig").exists()) {
 //                systemConfigDTO = dataSnapshot.child("SystemConfig").getValue(SystemConfigDTO.class);
@@ -189,8 +187,6 @@ public class WelcomeActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-//            Log.i(TAG, "data = " + dataSnapshot.toString());
 
         }
 
@@ -260,27 +256,27 @@ public class WelcomeActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.welcome_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_notify:
-                boolean check = item.isChecked();
-                MyLog.i(TAG, " menu item check = " + check);
-                item.setIcon(!check ? R.drawable.ic_notifications_white_24dp : R.drawable.ic_notifications_off_white_24dp);
-                item.setChecked(!check);
-                settingMenuNotify(!check);
-
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.welcome_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_notify:
+//                boolean check = item.isChecked();
+//                MyLog.i(TAG, " menu item check = " + check);
+//                item.setIcon(!check ? R.drawable.ic_notifications_white_24dp : R.drawable.ic_notifications_off_white_24dp);
+//                item.setChecked(!check);
+//                settingMenuNotify(!check);
+//
+//                break;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     protected void onStart() {
@@ -437,7 +433,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void showGoToUpdateAppDialog(boolean isShow, boolean isForced, String title, String message, String appVersion) {
 
-        MyLog.i(TAG, "is show =" + isShow + " is forced = " + isForced);
+//        MyLog.i(TAG, "is show =" + isShow + " is forced = " + isForced);
         if (!isShow || isFinishing()) {
             return;
         }
