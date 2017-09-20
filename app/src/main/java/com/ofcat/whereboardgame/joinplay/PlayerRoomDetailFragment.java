@@ -99,7 +99,13 @@ public class PlayerRoomDetailFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LocationDTO locationDTO = currentRoomDTO.getLocation();
-        showLocationIcon(locationDTO != null);
+
+        if (locationDTO != null && locationDTO.getLatitude() != 0.0 && locationDTO.getLongitude() != 0.0) {
+            showLocationIcon(true);
+        } else {
+            showLocationIcon(false);
+        }
+
         showCurrentPerson(currentRoomDTO.getCurrentPerson());
         showNeedPerson(currentRoomDTO.getNeedPerson());
 

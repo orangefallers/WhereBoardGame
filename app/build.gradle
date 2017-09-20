@@ -19,8 +19,8 @@ android {
 
         multiDexEnabled true
 
-        versionCode 21003
-        versionName "2.1.003"
+        versionCode 21005
+        versionName "2.1.005"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
