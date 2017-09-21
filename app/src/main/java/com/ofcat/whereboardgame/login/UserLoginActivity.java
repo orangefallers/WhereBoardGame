@@ -52,6 +52,7 @@ import com.ofcat.whereboardgame.R;
 import com.ofcat.whereboardgame.config.AppConfig;
 import com.ofcat.whereboardgame.findperson.CustomFindPersonActivity;
 import com.ofcat.whereboardgame.findperson.FindPersonActivity;
+import com.ofcat.whereboardgame.firebase.dataobj.LocationDTO;
 import com.ofcat.whereboardgame.firebase.dataobj.UserInfoDTO;
 import com.ofcat.whereboardgame.firebase.model.FireBaseUrl;
 import com.ofcat.whereboardgame.util.FirebaseTableKey;
@@ -98,6 +99,8 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
     private String userStoreId = "";
     private String userStoreName = "";
     private String userStoreAddressTag = "";
+    private String userStoreAddress = "";
+    private double userStoreLat, userStoreLng;
 
     private String roomDate = "目前揪團日期：%s";
 
@@ -170,6 +173,9 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE, userStoreName);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ID, userStoreId);
                         intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_PLACE_TAG, userStoreAddressTag);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_LAT, userStoreLat);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_LNG, userStoreLng);
+                        intent.putExtra(FindPersonActivity.KEY_FINDPERSON_BGS_ADDRESS, userStoreAddress);
                         startActivity(intent);
                     }
 
@@ -200,6 +206,14 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
                     spinnerCurrentPerson.setSelection(userInfoDTO.getWaitPlayerRoomDTO().getCurrentPerson());
                     spinnerNeedPerson.setSelection(userInfoDTO.getWaitPlayerRoomDTO().getNeedPerson());
+
+                    //補上店家地址和經緯度資訊
+                    userStoreAddress = userInfoDTO.getWaitPlayerRoomDTO().getStoreAddress();
+                    LocationDTO locationDTO = userInfoDTO.getWaitPlayerRoomDTO().getLocation();
+                    if (locationDTO != null) {
+                        userStoreLat = locationDTO.getLatitude();
+                        userStoreLng = locationDTO.getLongitude();
+                    }
                 }
 
                 userStoreId = userInfoDTO.getStoreId();
@@ -491,7 +505,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changeUserPlayerCurrentPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
@@ -502,7 +516,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changeUserPlayerNeedPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
@@ -513,7 +527,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changePlayerRoomCurrentPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
@@ -524,7 +538,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changePlayerCustomRoomCurrentPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
@@ -535,7 +549,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changePlayerRoomNeedPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
@@ -545,7 +559,7 @@ public class UserLoginActivity extends AppCompatActivity implements GoogleApiCli
 
     private void changePlayerCustomRoomNeedPerson(int person) {
 
-        if(!isRoomHasChildern){
+        if (!isRoomHasChildern) {
             return;
         }
 
