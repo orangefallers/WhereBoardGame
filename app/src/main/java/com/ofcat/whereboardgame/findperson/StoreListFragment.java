@@ -73,7 +73,7 @@ public class StoreListFragment extends Fragment {
             if (tvMessage != null) {
                 showLoading(false);
 
-                String modifyError = errorMessage+"/n請嘗試離開頁面重新讀取";
+                String modifyError = errorMessage+"\n請嘗試離開頁面重新讀取";
                 showError(modifyError, true);
             }
         }
